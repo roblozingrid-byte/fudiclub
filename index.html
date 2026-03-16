@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fudi Club | Mistery Box</title>
+    <!-- Fonts: Corben para la vibra Cooper BT, Space Grotesk para cuerpo, VT323 para números -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Overlay/Grain Effect -->
+    <div class="grain-overlay"></div>
+
+    <!-- Ticker / Marquee -->
+    <div class="ticker">
+      <div class="ticker-content">
+        <span>SORPRESA TOTAL // SOLO 100 CAJAS AL MES // EL SECRETO ESTÁ EN EL UNBOXING // SORPRESA TOTAL // SOLO 100 CAJAS AL MES // EL SECRETO ESTÁ EN EL UNBOXING // </span>
+        <span>SORPRESA TOTAL // SOLO 100 CAJAS AL MES // EL SECRETO ESTÁ EN EL UNBOXING // SORPRESA TOTAL // SOLO 100 CAJAS AL MES // EL SECRETO ESTÁ EN EL UNBOXING // </span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="neo-header">
+      <div class="logo-container">
+        <!-- Puedes reemplazar esto también por una imagen si prefieres -->
+        <h1 class="logo">Fudi<br>Club</h1>
+      </div>
+      <nav>
+        <a href="#registro" class="cta-button cta-green" style="text-decoration:none; display:inline-block;">Unirse Ahora</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero neo-border-section">
+        <div class="hero-content">
+          <!-- Logo de Fudi Club con relieve (reemplazar src con imagen real) -->
+          <img src="https://placehold.co/300x150/4ebaba/000000?text=Logo+Fudi+Club" alt="Fudi Club Logo" class="hero-logo-relief" />
+          
+          <h2 class="hero-title">Mistery Box</h2>
+          <p class="subtitle">Nuestra caja es un secreto. <br>(Cada mes un drop limitado)</p>
+          <div class="box-container" id="boxContainer">
+            <!-- 3D Box Image Placeholder. Reemplaza src con image9.webp -->
+            <div class="mystery-box">
+              <img src="https://placehold.co/400x300/4ebaba/000000?text=Caja+Fudi+Club\n(image9)" alt="Fudi Club Box" class="box-image" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teaser Section -->
+      <section class="teaser">
+        <h2 class="section-title">Lo que podría tocarte</h2>
+        <div class="teaser-grid">
+          <!-- Item 1 -->
+          <div class="teaser-card neo-border">
+            <div class="mystery-item-container">
+               <img src="https://placehold.co/150x150/d1ff5e/000000?text=Sticker\n(image10)" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            </div>
+          </div>
+          <!-- Item 2 -->
+          <div class="teaser-card neo-border">
+            <div class="mystery-item-container">
+               <img src="https://placehold.co/150x150/ffb7d5/000000?text=Sticker\n(image11)" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            </div>
+          </div>
+          <!-- Item 3 -->
+          <div class="teaser-card neo-border">
+            <div class="mystery-item-container">
+               <img src="https://placehold.co/150x150/d1ff5e/000000?text=Sticker\n(image12)" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            </div>
+          </div>
+          <!-- Item 4 -->
+          <div class="teaser-card neo-border">
+            <div class="mystery-item-container">
+               <img src="https://placehold.co/150x150/ffb7d5/000000?text=Sticker\n(image13)" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Single Disclaimer at the bottom -->
+        <div class="disclaimer-label master-disclaimer">PRODUCTO DE REFERENCIA - VARÍA CADA MES</div>
+      </section>
+
+      <!-- Checkout / Security Filter -->
+      <section class="checkout neo-border-section" id="registro">
+        <h2 class="section-title">Unite al club!</h2>
+
+        <!-- Email pre-registro + CTA -->
+        <div id="cta-join-wrapper">
+          <div class="pre-register-box">
+            <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico" autocomplete="email">
+            <button class="cta-button massive cta-green" id="btn-join-club" disabled>¡Quiero unirme al club!</button>
+          </div>
+        </div>
+
+        <!-- Expanded Checkout Card — oculto hasta que se clickea el botón -->
+        <div class="checkout-expanded-card neo-border" id="expandedCheckout">
+          <h2 class="section-title checkout-card-title">Completa tu orden</h2>
+
+          <form class="payment-form" id="paymentForm">
+
+            <!-- 1. PLANES DE COMPRA — pieza focal -->
+            <div class="plan-focal-section">
+              <p class="plan-focal-label">Elegí tu plan</p>
+              <div class="purchase-options focal">
+                <label class="radio-neo plan-card focal-card" id="plan-card-one">
+                  <input type="radio" name="plan" value="one-time" checked>
+                  <div class="radio-neo-content">
+                    <span class="plan-name">Compra Única</span>
+                    <span class="plan-price focal-price">$45.000</span>
+                    <span class="plan-tag">Sin compromiso</span>
+                  </div>
+                </label>
+                <label class="radio-neo plan-card focal-card" id="plan-card-quarterly">
+                  <input type="radio" name="plan" value="quarterly">
+                  <div class="plan-badge-sticker">⭐ MEJOR PRECIO</div>
+                  <div class="radio-neo-content">
+                    <span class="plan-name">Suscripción Trimestral</span>
+                    <span class="plan-price focal-price">$40.500 <small>c/u</small></span>
+                    <span class="plan-tag">Ahorrás $13.500 por ciclo</span>
+                    <small class="plan-note">(*el pago se debita cada 10 del mes)</small>
+                  </div>
+                </label>
+              </div>
+
+              <div class="quantity-selector">
+                <label class="quantity-label">Cantidad de cajas:</label>
+                <div class="quantity-controls">
+                  <button type="button" class="qty-btn" id="qty-minus">−</button>
+                  <input type="number" class="neo-input input-small" id="qtyInput" value="1" min="1" max="10" required>
+                  <button type="button" class="qty-btn" id="qty-plus">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Separator -->
+            <div class="checkout-divider">
+              <span>Tus datos y pago</span>
+            </div>
+
+            <!-- 2. DATOS PERSONALES -->
+            <div class="form-section">
+              <h3 class="modal-subtitle">Tus Datos</h3>
+              <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico" required autocomplete="email">
+              <input type="text" class="neo-input" placeholder="Nombre completo" required>
+              <input type="text" class="neo-input" placeholder="Dirección de envío" required>
+
+              <!-- Allergy Toggle -->
+              <div class="toggle-group neo-border">
+                <label class="toggle-control">
+                  <input type="checkbox" name="hasAllergy" id="allergyToggle">
+                  <span class="control"></span>
+                  <span class="label">¿Sos alérgico a algún alimento?</span>
+                </label>
+              </div>
+              <div class="allergy-details" id="allergyDetails">
+                <textarea name="allergyInfo" class="neo-input" placeholder="Contanos a qué sos alérgico..."></textarea>
+              </div>
+              <p class="checkout-subtitle-inline">No te diremos qué hay, pero intentaremos hacerlo único para vos.</p>
+            </div>
+
+            <!-- 3. MÉTODO DE PAGO -->
+            <div class="form-section">
+              <h3 class="modal-subtitle">Método de Pago</h3>
+              <input type="text" class="neo-input" placeholder="Número de Tarjeta" required>
+              <div class="split-inputs">
+                <input type="text" class="neo-input" placeholder="MM/AA" required>
+                <input type="text" class="neo-input" placeholder="CVC" required>
+              </div>
+            </div>
+
+            <div class="modal-disclaimer neo-border">
+              <p><strong>⚠️ Importante:</strong> La fecha de lanzamiento es el <strong>15 de cada mes</strong>. El tiempo de entrega es de <strong>1 a 2 días hábiles</strong> posteriores al lanzamiento, dependiendo de tu zona.</p>
+            </div>
+
+            <button type="submit" class="cta-button massive cta-green">Confirmar y Pagar</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Floating Urgency Stock Widget -->
+    <div class="stock-widget-floating neo-border">
+      <div class="stock-info">
+        <span class="stock-number">14</span>
+        <span class="stock-text">Quedan cajas<br>¡Último Drop!</span>
+      </div>
+    </div>
+
+    <!-- Draggable Stickers Container (Appended via JS) -->
+    <div id="stickers-layer"></div>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
