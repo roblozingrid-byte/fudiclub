@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCheckoutTotals(); // Initial calculation
   initGoogleMaps();
   initDynamicHeader();
+  initMysteryReveal();
 });
 
 // A. Allergy Toggle Logic
@@ -177,13 +178,14 @@ function initDraggableStickers() {
   if (!layer) return;
 
   const stickerData = [
-    { src: 'https://placehold.co/80x80/ffb7d5/000000?text=Logo1', x: 5, y: 15 },
-    { src: 'https://placehold.co/100x100/d1ff5e/000000?text=Logo2', x: 80, y: 40 },
-    { src: 'https://placehold.co/90x90/fff4bd/000000?text=Logo3', x: 10, y: 120 },
-    { src: 'https://placehold.co/110x110/4ebaba/000000?text=Logo4', x: 70, y: 150 },
-    { src: 'https://placehold.co/85x85/ecf0f1/000000?text=Logo5', x: 45, y: 80 },
-    { src: 'https://placehold.co/95x95/3498db/000000?text=Logo6', x: 20, y: 180 },
-    { src: 'https://placehold.co/105x105/e67e22/000000?text=Logo7', x: 60, y: 10 }
+    { src: '/imagenes/alfajor.png', x: 5, y: 15 },
+    { src: '/imagenes/chips.png', x: 80, y: 40 },
+    { src: '/imagenes/dulces.png', x: 10, y: 120 },
+    { src: '/imagenes/joystick.png', x: 70, y: 150 },
+    { src: '/imagenes/paleta.png', x: 45, y: 80 },
+    { src: '/imagenes/palomitas.png', x: 20, y: 180 },
+    { src: '/imagenes/polaroid.png', x: 60, y: 10 },
+    { src: '/imagenes/Compu.png', x: 30, y: 50 }
   ];
 
   const driftClasses = ['sticker-drift-h', 'sticker-drift-v', 'sticker-drift-d'];
@@ -223,7 +225,8 @@ function initDraggableStickers() {
     img.style.display = 'block';
     img.style.pointerEvents = 'none'; // so it doesn't interfere with dragging
     floatWrap.appendChild(img);
-    sticker.style.transform = `rotate(${(Math.random() - 0.5) * 40}deg)`;
+    // Use standalone 'rotate' to avoid clashing with 'translate' and 'transform'
+    sticker.style.rotate = `${(Math.random() - 0.5) * 40}deg`;
 
     layer.appendChild(sticker);
     makeDraggable(sticker);
@@ -232,57 +235,66 @@ function initDraggableStickers() {
 
 function makeDraggable(element) {
   let isDragging = false;
-  let currentX = 0;
-  let currentY = 0;
-  let initialX;
-  let initialY;
-  let xOffset = 0;
-  let yOffset = 0;
+  let startX, startY;
+  let initialTranslateX = 0, initialTranslateY = 0;
 
-  element.addEventListener('pointerdown', dragStart, { passive: false });
-  document.addEventListener('pointermove', drag, { passive: false });
-  document.addEventListener('pointerup', dragEnd);
-
-  function dragStart(e) {
-    // Only drag with left click or touch
+  element.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
-    initialX = e.clientX - xOffset;
-    initialY = e.clientY - yOffset;
+    // Capture current translate from dataset to avoid reading complex styles
+    initialTranslateX = parseFloat(element.dataset.accX) || 0;
+    initialTranslateY = parseFloat(element.dataset.accY) || 0;
 
+    startX = e.clientX;
+    startY = e.clientY;
     isDragging = true;
-    element.style.zIndex = '2000';
+
+    // Reliability: Capture pointer to avoid losing it during fast movement
+    element.setPointerCapture(e.pointerId);
+    
+    // UI state
+    element.classList.add('dragging');
     element.style.cursor = 'grabbing';
     
-    // Stop the drift animation while dragging
+    // Pause animations
     const drift = element.querySelector('[class*="sticker-drift"]');
     if (drift) drift.style.animationPlayState = 'paused';
-    
-    // Prevent text selection
-    e.preventDefault();
-  }
 
-  function dragEnd() {
-    isDragging = false;
-    element.style.zIndex = '1999';
-    element.style.cursor = 'grab';
-
-    // Resume drift animation
-    const drift = element.querySelector('[class*="sticker-drift"]');
-    if (drift) drift.style.animationPlayState = 'running';
-
-    xOffset = currentX;
-    yOffset = currentY;
-  }
-
-  function drag(e) {
-    if (isDragging) {
-      currentX = e.clientX - initialX;
-      currentY = e.clientY - initialY;
-
+    const onPointerMove = (ev) => {
+      if (!isDragging) return;
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      
+      const currentX = initialTranslateX + dx;
+      const currentY = initialTranslateY + dy;
+      
+      // Use 'translate' property (works alongside 'rotate' and 'transform')
       element.style.translate = `${currentX}px ${currentY}px`;
-    }
-  }
+      
+      // Store current state for persistence
+      element.dataset.accX = currentX;
+      element.dataset.accY = currentY;
+    };
+
+    const onPointerUp = (ev) => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      element.releasePointerCapture(ev.pointerId);
+      element.classList.remove('dragging');
+      element.style.cursor = 'grab';
+      
+      if (drift) drift.style.animationPlayState = 'running';
+
+      element.removeEventListener('pointermove', onPointerMove);
+      element.removeEventListener('pointerup', onPointerUp);
+    };
+
+    element.addEventListener('pointermove', onPointerMove);
+    element.addEventListener('pointerup', onPointerUp);
+    
+    e.preventDefault();
+  });
 }
 // D. Dynamic Totals Calculation
 function updateCheckoutTotals() {
@@ -423,4 +435,25 @@ function initDynamicHeader() {
   });
 
   observer.observe(heroLogo);
+}
+
+// H. Mystery Product Reveal "Lens" Effect
+function initMysteryReveal() {
+  const containers = document.querySelectorAll('.mystery-item-container');
+
+  containers.forEach(container => {
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      container.style.setProperty('--reveal-x', `${x}px`);
+      container.style.setProperty('--reveal-y', `${y}px`);
+      container.style.setProperty('--reveal-radius', '45px');
+    });
+
+    container.addEventListener('mouseleave', () => {
+      container.style.setProperty('--reveal-radius', '0px');
+    });
+  });
 }

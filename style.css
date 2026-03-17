@@ -342,6 +342,8 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   transition: transform 0.2s;
+  position: relative; /* Necessary for z-index */
+  z-index: 60; /* Above stickers-layer (50) */
 }
 
 .teaser-card:hover {
@@ -359,19 +361,33 @@ h1, h2, h3 {
   border-radius: 8px;
 }
 
-.mystery-item {
-  max-width: 100%;
-  max-height: 100%;
+.mystery-reveal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Fill container */
+  height: 100%; /* Fill container */
   object-fit: contain;
+  pointer-events: none;
+  clip-path: circle(var(--reveal-radius, 0px) at var(--reveal-x, 0px) var(--reveal-y, 0px));
+  transition: clip-path 0.05s ease-out;
+  z-index: 2;
+}
+
+.mystery-item {
+  width: 100%; /* Match reveal size */
+  height: 100%; /* Match reveal size */
+  object-fit: contain;
+  display: block;
 }
 
 .blur-effect {
-  filter: blur(8px) grayscale(50%);
+  filter: blur(12px) grayscale(30%); /* Slightly more blur for better mystery */
   transition: filter 0.3s;
 }
 
 .teaser-card:hover .blur-effect {
-  filter: blur(3px) grayscale(0%);
+  filter: blur(8px) grayscale(10%); /* Reveal a bit more context on hover but keep mystery */
 }
 
 .master-disclaimer {
@@ -914,19 +930,26 @@ textarea.neo-input {
   position: absolute;
   pointer-events: auto;
   cursor: grab;
-  /* Remove old container styles */
+  /* Ensure dimensions so grab area is correct */
+  width: 100px; 
+  height: 100px;
   background: none;
   border: none;
   padding: 0;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, translate 0.05s linear; /* Smooth but fast */
   user-select: none;
   touch-action: none;
+  z-index: 1999;
 }
 
-.draggable-sticker:active {
+.draggable-sticker.dragging {
   cursor: grabbing;
-  transform: scale(1.1) rotate(5deg) !important; /* Override the random rotation briefly */
-  z-index: 100;
+  z-index: 3000;
+  transition: none; /* Disable transition while dragging to avoid lagging */
+}
+
+.draggable-sticker.dragging:active {
+  transform: scale(1.1) rotate(5deg) !important;
 }
 
 /* Floating animation for the inner content */
