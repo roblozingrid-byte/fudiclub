@@ -243,7 +243,7 @@ h1, h2, h3 {
 .hero-logo-relief {
   max-width: 400px; /* Ajustado para el layout de dos columnas */
   margin: 0;
-  filter: drop-shadow(4px 4px 0px var(--black));
+  filter: drop-shadow(6px 6px 0px var(--black));
   transform: rotate(-3deg);
   transition: transform 0.2s ease;
 }
