@@ -98,34 +98,6 @@ function initCheckoutFlow() {
     });
   });
 
-  // 3. Controles +/- de cantidad
-  const qtyInput = document.getElementById('qtyInput');
-  const qtyMinus = document.getElementById('qty-minus');
-  const qtyPlus = document.getElementById('qty-plus');
-
-  if (qtyInput && qtyMinus && qtyPlus) {
-    qtyMinus.addEventListener('click', () => {
-      const val = parseInt(qtyInput.value);
-      if (val > 1) {
-        qtyInput.value = val - 1;
-        updateCheckoutTotals();
-      }
-    });
-    qtyPlus.addEventListener('click', () => {
-      const val = parseInt(qtyInput.value);
-      if (val < 5) {
-        qtyInput.value = val + 1;
-        updateCheckoutTotals();
-      }
-    });
-    qtyInput.addEventListener('change', () => {
-      let val = parseInt(qtyInput.value);
-      if (isNaN(val) || val < 1) val = 1;
-      if (val > 5) val = 5;
-      qtyInput.value = val;
-      updateCheckoutTotals();
-    });
-  }
 
   // 4. Allergy Toggle
   const allergyToggle = document.getElementById('allergyToggle');
@@ -298,22 +270,25 @@ function makeDraggable(element) {
 }
 // D. Dynamic Totals Calculation
 function updateCheckoutTotals() {
-  const qtyInput = document.getElementById('qtyInput');
-  const summaryQty = document.getElementById('summary-qty');
+  const summarySubtotalLabel = document.getElementById('summary-subtotal-label');
   const summarySubtotal = document.getElementById('summary-subtotal');
   const summaryDelivery = document.getElementById('summary-delivery');
   const summaryTotal = document.getElementById('summary-total');
-
-  if (!qtyInput || !summaryQty) return;
-
-  const qty = parseInt(qtyInput.value) || 1;
+ 
+  if (!summarySubtotal) return;
+ 
+  const qty = 1; // Fixed quantity 
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
-  const pricePerBox = (selectedPlan && selectedPlan.value === 'quarterly') ? 40500 : 45000;
+  const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
+  const pricePerBox = isQuarterly ? 40500 : 45000;
   
   const subtotal = qty * pricePerBox;
-  const deliveryFee = 2500; // Fixed fee for now, can be dynamic based on distance
-
-  summaryQty.innerText = qty;
+  const deliveryFee = 2500; // Fixed fee for now, can be dynamic
+ 
+  if (summarySubtotalLabel) {
+    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (Box 1 de 3):' : 'Subtotal (1 box):';
+  }
+  
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
   summaryDelivery.innerText = `$${deliveryFee.toLocaleString('es-AR')}`;
   summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
@@ -399,17 +374,15 @@ function initGoogleMaps() {
 }
 
 function updateCheckoutTotalsFromFee(deliveryFee) {
-  const qtyInput = document.getElementById('qtyInput');
   const summarySubtotal = document.getElementById('summary-subtotal');
   const summaryTotal = document.getElementById('summary-total');
 
-  if (!qtyInput || !summarySubtotal) return;
+  if (!summarySubtotal) return;
 
-  const qty = parseInt(qtyInput.value) || 1;
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
   const pricePerBox = (selectedPlan && selectedPlan.value === 'quarterly') ? 40500 : 45000;
   
-  const subtotal = qty * pricePerBox;
+  const subtotal = pricePerBox;
   summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
 }
 

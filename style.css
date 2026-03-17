@@ -363,10 +363,10 @@ h1, h2, h3 {
 
 .mystery-reveal {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%; /* Fill container */
-  height: 100%; /* Fill container */
+  top: 5%; /* Center in 90% box */
+  left: 5%;
+  width: 90%;
+  height: 90%;
   object-fit: contain;
   pointer-events: none;
   clip-path: circle(var(--reveal-radius, 0px) at var(--reveal-x, 0px) var(--reveal-y, 0px));
@@ -375,19 +375,20 @@ h1, h2, h3 {
 }
 
 .mystery-item {
-  width: 100%; /* Match reveal size */
-  height: 100%; /* Match reveal size */
+  width: 90%;
+  height: 90%;
   object-fit: contain;
   display: block;
+  transition: transform 0.3s ease;
 }
 
 .blur-effect {
-  filter: blur(12px) grayscale(30%); /* Slightly more blur for better mystery */
-  transition: filter 0.3s;
+  filter: blur(12px) grayscale(30%);
+  transition: filter 0.3s, transform 0.3s ease;
 }
 
 .teaser-card:hover .blur-effect {
-  filter: blur(8px) grayscale(10%); /* Reveal a bit more context on hover but keep mystery */
+  filter: blur(8px) grayscale(10%);
 }
 
 .master-disclaimer {
@@ -676,19 +677,21 @@ h1, h2, h3 {
 
 /* Checkout Summary / Totals Box */
 .checkout-summary {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: var(--bg-amarillo);
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: var(--accent-rosa);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  border-radius: 8px;
 }
 
 .summary-line {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--black);
 }
 
@@ -696,7 +699,7 @@ h1, h2, h3 {
   margin-top: 8px;
   padding-top: 8px;
   border-top: 2px solid var(--black);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 

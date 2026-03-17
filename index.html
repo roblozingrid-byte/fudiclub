@@ -149,26 +149,7 @@
               </label>
             </div>
 
-            <div class="quantity-selector">
-              <label class="quantity-label">Cantidad de cajas:</label>
-              <div class="quantity-controls">
-                <button type="button" class="qty-btn" id="qty-minus">−</button>
-                <input type="number" class="neo-input input-small" id="qtyInput" value="1" min="1" max="5" required>
-                <button type="button" class="qty-btn" id="qty-plus">+</button>
-              </div>
-            </div>
 
-            <!-- Allergy Toggle (Moved here) -->
-            <div class="toggle-group neo-border" style="margin-top: 15px;">
-              <label class="toggle-control">
-                <input type="checkbox" name="hasAllergy" id="allergyToggle">
-                <span class="control"></span>
-                <span class="label">¿Sos alérgico a algún alimento?</span>
-              </label>
-            </div>
-            <div class="allergy-details" id="allergyDetails">
-              <textarea name="allergyInfo" class="neo-input" placeholder="Contanos a qué sos alérgico..."></textarea>
-            </div>
             <p class="checkout-subtitle-inline">No te diremos qué hay, pero intentaremos hacerlo único para vos.</p>
           </div>
 
@@ -193,21 +174,18 @@
               </div>
             </div>
 
-            <!-- Order Summary / Totals -->
-            <div class="checkout-summary neo-border">
-              <div class="summary-line">
-                <span>Subtotal (<span id="summary-qty">1</span> caja/s):</span>
-                <span id="summary-subtotal">$0</span>
-              </div>
-              <div class="summary-line">
-                <span>Envío:</span>
-                <span id="summary-delivery">$0</span>
-              </div>
-              <div class="summary-line total-line">
-                <span>Total:</span>
-                <span id="summary-total">$0</span>
-              </div>
+            <!-- Allergy Toggle -->
+            <div class="toggle-group neo-border" style="margin-top: 15px;">
+              <label class="toggle-control">
+                <input type="checkbox" name="hasAllergy" id="allergyToggle">
+                <span class="control"></span>
+                <span class="label">¿Sos alérgico a algún alimento?</span>
+              </label>
             </div>
+            <div class="allergy-details" id="allergyDetails">
+              <textarea name="allergyInfo" class="neo-input" placeholder="Contanos a qué sos alérgico..."></textarea>
+            </div>
+
           </div>
 
           <!-- 3. MÉTODO DE PAGO -->
@@ -217,6 +195,22 @@
             <div class="split-inputs">
               <input type="text" class="neo-input" placeholder="MM/AA" required>
               <input type="text" class="neo-input" placeholder="CVC" required>
+            </div>
+          </div>
+
+          <!-- Order Summary / Totals -->
+          <div class="checkout-summary neo-border">
+            <div class="summary-line">
+              <span id="summary-subtotal-label">Subtotal (1 box):</span>
+              <span id="summary-subtotal">$0</span>
+            </div>
+            <div class="summary-line">
+              <span>Envío:</span>
+              <span id="summary-delivery">$0</span>
+            </div>
+            <div class="summary-line total-line">
+              <span>Total:</span>
+              <span id="summary-total">$0</span>
             </div>
           </div>
 
