@@ -236,8 +236,10 @@ h1, h2, h3 {
 .hero-text-col {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centrar texto internamente en su columna */
+  align-items: center;
   text-align: center;
+  align-self: flex-end; /* Move to the bottom of the row */
+  padding-bottom: 20px; /* Give it some breathing room from the box below */
 }
 
 .hero-logo-relief {
@@ -934,29 +936,28 @@ textarea.neo-input {
   position: absolute;
   pointer-events: auto;
   cursor: grab;
-  /* Ensure dimensions so grab area is correct */
   width: 100px; 
   height: 100px;
   background: none;
   border: none;
   padding: 0;
-  transition: transform 0.15s ease, translate 0.05s linear; /* Smooth but fast */
   user-select: none;
   touch-action: none;
   z-index: 1999;
+  /* translate will be set via JS */
+  will-change: translate;
 }
 
 .draggable-sticker.dragging {
   cursor: grabbing;
   z-index: 3000;
-  transition: none; /* Disable transition while dragging to avoid lagging */
 }
 
 .draggable-sticker.dragging:active {
   transform: scale(1.1) rotate(5deg) !important;
 }
 
-/* Floating animation for the inner content */
+/* Floating animation for the inner content (stays CSS for efficiency) */
 .sticker-inner-float {
   animation: float-sticker 3s ease-in-out infinite;
   display: flex;
@@ -969,39 +970,6 @@ textarea.neo-input {
 @keyframes float-sticker {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
-}
-
-@keyframes drift-horizontal {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(80vw); }
-}
-
-@keyframes drift-vertical {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(180vh); }
-}
-
-@keyframes drift-diagonal {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(70vw, 150vh); }
-}
-
-.sticker-drift-h { animation: drift-horizontal 45s linear infinite alternate; }
-.sticker-drift-v { animation: drift-vertical 50s linear infinite alternate; }
-.sticker-drift-d { animation: drift-diagonal 60s linear infinite alternate; }
-
-/* Drifting animation for the container itself - keeping as general option */
-.sticker-drift {
-  animation: slow-drift 15s linear infinite;
-  display: block;
-}
-
-@keyframes slow-drift {
-  0% { translate: 0px 0px; }
-  25% { translate: 15px 10px; }
-  50% { translate: 0px 20px; }
-  75% { translate: -15px 10px; }
-  100% { translate: 0px 0px; }
 }
 
 /* Footer Styles */
