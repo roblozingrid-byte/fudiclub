@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initDraggableStickers();
   initAllergyToggle();
   initCheckoutFlow();
+  updateStockWidget();
+  updateCheckoutTotals(); // Initial calculation
+  initGoogleMaps();
+  initDynamicHeader();
 });
 
 // A. Allergy Toggle Logic
@@ -88,6 +92,8 @@ function initCheckoutFlow() {
     card.addEventListener('click', () => {
       planCards.forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
+      radio.checked = true;
+      updateCheckoutTotals();
     });
   });
 
@@ -99,20 +105,38 @@ function initCheckoutFlow() {
   if (qtyInput && qtyMinus && qtyPlus) {
     qtyMinus.addEventListener('click', () => {
       const val = parseInt(qtyInput.value);
-      if (val > 1) qtyInput.value = val - 1;
+      if (val > 1) {
+        qtyInput.value = val - 1;
+        updateCheckoutTotals();
+      }
     });
     qtyPlus.addEventListener('click', () => {
       const val = parseInt(qtyInput.value);
-      if (val < 10) qtyInput.value = val + 1;
+      if (val < 5) {
+        qtyInput.value = val + 1;
+        updateCheckoutTotals();
+      }
+    });
+    qtyInput.addEventListener('change', () => {
+      let val = parseInt(qtyInput.value);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 5) val = 5;
+      qtyInput.value = val;
+      updateCheckoutTotals();
     });
   }
 
   // 4. Allergy Toggle
   const allergyToggle = document.getElementById('allergyToggle');
   const allergyDetails = document.getElementById('allergyDetails');
+  const allergyMysteryText = document.querySelector('.checkout-subtitle-inline');
   if (allergyToggle && allergyDetails) {
     allergyToggle.addEventListener('change', (e) => {
-      allergyDetails.style.display = e.target.checked ? 'block' : 'none';
+      const isChecked = e.target.checked;
+      allergyDetails.style.display = isChecked ? 'block' : 'none';
+      if (allergyMysteryText) {
+        allergyMysteryText.style.display = isChecked ? 'block' : 'none';
+      }
     });
   }
 
@@ -153,47 +177,53 @@ function initDraggableStickers() {
   if (!layer) return;
 
   const stickerData = [
-    { text: '🌟', color: '#ffb7d5', x: 10, y: 20 },
-    { text: '💥', color: '#d1ff5e', x: 80, y: 15 },
-    { text: '🍕', color: '#fff4bd', x: 15, y: 60 },
-    { text: '🕹️', color: '#4ebaba', x: 75, y: 70 },
-    { text: 'TOP SECRET', color: '#000', bgColor: '#d1ff5e', x: 50, y: 90, isText: true }
+    { src: 'https://placehold.co/80x80/ffb7d5/000000?text=Logo1', x: 5, y: 15 },
+    { src: 'https://placehold.co/100x100/d1ff5e/000000?text=Logo2', x: 80, y: 40 },
+    { src: 'https://placehold.co/90x90/fff4bd/000000?text=Logo3', x: 10, y: 120 },
+    { src: 'https://placehold.co/110x110/4ebaba/000000?text=Logo4', x: 70, y: 150 },
+    { src: 'https://placehold.co/85x85/ecf0f1/000000?text=Logo5', x: 45, y: 80 },
+    { src: 'https://placehold.co/95x95/3498db/000000?text=Logo6', x: 20, y: 180 },
+    { src: 'https://placehold.co/105x105/e67e22/000000?text=Logo7', x: 60, y: 10 }
   ];
+
+  const driftClasses = ['sticker-drift-h', 'sticker-drift-v', 'sticker-drift-d'];
 
   stickerData.forEach((data, index) => {
     const sticker = document.createElement('div');
     sticker.classList.add('draggable-sticker');
     sticker.id = `sticker-${index}`;
     
-    // Position using percentages so they scatter across the layout
+    // Initial scattering
     sticker.style.left = `${data.x}vw`;
-    // We add absolute px offset for y to keep them flowing down the page
-    sticker.style.top = `${data.y * 20}px`;
+    sticker.style.top = `${data.y}vh`;
 
-    if (data.isText) {
-      sticker.innerText = data.text;
-      sticker.style.backgroundColor = data.bgColor;
-      sticker.style.color = data.color;
-      sticker.style.padding = '5px 10px';
-      sticker.style.border = '2px solid black';
-      sticker.style.fontFamily = "'VT323', monospace";
-      sticker.style.fontSize = '1.5rem';
-      sticker.style.transform = `rotate(${(Math.random() - 0.5) * 30}deg)`;
-    } else {
-      sticker.innerText = data.text;
-      // Make emoji stickers large and circular
-      sticker.style.backgroundColor = data.color;
-      sticker.style.fontSize = '2rem';
-      sticker.style.padding = '10px';
-      sticker.style.border = '2px solid black';
-      sticker.style.borderRadius = '50%';
-      sticker.style.width = '60px';
-      sticker.style.height = '60px';
-      sticker.style.display = 'flex';
-      sticker.style.alignItems = 'center';
-      sticker.style.justifyContent = 'center';
-      sticker.style.transform = `rotate(${(Math.random() - 0.5) * 40}deg)`;
-    }
+    // Drift wrapper (varied paths)
+    const drift = document.createElement('div');
+    // Randomly assign a drift path
+    const randomClass = driftClasses[Math.floor(Math.random() * driftClasses.length)];
+    drift.classList.add(randomClass);
+    
+    // Randomize drift timing for variety - making it much slower now for site-wide bounce
+    drift.style.animationDelay = `${Math.random() * -60}s`;
+    drift.style.animationDuration = `${40 + Math.random() * 30}s`;
+    sticker.appendChild(drift);
+
+    // Float wrapper (for the up/down bounce)
+    const floatWrap = document.createElement('div');
+    floatWrap.classList.add('sticker-inner-float');
+    floatWrap.style.animationDelay = `${Math.random() * -5}s`;
+    floatWrap.style.animationDuration = `${3 + Math.random() * 2}s`;
+    drift.appendChild(floatWrap);
+
+    const img = document.createElement('img');
+    img.src = data.src;
+    img.alt = 'Sticker';
+    img.style.maxWidth = '100px';
+    img.style.height = 'auto';
+    img.style.display = 'block';
+    img.style.pointerEvents = 'none'; // so it doesn't interfere with dragging
+    floatWrap.appendChild(img);
+    sticker.style.transform = `rotate(${(Math.random() - 0.5) * 40}deg)`;
 
     layer.appendChild(sticker);
     makeDraggable(sticker);
@@ -202,44 +232,195 @@ function initDraggableStickers() {
 
 function makeDraggable(element) {
   let isDragging = false;
-  let currentX;
-  let currentY;
+  let currentX = 0;
+  let currentY = 0;
   let initialX;
   let initialY;
   let xOffset = 0;
   let yOffset = 0;
 
-  element.addEventListener('pointerdown', dragStart);
+  element.addEventListener('pointerdown', dragStart, { passive: false });
+  document.addEventListener('pointermove', drag, { passive: false });
   document.addEventListener('pointerup', dragEnd);
-  document.addEventListener('pointermove', drag);
 
   function dragStart(e) {
+    // Only drag with left click or touch
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+
     initialX = e.clientX - xOffset;
     initialY = e.clientY - yOffset;
 
-    if (e.target === element) {
-      isDragging = true;
-      element.style.zIndex = '1000'; // bring above other stickers
-    }
+    isDragging = true;
+    element.style.zIndex = '2000';
+    element.style.cursor = 'grabbing';
+    
+    // Stop the drift animation while dragging
+    const drift = element.querySelector('[class*="sticker-drift"]');
+    if (drift) drift.style.animationPlayState = 'paused';
+    
+    // Prevent text selection
+    e.preventDefault();
   }
 
-  function dragEnd(e) {
-    initialX = currentX;
-    initialY = currentY;
+  function dragEnd() {
     isDragging = false;
-    element.style.zIndex = '';
+    element.style.zIndex = '1999';
+    element.style.cursor = 'grab';
+
+    // Resume drift animation
+    const drift = element.querySelector('[class*="sticker-drift"]');
+    if (drift) drift.style.animationPlayState = 'running';
+
+    xOffset = currentX;
+    yOffset = currentY;
   }
 
   function drag(e) {
     if (isDragging) {
-      e.preventDefault();
       currentX = e.clientX - initialX;
       currentY = e.clientY - initialY;
-
-      xOffset = currentX;
-      yOffset = currentY;
 
       element.style.translate = `${currentX}px ${currentY}px`;
     }
   }
+}
+// D. Dynamic Totals Calculation
+function updateCheckoutTotals() {
+  const qtyInput = document.getElementById('qtyInput');
+  const summaryQty = document.getElementById('summary-qty');
+  const summarySubtotal = document.getElementById('summary-subtotal');
+  const summaryDelivery = document.getElementById('summary-delivery');
+  const summaryTotal = document.getElementById('summary-total');
+
+  if (!qtyInput || !summaryQty) return;
+
+  const qty = parseInt(qtyInput.value) || 1;
+  const selectedPlan = document.querySelector('input[name="plan"]:checked');
+  const pricePerBox = (selectedPlan && selectedPlan.value === 'quarterly') ? 40500 : 45000;
+  
+  const subtotal = qty * pricePerBox;
+  const deliveryFee = 2500; // Fixed fee for now, can be dynamic based on distance
+
+  summaryQty.innerText = qty;
+  summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
+  summaryDelivery.innerText = `$${deliveryFee.toLocaleString('es-AR')}`;
+  summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
+}
+
+// E. Automated Stock Widget Month
+function updateStockWidget() {
+  const stockNum = document.querySelector('.stock-number');
+  const stockText = document.querySelector('.stock-text');
+  if (!stockNum || !stockText) return;
+
+  const now = new Date();
+  let monthIndex = now.getMonth(); // 0-11
+  const day = now.getDate();
+
+  // If 15th or later, show next month
+  if (day >= 15) {
+    monthIndex = (monthIndex + 1) % 12;
+  }
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  stockNum.innerText = '50';
+  stockText.innerText = `boxes restantes\npara ${months[monthIndex]}!`;
+}
+
+// F. Google Maps Autocomplete & Confirmation
+function initGoogleMaps() {
+  const addressInput = document.getElementById('addressInput');
+  const mapContainer = document.getElementById('address-map-container');
+  const mapDiv = document.getElementById('address-map');
+
+  if (!addressInput || !window.google) return;
+
+  const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+    types: ['address'],
+    componentRestrictions: { country: 'AR' } // Restricted to Argentina as per previous context
+  });
+
+  const map = new google.maps.Map(mapDiv, {
+    zoom: 15,
+    center: { lat: -34.6037, lng: -58.3816 }, // Default (BA)
+    mapTypeControl: false,
+    streetViewControl: false
+  });
+
+  const marker = new google.maps.Marker({
+    map: map,
+    draggable: false
+  });
+
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    mapContainer.style.display = 'block';
+    
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);
+    }
+
+    marker.setPosition(place.geometry.location);
+    
+    // Simulate dynamic delivery fee update based on area
+    const summaryDelivery = document.getElementById('summary-delivery');
+    if (summaryDelivery) {
+      // Mock logic: further addresses slightly more expensive
+      const isDistant = place.formatted_address.toLowerCase().includes('provincia');
+      const fee = isDistant ? 4500 : 2500;
+      summaryDelivery.innerText = `$${fee.toLocaleString('es-AR')}`;
+      updateCheckoutTotalsFromFee(fee);
+    }
+  });
+
+  // Expose for window if needed
+  window.fudiMap = map;
+}
+
+function updateCheckoutTotalsFromFee(deliveryFee) {
+  const qtyInput = document.getElementById('qtyInput');
+  const summarySubtotal = document.getElementById('summary-subtotal');
+  const summaryTotal = document.getElementById('summary-total');
+
+  if (!qtyInput || !summarySubtotal) return;
+
+  const qty = parseInt(qtyInput.value) || 1;
+  const selectedPlan = document.querySelector('input[name="plan"]:checked');
+  const pricePerBox = (selectedPlan && selectedPlan.value === 'quarterly') ? 40500 : 45000;
+  
+  const subtotal = qty * pricePerBox;
+  summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
+}
+
+// G. Dynamic Header Logo Resize
+function initDynamicHeader() {
+  const headerLogo = document.querySelector('.header-logo');
+  const heroLogo = document.querySelector('.hero-logo-relief');
+
+  if (!headerLogo || !heroLogo) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        // Hero logo is out of view -> Grow header logo
+        headerLogo.classList.add('grown');
+      } else {
+        // Hero logo is in view -> Shrink header logo
+        headerLogo.classList.remove('grown');
+      }
+    });
+  }, {
+    threshold: 0 // Trigger as soon as it leave/enters view
+  });
+
+  observer.observe(heroLogo);
 }

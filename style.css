@@ -96,23 +96,67 @@ h1, h2, h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  height: 100px; /* Altura fija para evitar el salto */
+  padding: 0 40px;
   background-color: var(--bg-amarillo);
   border-bottom: var(--border-thick);
   position: sticky;
-  top: 38px; /* altura exacta del ticker: font(~19px) + padding(16px) + border(3px) */
+  top: 38px;
   z-index: 90;
 }
 
 /* .logo-container — no custom styles needed */
 
-.logo {
-  font-size: 2.5rem;
-  line-height: 0.9;
-  color: var(--white);
-  text-shadow: 3px 3px 0px var(--black);
-  -webkit-text-stroke: 2px var(--black);
+.header-logo {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(2px 2px 0px var(--black));
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+.header-logo.grown {
+  height: 90px; /* Crece casi hasta el alto total (100px) */
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Social Links in Header */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--black);
+  text-decoration: none;
+  box-shadow: 3px 3px 0px var(--black);
+  transition: all 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--black);
+}
+
+.social-icon.ig { background-color: var(--accent-rosa); }
+.social-icon.fb { background-color: var(--bg-turquesa); }
+.social-icon.tt { background-color: var(--bg-lila); }
 
 /* Buttons */
 .cta-button {
@@ -144,7 +188,8 @@ h1, h2, h3 {
   padding: 15px 30px; /* reduced from 20px 40px */
   width: 100%;
   max-width: 500px;
-  margin-top: 20px;
+  margin: 20px auto 0; /* centered */
+  display: block;
 }
 
 .cta-button.cta-green {
@@ -174,12 +219,30 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   overflow: visible;
+  padding: 40px 20px; /* Padding equilibrado */
+}
+
+.hero-main-row {
+  display: flex;
+  align-items: center; /* Centrar verticalmente logo y texto */
+  justify-content: center;
+  gap: 40px; /* Espacio entre logo y texto */
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 30px;
+}
+
+.hero-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrar texto internamente en su columna */
+  text-align: center;
 }
 
 .hero-logo-relief {
-  max-width: 300px;
-  margin-bottom: 20px;
-  filter: drop-shadow(4px 4px 0px var(--black)); /* Relief effect */
+  max-width: 400px; /* Ajustado para el layout de dos columnas */
+  margin: 0;
+  filter: drop-shadow(4px 4px 0px var(--black));
   transform: rotate(-3deg);
   transition: transform 0.2s ease;
 }
@@ -193,16 +256,17 @@ h1, h2, h3 {
   color: var(--white);
   text-shadow: var(--shadow-text);
   -webkit-text-stroke: 2px var(--black);
-  margin-bottom: 20px;
+  margin: 0 0 10px;
   transform: rotate(-2deg);
-  display: inline-block;
+  display: block;
 }
 
 .subtitle {
   font-size: 1.3rem;
   font-weight: 600;
-  margin-bottom: 40px;
-  max-width: 600px;
+  margin: 0;
+  max-width: 400px;
+  width: 100%;
 }
 
 .box-container {
@@ -216,15 +280,18 @@ h1, h2, h3 {
 .mystery-box {
   transition: transform 0.1s;
   position: relative;
-  display: inline-block;
+  display: inline-flex; /* Ajuste milimétrico al contenido */
   border: var(--border-thick);
   box-shadow: var(--shadow-solid);
   background-color: #fff;
+  vertical-align: middle;
 }
 
 .box-image {
   display: block;
-  max-width: 100%;
+  width: 840px; /* Escala 3x (antes 280px) */
+  max-width: 100%; /* Asegura que no rompa el diseño en móviles */
+  margin: 0 auto;
   height: auto;
 }
 
@@ -317,7 +384,7 @@ h1, h2, h3 {
   font-size: 1.1rem;
   text-align: center;
   background-color: var(--accent-rosa);
-  color: var(--white);
+  color: var(--black);
   padding: 10px 20px;
   border-radius: 4px;
   width: 100%;
@@ -327,6 +394,7 @@ h1, h2, h3 {
 
 /* Subtítulo inline debajo del toggle de alergia */
 .checkout-subtitle-inline {
+  display: none; /* hidden by default */
   font-size: 1rem;
   font-weight: 600;
   color: #444;
@@ -579,6 +647,50 @@ h1, h2, h3 {
   text-align: center;
   font-size: 1.2rem;
   padding: 8px 10px;
+  -moz-appearance: textfield; /* Firefox */
+  appearance: none; /* Standard */
+}
+
+/* Hide native arrows in Chrome, Safari, Edge, Opera */
+.input-small::-webkit-outer-spin-button,
+.input-small::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Checkout Summary / Totals Box */
+.checkout-summary {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: var(--bg-amarillo);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--black);
+}
+
+.summary-line.total-line {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid var(--black);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Address Map Container */
+#address-map-container {
+  width: 100%;
+}
+
+#address-map {
+  background-color: #eee;
 }
 
 /* Checkout Divider */
@@ -763,16 +875,18 @@ textarea.neo-input {
 
 .stock-number {
   font-family: var(--font-mono);
-  font-size: 3rem;
+  font-size: 3.5rem; /* Slightly larger */
   color: var(--black);
-  line-height: 1;
+  line-height: 0.8;
+  margin-bottom: 2px;
 }
 
 .stock-text {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem; /* Slightly smaller for contrast */
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1.1;
+  white-space: pre-line;
 }
 
 @keyframes heartbeatUrgency {
@@ -798,18 +912,69 @@ textarea.neo-input {
 
 .draggable-sticker {
   position: absolute;
-  pointer-events: auto; /* Make the sticker itself clickable */
+  pointer-events: auto;
   cursor: grab;
-  filter: drop-shadow(2px 2px 0px var(--black));
-  transition: transform 0.1s ease;
+  /* Remove old container styles */
+  background: none;
+  border: none;
+  padding: 0;
+  transition: transform 0.15s ease;
   user-select: none;
   touch-action: none;
 }
 
 .draggable-sticker:active {
   cursor: grabbing;
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.1) rotate(5deg) !important; /* Override the random rotation briefly */
   z-index: 100;
+}
+
+/* Floating animation for the inner content */
+.sticker-inner-float {
+  animation: float-sticker 3s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes float-sticker {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes drift-horizontal {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(80vw); }
+}
+
+@keyframes drift-vertical {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(180vh); }
+}
+
+@keyframes drift-diagonal {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(70vw, 150vh); }
+}
+
+.sticker-drift-h { animation: drift-horizontal 45s linear infinite alternate; }
+.sticker-drift-v { animation: drift-vertical 50s linear infinite alternate; }
+.sticker-drift-d { animation: drift-diagonal 60s linear infinite alternate; }
+
+/* Drifting animation for the container itself - keeping as general option */
+.sticker-drift {
+  animation: slow-drift 15s linear infinite;
+  display: block;
+}
+
+@keyframes slow-drift {
+  0% { translate: 0px 0px; }
+  25% { translate: 15px 10px; }
+  50% { translate: 0px 20px; }
+  75% { translate: -15px 10px; }
+  100% { translate: 0px 0px; }
 }
 
 /* Responsive */
