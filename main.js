@@ -9,7 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
   initGoogleMaps();
   initDynamicHeader();
   initMysteryReveal();
+  initFAQ();
 });
+
+// A. FAQ Toggle Logic
+function initFAQ() {
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
+    question.addEventListener('click', () => {
+      // Close other items
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item) otherItem.classList.remove('active');
+      });
+      // Toggle current item
+      item.classList.toggle('active');
+    });
+  });
+}
 
 // A. Allergy Toggle Logic
 function initAllergyToggle() {
@@ -140,6 +157,20 @@ function initCheckoutFlow() {
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
+    });
+  }
+
+  // 7. Tarjeta de crédito - formateo automático
+  const cardInput = document.querySelector('input[placeholder="Número de Tarjeta"]');
+  if (cardInput) {
+    cardInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      let formattedValue = '';
+      for (let i = 0; i < value.length; i++) {
+        if (i > 0 && i % 4 === 0) formattedValue += ' ';
+        formattedValue += value[i];
+      }
+      e.target.value = formattedValue.substring(0, 19);
     });
   }
 }

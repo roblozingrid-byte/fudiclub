@@ -240,6 +240,23 @@ h1, h2, h3 {
   text-align: center;
   align-self: flex-end; /* Move to the bottom of the row */
   padding-bottom: 20px; /* Give it some breathing room from the box below */
+  margin-bottom: 30px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .hero-logo-relief {
@@ -1026,4 +1043,158 @@ textarea.neo-input {
   .stock-text { font-size: 0.8rem; }
   .hero-logo-relief { max-width: 200px; }
   .footer-logo img { height: 60px; }
+}
+
+/* --- NEW IMPROVEMENTS --- */
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* How it Works Styles */
+.how-it-works {
+  background-color: var(--bg-amarillo) !important;
+}
+
+.how-it-works .steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.step-card {
+  text-align: center;
+  padding: 30px;
+  background: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+}
+
+.step-number {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  color: var(--black);
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  border: var(--border-thick);
+  border-radius: 50%;
+  box-shadow: 4px 4px 0px var(--black);
+}
+
+.step-card:nth-child(1) .step-number { background-color: var(--bg-lila); }
+.step-card:nth-child(2) .step-number { background-color: var(--accent-rosa); }
+.step-card:nth-child(3) .step-number { background-color: var(--bg-turquesa); }
+
+/* FAQ Styles */
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: var(--white);
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.faq-question {
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  background: var(--accent-rosa);
+  transition: background 0.2s;
+  border-bottom: var(--border-thick);
+}
+
+.faq-question:hover {
+  background: var(--accent-verde);
+}
+
+.faq-question i {
+  transition: transform 0.3s;
+}
+
+.faq-item.active .faq-question i {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  padding: 0 25px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease;
+  background: var(--white);
+}
+
+.faq-item.active .faq-answer {
+  max-height: 200px;
+  padding: 20px 25px;
+}
+
+/* Stock Widget Pulse */
+.stock-widget-floating {
+  animation: heartbeatUrgency 2s ease-in-out infinite, stockPulse 3s infinite ease-in-out;
+}
+
+@keyframes stockPulse {
+  0% { transform: scale(1); }
+  50% { box-shadow: 0 0 25px var(--accent-rosa), 6px 6px 0px var(--black); }
+  100% { transform: scale(1); }
+}
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 768px) {
+  .hero-main-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .hero-logo-relief {
+    max-width: 250px;
+  }
+  
+  .steps-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .teaser-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .purchase-options.focal {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .social-links {
+    display: none; 
+  }
 }
