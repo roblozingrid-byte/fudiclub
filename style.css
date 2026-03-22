@@ -1110,6 +1110,10 @@ textarea.neo-input {
 .step-card:nth-child(3) .step-number { background-color: var(--bg-turquesa); }
 
 /* FAQ Styles */
+.faq-section {
+  background-color: var(--accent-rosa);
+}
+
 .faq-container {
   max-width: 800px;
   margin: 0 auto;
@@ -1130,7 +1134,7 @@ textarea.neo-input {
   cursor: pointer;
   font-family: var(--font-display);
   font-size: 1.2rem;
-  background: var(--accent-rosa);
+  background: var(--white);
   transition: background 0.2s;
   border-bottom: var(--border-thick);
 }
@@ -1197,4 +1201,125 @@ textarea.neo-input {
   .social-links {
     display: none; 
   }
+}
+
+/* Retro Music Player - Ultra Compact */
+.retro-player {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 180px; /* Slightly wider to fit volume icons */
+  background-color: var(--bg-amarillo); /* Changed to yellow */
+  border: 3px solid var(--black);
+  box-shadow: var(--shadow-solid);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 4px; /* Slight padding for the yellow bg */
+  transition: transform 0.3s ease;
+  border-radius: 4px;
+}
+
+.retro-player.minimized {
+  transform: translateY(calc(100% - 24px));
+}
+
+.player-header {
+  background: var(--bg-turquesa); /* Changed to brand turquoise */
+  color: var(--black); /* Black text for better contrast */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  user-select: none;
+  font-weight: bold;
+  border: 2px solid var(--black);
+  margin-bottom: 6px;
+}
+
+.player-title .blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.player-min-btn {
+  background: var(--bg-amarillo); /* yellow */
+  border: 2px solid var(--black);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #000;
+  padding: 0;
+  line-height: 1;
+  font-size: 0.9rem;
+}
+.player-min-btn:active {
+  background-color: var(--accent-verde);
+}
+
+.player-controls {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.ctrl-btn {
+  background: var(--white);
+  border: 2px solid var(--black);
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 30px;
+  box-shadow: 2px 2px 0px var(--black);
+  transition: all 0.1s;
+}
+
+.ctrl-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--black);
+}
+
+.player-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  color: var(--black);
+}
+
+#volSlider {
+  flex-grow: 1;
+  width: 50px; /* Allow shrinking */
+  cursor: pointer;
+  height: 4px;
+  background: var(--black);
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+#volSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-turquesa);
+  border: 2px solid var(--black);
+  cursor: pointer;
 }
