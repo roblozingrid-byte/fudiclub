@@ -1323,3 +1323,8 @@ textarea.neo-input {
   border: 2px solid var(--black);
   cursor: pointer;
 }
+
+/* Retro Leaflet Map styling */
+.retro-map-tiles {
+  filter: sepia(0.8) hue-rotate(-15deg) saturate(3) contrast(1.1) brightness(1.2);
+}

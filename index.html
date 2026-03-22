@@ -190,12 +190,7 @@
             <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
               required>
 
-            <!-- Google Maps Confirmation -->
-            <div id="address-map-container" style="display: none; margin-top: 10px;">
-              <p style="font-size: 0.9rem; margin-bottom: 5px;">📍 Confirmá tu ubicación en el mapa:</p>
-              <div id="address-map" style="height: 200px; width: 100%; border: 2px solid black; border-radius: 8px;">
-              </div>
-            </div>
+
 
             <!-- Allergy Toggle -->
             <div class="toggle-group neo-border" style="margin-top: 15px;">
@@ -279,6 +274,15 @@
             <p>Por ahora solo hacemos envíos en CABA y GBA. El costo de envío se calcula al momento de completar tus datos de dirección.</p>
           </div>
         </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>En qué zonas hacen envíos?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Llegamos a todo CABA, GBA Norte, Sur, Oeste y algunas zonas de GBA Extendido. El costo de envío se calculará automáticamente cuando ingreses tu dirección en el formulario de pago.</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -331,8 +335,7 @@
   <!-- Draggable Stickers Container (Appended via JS) -->
   <div id="stickers-layer"></div>
 
-  <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
+  
   <script type="module" src="/main.js"></script>
 </body>
 

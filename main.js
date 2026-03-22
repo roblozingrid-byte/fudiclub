@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCheckoutFlow();
   updateStockWidget();
   updateCheckoutTotals(); // Initial calculation
-  initGoogleMaps();
+  initAddressPricing();
   initDynamicHeader();
   initMysteryReveal();
   initFAQ();
@@ -412,59 +412,41 @@ function updateStockWidget() {
   stockText.innerText = `boxes restantes\npara ${months[monthIndex]}!`;
 }
 
-// F. Google Maps Autocomplete & Confirmation
-function initGoogleMaps() {
+// F. Address Pricing Logic
+function initAddressPricing() {
   const addressInput = document.getElementById('addressInput');
-  const mapContainer = document.getElementById('address-map-container');
-  const mapDiv = document.getElementById('address-map');
+  if (!addressInput) return;
 
-  if (!addressInput || !window.google) return;
+  addressInput.addEventListener('blur', (e) => {
+    const address = e.target.value.toLowerCase();
+    if (!address.trim()) return;
 
-  const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-    types: ['address'],
-    componentRestrictions: { country: 'AR' } // Restricted to Argentina as per previous context
-  });
-
-  const map = new google.maps.Map(mapDiv, {
-    zoom: 15,
-    center: { lat: -34.6037, lng: -58.3816 }, // Default (BA)
-    mapTypeControl: false,
-    streetViewControl: false
-  });
-
-  const marker = new google.maps.Marker({
-    map: map,
-    draggable: false
-  });
-
-  autocomplete.addListener('place_changed', () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) return;
-
-    mapContainer.style.display = 'block';
-    
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-    }
-
-    marker.setPosition(place.geometry.location);
-    
-    // Simulate dynamic delivery fee update based on area
     const summaryDelivery = document.getElementById('summary-delivery');
-    if (summaryDelivery) {
-      // Mock logic: further addresses slightly more expensive
-      const isDistant = place.formatted_address.toLowerCase().includes('provincia');
-      const fee = isDistant ? 4500 : 2500;
-      summaryDelivery.innerText = `$${fee.toLocaleString('es-AR')}`;
-      updateCheckoutTotalsFromFee(fee);
-    }
-  });
+    if (!summaryDelivery) return;
 
-  // Expose for window if needed
-  window.fudiMap = map;
+    let fee = 9500;
+    let zonaName = "Zona 2";
+    
+    if (/(florida|olivos|vicente l[oó]pez|vicente lopez|mart[ií]nez|martinez)/.test(address)) {
+      fee = 4500;
+      zonaName = "Zona 0";
+    } else if (/(n[uú][nñ]ez|saavedra|belgrano|palermo|san isidro|san fernando|caba norte|colegiales|villa urquiza|recoleta)/.test(address)) {
+      fee = 6600;
+      zonaName = "Zona 1";
+    } else if (/(pilar|tigre|nordelta|escobar|san miguel|malvinas|jose c paz)/.test(address)) {
+      fee = 11500;
+      zonaName = "Zona 3";
+    } else if (/(caballito|san telmo|lan[uú]s|ramos mej[ií]a|lomas de zamora|quilmes|avellaneda|mor[oó]n|caseros|san justo)/.test(address) || address.includes("buenos aires") || address.includes("caba")) {
+      fee = 9500;
+      zonaName = "Zona 2";
+    } else {
+      fee = 6600;
+      zonaName = "Zona 1 (Por defecto)";
+    }
+
+    summaryDelivery.innerText = `$${fee.toLocaleString('es-AR')} (${zonaName})`;
+    updateCheckoutTotalsFromFee(fee);
+  });
 }
 
 function updateCheckoutTotalsFromFee(deliveryFee) {
