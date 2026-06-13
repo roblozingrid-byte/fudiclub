@@ -420,7 +420,7 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   font-size: 1.1rem;
   text-align: center;
-  background-color: var(--accent-rosa);
+  background-color: var(--bg-turquesa);
   color: var(--black);
   padding: 10px 20px;
   border-radius: 4px;
@@ -695,6 +695,32 @@ h1, h2, h3 {
   margin: 0;
 }
 
+/* Current Edition Banner */
+.current-edition-banner {
+  background-color: var(--white);
+  padding: 15px 20px;
+  margin-top: 24px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+}
+
+.edition-label {
+  font-weight: bold;
+}
+
+.edition-value {
+  background-color: var(--accent-verde);
+  padding: 4px 10px;
+  border: 2px solid var(--black);
+  border-radius: 4px;
+  font-weight: 700;
+  box-shadow: 2px 2px 0px var(--black);
+}
+
 /* Checkout Summary / Totals Box */
 .checkout-summary {
   margin-top: 24px;
@@ -705,6 +731,85 @@ h1, h2, h3 {
   flex-direction: column;
   gap: 12px;
   border-radius: 8px;
+}
+
+/* Waitlist & Sold Out Options */
+.sold-out-options, .waitlist-container {
+  text-align: center;
+  padding: 30px 20px;
+  background-color: var(--bg-amarillo);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 2px solid var(--black);
+  box-shadow: 4px 4px 0px var(--black);
+}
+
+.sold-out-options h3, .waitlist-container h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.sold-out-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--black);
+  border: 2px solid var(--black);
+  padding: 15px 30px;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 4px 4px 0px var(--black);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-secondary:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+.waitlist-success {
+  color: var(--accent-verde);
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 15px;
+  background: white;
+  padding: 10px;
+  border: 2px solid var(--black);
+  border-radius: 4px;
+}
+
+/* Sold out state for widget */
+.stock-widget.sold-out {
+  background-color: #d1d5db; /* Gray */
+}
+.stock-widget.sold-out .stock-number {
+  color: #ef4444; /* Red */
+  font-size: 1.2rem;
 }
 
 .summary-line {
@@ -1033,7 +1138,6 @@ textarea.neo-input {
 }
 
 @media (max-width: 768px) {
-  .hero-title { font-size: 2.5rem; }
   .logo { font-size: 2rem; }
   .neo-border-section { padding: 20px; margin: 30px 15px; }
   .teaser-grid { grid-template-columns: 1fr 1fr; }
@@ -1041,7 +1145,6 @@ textarea.neo-input {
   .stock-widget-floating { bottom: 10px; right: 10px; padding: 10px 15px; }
   .stock-number { font-size: 2rem; }
   .stock-text { font-size: 0.8rem; }
-  .hero-logo-relief { max-width: 200px; }
   .footer-logo img { height: 60px; }
 }
 
@@ -1179,11 +1282,41 @@ textarea.neo-input {
 @media (max-width: 768px) {
   .hero-main-row {
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
   }
   
   .hero-logo-relief {
-    max-width: 250px;
+    max-width: 240px;
+    width: auto;
+    margin: 0 auto;
+    filter: drop-shadow(4px 4px 0px var(--black));
+    transform: rotate(-3deg) translateX(0);
+  }
+  
+  .hero-text-col {
+    align-self: center;
+    margin-bottom: 15px;
+    padding-bottom: 0;
+    text-align: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+    text-align: center;
+    margin: 0 0 8px;
+    -webkit-text-stroke: 1.5px var(--black);
+    transform: rotate(-2deg);
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 90%;
+    margin: 0 auto;
   }
   
   .steps-grid {
@@ -1192,6 +1325,16 @@ textarea.neo-input {
   
   .teaser-grid {
     grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+  }
+  
+  .teaser-card {
+    padding: 15px;
+  }
+  
+  .mystery-item-container {
+    width: 120px;
+    height: 120px;
   }
   
   .purchase-options.focal {
@@ -1200,6 +1343,224 @@ textarea.neo-input {
   
   .social-links {
     display: none; 
+  }
+  
+  /* Header Mobile Adjustments */
+  .neo-header {
+    height: 50px;
+    padding: 0 15px;
+    top: 35px;
+  }
+  
+  .header-logo {
+    height: 25px;
+  }
+  
+  .header-logo.grown {
+    height: 40px;
+  }
+  
+  .neo-header .cta-button {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    box-shadow: 3px 3px 0px var(--black);
+    border-width: 2px;
+  }
+  
+  .neo-header .cta-button:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--black);
+  }
+  
+  .neo-header .cta-button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--black);
+  }
+
+  /* Sticker Mobile Sizing */
+  .draggable-sticker {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* How it Works Mobile Adjustments */
+  .how-it-works .steps-grid {
+    gap: 20px !important;
+    margin-top: 30px;
+  }
+  
+  .step-card {
+    padding: 20px;
+  }
+  
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    box-shadow: 3px 3px 0px var(--black);
+  }
+  
+  .step-title {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+  
+  .step-desc {
+    font-size: 0.95rem;
+  }
+
+  /* Checkout Mobile Adjustments */
+  .checkout-expanded-card {
+    padding: 25px 20px;
+  }
+  
+  .checkout-card-title {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  
+  .plan-focal-label {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .focal-price {
+    font-size: 1.9rem !important;
+  }
+  
+  .focal-price small {
+    font-size: 0.9rem;
+  }
+  
+  .plan-card.focal-card .radio-neo-content {
+    padding: 16px 12px 14px;
+    gap: 4px;
+  }
+  
+  .plan-badge-sticker {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    top: -8px;
+    right: -8px;
+  }
+  
+  .neo-input {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+  
+  .checkout-summary {
+    padding: 15px;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .summary-line {
+    font-size: 1.05rem;
+  }
+  
+  .summary-line.total-line {
+    font-size: 1.3rem;
+  }
+  
+  .checkout-divider {
+    margin: 20px 0 15px;
+  }
+  
+  .cta-button.massive {
+    font-size: 1.15rem;
+    padding: 12px 24px;
+  }
+
+  /* FAQ Mobile Adjustments */
+  .faq-question {
+    padding: 15px 18px;
+    font-size: 1.1rem;
+  }
+  
+  .faq-item.active .faq-answer {
+    padding: 15px 18px;
+    max-height: 300px; /* safety increase to prevent text clipping */
+  }
+
+  /* Footer Mobile Adjustments */
+  .neo-footer {
+    padding: 30px 15px;
+  }
+  
+  .footer-content {
+    gap: 20px;
+  }
+}
+
+/* Extra Small Screens (Phones in Portrait) */
+@media (max-width: 480px) {
+  .hero-logo-relief {
+    max-width: 180px;
+  }
+  
+  .hero-title {
+    font-size: 1.8rem;
+    -webkit-text-stroke: 1.2px var(--black);
+  }
+  
+  .subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .teaser-grid {
+    gap: 10px !important;
+  }
+  
+  .teaser-card {
+    padding: 10px;
+  }
+  
+  .mystery-item-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Extra Small Screens Detail Tweaks */
+  .step-card {
+    padding: 15px;
+  }
+
+  .checkout-expanded-card {
+    padding: 20px 15px;
+  }
+  
+  .checkout-card-title {
+    font-size: 1.4rem;
+  }
+  
+  .focal-price {
+    font-size: 1.7rem !important;
+  }
+  
+  .neo-input {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+  
+  .faq-question {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+  
+  .faq-item.active .faq-answer {
+    padding: 12px 15px;
+  }
+  
+  .footer-logo img {
+    height: 50px;
+  }
+  
+  .cta-button.massive {
+    font-size: 1.05rem;
+    padding: 10px 20px;
   }
 }
 
@@ -1327,4 +1688,41 @@ textarea.neo-input {
 /* Retro Leaflet Map styling */
 .retro-map-tiles {
   filter: sepia(0.8) hue-rotate(-15deg) saturate(3) contrast(1.1) brightness(1.2);
+}
+
+.whatsapp-support {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25D366;
+  color: var(--black);
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-decoration: none;
+  border: 2px solid var(--black);
+  box-shadow: 4px 4px 0px var(--black);
+  z-index: 9999;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.whatsapp-support:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--black);
+}
+
+.whatsapp-support:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.allergy-warning {
+  background-color: var(--bg-amarillo);
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 4px;
 }

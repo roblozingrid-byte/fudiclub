@@ -1,0 +1,19 @@
+schema: spec-driven
+context: |
+  Tech Stack:
+    - Core: HTML5, Vanilla JavaScript (ES Modules), Vanilla CSS
+    - Build Tool: Vite
+    - Styling: Custom neo-brutalist / retro style defined in style.css, Google Fonts (Corben, Space Grotesk, VT323), Font Awesome
+    - Data: Local static GeoJSON loader for delivery zones (public/zonas.geojson)
+  Project Structure:
+    - index.html: Main landing page and purchase/checkout form
+    - main.js: Root JavaScript logic handling user interactions, dynamic stickers, retro audio player, checkout, and zone/delivery computation
+    - style.css: Core stylesheet implementing the visual identity, colors, retro animations, and responsive layouts
+    - public/: Static assets, icons, music, images, and GeoJSON zone configuration
+    - openspec/: Specification-driven development artifacts and specs
+rules:
+  specs:
+    - Use standard Gherkin scenarios (Given/When/Then) for requirements.
+  proposal:
+    - Detail the problem context and user benefit clearly.
+    - Mention any related system specs affected.

@@ -39,9 +39,9 @@
     </a>
     <nav class="header-nav">
       <div class="social-links">
-        <a href="#" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" class="social-icon fb" title="Facebook" aria-label="Follow us on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://instagram.com/fudiclub" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://facebook.com/fudiclub" class="social-icon fb" title="Facebook" aria-label="Follow us on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://tiktok.com/@fudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
       </div>
       <a href="#registro" class="cta-button cta-green" style="text-decoration:none; display:inline-block;">Unite
         Ahora</a>
@@ -130,6 +130,58 @@
       <div class="disclaimer-label master-disclaimer">PRODUCTOS DE REFERENCIA - VARIAN CADA MES</div>
     </section>
 
+    <!-- FAQ Section -->
+    <section class="faq-section neo-border-section" id="faq">
+      <h2 class="section-title">Preguntas Frecuentes</h2>
+      <div class="faq-container">
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Cuándo me llega la caja?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Los despachos se realizan los días 15 de cada mes. La demora es de 3 a 7 días hábiles según tu zona de envío.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Qué pasa si un producto llega dañado?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Tenés hasta 48hs desde que recibís la caja para reportarlo. Escribinos a nuestro WhatsApp de soporte con fotos del producto y lo solucionaremos.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Es una suscripción que se renueva sola?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No. Pagás por única vez por 1 caja, o elegís el Plan Trimestral (3 cajas, 1 por mes) que se cobra de una vez. No guardamos tus tarjetas ni hacemos débitos sorpresa.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Puedo elegir qué trae la caja? / ¿Qué incluye?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Es una Mistery Box. ¡Esa es la gracia! Es un secreto, pero siempre incluimos entre 5 y 8 productos geniales. Mezclamos snacks importados tendencia con esas golosinas de tu infancia que te desbloquean recuerdos, y sorpresas increíbles que no vas a encontrar en ningún otro lado.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿En qué zonas hacen envíos?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Por ahora hacemos envíos en todo CABA, GBA Norte, Sur, Oeste y algunas zonas de GBA Extendido. El costo de envío se calculará automáticamente cuando ingreses tu Código Postal en el formulario de pago.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Checkout / Security Filter -->
     <section class="checkout neo-border-section" id="registro">
       <h2 class="section-title">Unite al club!</h2>
@@ -145,7 +197,38 @@
 
       <!-- Expanded Checkout Card — oculto hasta que se clickea el botón -->
       <div class="checkout-expanded-card neo-border" id="expandedCheckout">
-        <h2 class="section-title checkout-card-title">Completá tu orden</h2>
+        <h2 class="modal-title">Unite al Fudi Club</h2>
+
+        <!-- Opciones cuando no hay stock -->
+        <div id="sold-out-options" class="sold-out-options" style="display: none;">
+          <h3 id="sold-out-title">¡Edición Actual Agotada! 😱</h3>
+          <p id="sold-out-desc">Pero no te preocupes, podés asegurar tu caja para el próximo mes o anotarte en la lista de espera.</p>
+          <div class="sold-out-buttons">
+            <button id="btn-preorder" class="cta-button cta-green">Asegurar caja para <span id="preorder-month">...</span></button>
+            <button id="btn-show-waitlist" class="cta-button btn-secondary">Anotarme en lista de espera</button>
+          </div>
+        </div>
+
+        <!-- Contenedor Waitlist -->
+        <div id="waitlist-container" class="waitlist-container" style="display: none;">
+          <h3>Lista de Espera 📝</h3>
+          <p>Dejanos tu email y te avisaremos apenas se liberen nuevos cupos.</p>
+          <form id="waitlistForm" class="waitlist-form">
+            <input type="email" id="waitlistEmail" class="neo-input" placeholder="Tu correo electrónico" required>
+            <button type="submit" class="cta-button cta-green">Anotarme en la lista</button>
+          </form>
+          <p id="waitlist-success" class="waitlist-success" style="display: none;">¡Te avisaremos pronto!</p>
+        </div>
+        <!-- Success Modal -->
+        <div id="success-modal" class="success-modal" style="display: none; text-align: center; margin: 20px 0; padding: 30px; background-color: var(--accent-rosa); border-radius: 8px; border: 2px solid var(--black); box-shadow: 4px 4px 0px var(--black);">
+          <h3>¡Preparando tu pedido! 📦</h3>
+          <p id="success-message" style="font-size: 1.2rem; margin-top: 10px;">Esperá un momento...</p>
+          <div id="transfer-details" style="display: none; text-align: left; background: var(--white); padding: 15px; border: 2px solid var(--black); margin-top: 15px; border-radius: 4px;">
+            <p><strong>Alias:</strong> FUDI.CLUB.OK</p>
+            <p><strong>CBU:</strong> 0000000000000000000000</p>
+            <p style="margin-top: 10px;">Envíanos el comprobante a <strong>soporte@fudiclub.com</strong> indicando tu nombre.</p>
+          </div>
+        </div>
 
         <form class="payment-form" id="paymentForm">
 
@@ -165,10 +248,10 @@
                 <input type="radio" name="plan" value="quarterly">
                 <div class="plan-badge-sticker">⭐ MEJOR PRECIO</div>
                 <div class="radio-neo-content">
-                  <span class="plan-name">Suscripción Trimestral</span>
+                  <span class="plan-name">Plan Trimestral (Pago Único)</span>
                   <span class="plan-price focal-price">$40.500 <small>c/u</small></span>
                   <span class="plan-tag">Ahorrás $13.500 por ciclo</span>
-                  <small class="plan-note">(*el pago se debita cada 10 del mes)</small>
+                  <small class="plan-note">(Sin renovación automática)</small>
                 </div>
               </label>
             </div>
@@ -187,9 +270,11 @@
             <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico"
               required autocomplete="email">
             <input type="text" class="neo-input" placeholder="Nombre completo" required>
-            <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
-              required>
-
+            <div style="display: flex; gap: 10px;">
+              <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
+                required style="flex: 2;">
+              <input type="text" id="cpInput" class="neo-input" placeholder="Código Postal" required maxlength="8" style="flex: 1;">
+            </div>
 
 
             <!-- Allergy Toggle -->
@@ -202,6 +287,12 @@
             </div>
             <div class="allergy-details" id="allergyDetails">
               <textarea name="allergyInfo" class="neo-input" placeholder="Contanos a qué sos alérgico..."></textarea>
+              <div class="allergy-warning neo-border">
+                <label style="display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: 0.9rem;">
+                  <input type="checkbox" id="allergyConsent" required style="margin-top: 4px;">
+                  <span>Entiendo que Fudi Club intenta adaptar la caja, pero no puede garantizar la ausencia de trazas cruzadas de alérgenos. Me comprometo a revisar las etiquetas de los productos originales antes de consumirlos.</span>
+                </label>
+              </div>
             </div>
             <p class="checkout-subtitle-inline">No te diremos qué hay en tu box, pero intentaremos hacerlo único para vos.</p>
 
@@ -210,11 +301,28 @@
           <!-- 3. MÉTODO DE PAGO -->
           <div class="form-section">
             <h3 class="modal-subtitle">Método de Pago</h3>
-            <input type="text" class="neo-input" placeholder="Número de Tarjeta" required>
-            <div class="split-inputs">
-              <input type="text" class="neo-input" placeholder="MM/AA" required>
-              <input type="text" class="neo-input" placeholder="CVC" required>
+            <div class="purchase-options focal" style="margin-top: 10px;">
+              <label class="radio-neo plan-card focal-card selected" id="method-card-mp">
+                <input type="radio" name="payment_method" value="mercado_pago" checked>
+                <div class="radio-neo-content">
+                  <span class="plan-name">Mercado Pago</span>
+                  <span class="plan-tag">Tarjetas, Dinero en cuenta</span>
+                </div>
+              </label>
+              <label class="radio-neo plan-card focal-card" id="method-card-transfer">
+                <input type="radio" name="payment_method" value="transfer">
+                <div class="radio-neo-content">
+                  <span class="plan-name">Transferencia Bancaria</span>
+                  <span class="plan-tag">Alias / CBU</span>
+                </div>
+              </label>
             </div>
+          </div>
+
+          <!-- Edición a recibir -->
+          <div class="current-edition-banner neo-border">
+            <span class="edition-label">Edición a recibir:</span>
+            <span class="edition-value" id="current-edition-display">Calculando...</span>
           </div>
 
           <!-- Order Summary / Totals -->
@@ -242,49 +350,6 @@
         </form>
       </div>
     </section>
-
-    <!-- FAQ Section -->
-    <section class="faq-section neo-border-section">
-      <h2 class="section-title">Preguntas Frecuentes</h2>
-      <div class="faq-container">
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>Qué incluye la Mystery Box?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Es un secreto, pero siempre incluimos entre 5 y 8 productos geniales. Mezclamos snacks importados que son tendencia con esas golosinas de tu infancia que te desbloquean recuerdos, y sorpresas increíbles que probablemente no vas a encontrar en ningún otro lado (al menos no todas juntas en un mismo lugar y con este vibe).</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>Puedo cancelar mi suscripción?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>¡Obvio! No hay compromiso a largo plazo. Podés cancelar tu suscripción trimestral en cualquier momento desde tu perfil o contactándonos.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>Hacen envíos a todo el país?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Por ahora solo hacemos envíos en CABA y GBA. El costo de envío se calcula al momento de completar tus datos de dirección.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>En qué zonas hacen envíos?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Llegamos a todo CABA, GBA Norte, Sur, Oeste y algunas zonas de GBA Extendido. El costo de envío se calculará automáticamente cuando ingreses tu dirección en el formulario de pago.</p>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Floating Urgency Stock Widget -->
@@ -302,9 +367,9 @@
         <img src="/imagenes/Logo%20blanco%20plano%20png.png" alt="Fudi Club Logo" />
       </div>
       <div class="footer-social">
-        <a href="#" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" class="social-icon fb" title="Facebook" aria-label="Follow us on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://instagram.com/fudiclub" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://facebook.com/fudiclub" class="social-icon fb" title="Facebook" aria-label="Follow us on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://tiktok.com/@fudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
       </div>
       <p class="footer-copy">&copy; 2026 Fudi Club. Todos los derechos reservados.</p>
     </div>
@@ -336,6 +401,11 @@
   <div id="stickers-layer"></div>
 
   
+  <a href="https://wa.me/1234567890?text=Hola,%20necesito%20ayuda%20con%20Fudi%20Club" target="_blank" class="whatsapp-support">
+    💬 Soporte
+  </a>
+
+  <!-- Custom Script -->
   <script type="module" src="/main.js"></script>
 </body>
 

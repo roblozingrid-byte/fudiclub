@@ -1,4 +1,6 @@
 // Fudi Club Main JavaScript
+const AVAILABLE_STOCK = 0; // Cambiar a 30 para producción
+let isPreorderMode = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   initDraggableStickers();
@@ -6,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCheckoutFlow();
   updateStockWidget();
   updateCheckoutTotals(); // Initial calculation
-  initAddressPricing();
   initDynamicHeader();
   initMysteryReveal();
   initFAQ();
@@ -55,6 +56,12 @@ function initCheckoutFlow() {
   const preEmailInput = document.getElementById('preEmailInput');
   const emailInput = document.getElementById('emailInput');
 
+  // Inicializar mostrar la edición actual
+  const currentEditionDisplay = document.getElementById('current-edition-display');
+  if (currentEditionDisplay) {
+    currentEditionDisplay.innerText = calculateCurrentEdition();
+  }
+
   if (!btnJoin || !expandedCheckout) return;
 
   // 0. Habilitar botón solo cuando el email tiene formato válido
@@ -81,6 +88,34 @@ function initCheckoutFlow() {
     setTimeout(() => {
       ctaWrapper.style.display = 'none';
       expandedCheckout.classList.add('active');
+
+      const soldOutOptions = document.getElementById('sold-out-options');
+      if (AVAILABLE_STOCK <= 0) {
+        if (paymentForm) paymentForm.style.display = 'none';
+        if (soldOutOptions) {
+          const soldOutTitle = document.getElementById('sold-out-title');
+          const soldOutDesc = document.getElementById('sold-out-desc');
+          const now = new Date();
+          const day = now.getDate();
+          const months = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+          ];
+          
+          if (day > 5) {
+            const closedMonth = months[now.getMonth()];
+            if (soldOutTitle) soldOutTitle.innerText = `¡Venta de ${closedMonth} Cerrada! 😱`;
+            if (soldOutDesc) soldOutDesc.innerText = `La venta para ${closedMonth} ya cerró, pero podés asegurar tu caja para el próximo mes o anotarte en la lista de espera y te avisaremos cuando esté disponible.`;
+          } else {
+            if (soldOutTitle) soldOutTitle.innerText = `¡Edición Actual Agotada! 😱`;
+            if (soldOutDesc) soldOutDesc.innerText = `Pero no te preocupes, podés asegurar tu caja para el próximo mes o anotarte en la lista de espera.`;
+          }
+
+          soldOutOptions.style.display = 'block';
+        }
+      } else {
+        if (paymentForm) paymentForm.style.display = 'block';
+      }
 
       // Autocompletar email en el formulario de checkout
       if (emailInput && capturedEmail) {
@@ -116,6 +151,65 @@ function initCheckoutFlow() {
     });
   });
 
+  // 3. Manejo de opciones cuando no hay stock
+  const btnPreorder = document.getElementById('btn-preorder');
+  const btnShowWaitlist = document.getElementById('btn-show-waitlist');
+  const soldOutOptions = document.getElementById('sold-out-options');
+  const waitlistContainer = document.getElementById('waitlist-container');
+  const waitlistForm = document.getElementById('waitlistForm');
+  const waitlistSuccess = document.getElementById('waitlist-success');
+
+  if (btnPreorder) {
+    btnPreorder.addEventListener('click', () => {
+      isPreorderMode = true;
+      if (soldOutOptions) soldOutOptions.style.display = 'none';
+      if (paymentForm) paymentForm.style.display = 'block';
+      
+      const currentEditionDisplay = document.getElementById('current-edition-display');
+      if (currentEditionDisplay) {
+        currentEditionDisplay.innerText = calculateCurrentEdition();
+        currentEditionDisplay.style.backgroundColor = 'var(--bg-amarillo)';
+        setTimeout(() => currentEditionDisplay.style.backgroundColor = 'var(--accent-verde)', 1500);
+      }
+    });
+  }
+
+  if (btnShowWaitlist) {
+    btnShowWaitlist.addEventListener('click', () => {
+      if (soldOutOptions) soldOutOptions.style.display = 'none';
+      if (waitlistContainer) waitlistContainer.style.display = 'block';
+    });
+  }
+
+  if (waitlistForm) {
+    waitlistForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('waitlistEmail').value;
+      console.log(`[Waitlist] Registrando email: ${email}`);
+      const btn = waitlistForm.querySelector('button');
+      btn.innerText = 'Registrando...';
+      btn.disabled = true;
+
+      const functionsUrl = import.meta.env?.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+
+      fetch(`${functionsUrl}/join-waitlist`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        waitlistForm.style.display = 'none';
+        if (waitlistSuccess) waitlistSuccess.style.display = 'block';
+      })
+      .catch(err => {
+        console.error(err);
+        btn.innerText = 'Anotarme en la lista';
+        btn.disabled = false;
+        alert('Hubo un error. Intenta nuevamente.');
+      });
+    });
+  }
 
   // 4. Allergy Toggle
   const allergyToggle = document.getElementById('allergyToggle');
@@ -131,19 +225,113 @@ function initCheckoutFlow() {
     });
   }
 
-  // 5. Simular pago exitoso
+  // 4.5 CP Input Listener
+  const cpInput = document.getElementById('cpInput');
+  if (cpInput) {
+    cpInput.addEventListener('input', () => {
+      updateCheckoutTotals();
+    });
+  }
+
+  // 5. Highlight de método de pago
+  const methodCards = document.querySelectorAll('input[name="payment_method"]');
+  methodCards.forEach(radio => {
+    const card = radio.closest('.plan-card');
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('input[name="payment_method"]').forEach(r => r.closest('.plan-card').classList.remove('selected'));
+      if (radio.checked) card.classList.add('selected');
+    });
+  });
+
+  // 6. Procesamiento de Pago (Simulado)
   if (paymentForm) {
     paymentForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      // Validación de Política de Alergias
+      const allergyToggle = document.getElementById('allergyToggle');
+      const allergyConsent = document.getElementById('allergyConsent');
+      if (allergyToggle && allergyToggle.checked) {
+        if (!allergyConsent || !allergyConsent.checked) {
+          alert("Debes aceptar la política de seguridad alimentaria y revisión de etiquetas para continuar.");
+          return; // Abortar envío
+        }
+      }
+
       const btnSubmit = paymentForm.querySelector('button[type="submit"]');
+      const originalText = btnSubmit.innerText;
       btnSubmit.innerText = 'Procesando...';
       btnSubmit.style.backgroundColor = 'var(--bg-amarillo)';
+      btnSubmit.style.color = 'var(--black)';
       btnSubmit.disabled = true;
 
-      setTimeout(() => {
-        btnSubmit.innerText = '¡Pago Exitoso! ✨';
-        btnSubmit.style.backgroundColor = 'var(--accent-verde)';
-      }, 1500);
+      // Generación del payload de pedido para la pasarela de pago
+      const editionAssigned = calculateCurrentEdition();
+      const planValue = document.querySelector('input[name="plan"]:checked').value;
+      const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
+      const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'mercado_pago';
+      
+      const formattedPlan = planValue === 'quarterly' 
+        ? 'Plan Trimestral (Pago Único 3 cajas)' 
+        : 'Compra Única (1 caja)';
+        
+      console.log(`[Pasarela de Pago] Iniciando checkout...\nPlan: ${formattedPlan}\nMétodo: ${paymentMethod}\nAsignado a: ${editionAssigned}`);
+
+      // Gather form data
+      const email = document.getElementById('emailInput').value;
+      const name = document.querySelector('input[placeholder="Nombre completo"]').value;
+      const address = document.getElementById('addressInput').value;
+      const cp = document.getElementById('cpInput').value;
+      const allergiesText = document.querySelector('textarea[name="allergyInfo"]').value;
+      const hasAllergy = document.getElementById('allergyToggle').checked;
+      const allergies = hasAllergy ? allergiesText : '';
+
+      const payload = {
+        email,
+        name,
+        address,
+        cp,
+        allergies,
+        plan: planValue,
+        payment_method: paymentMethod
+      };
+
+      const functionsUrl = import.meta.env?.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+
+      fetch(`${functionsUrl}/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error procesando la orden');
+        
+        paymentForm.style.display = 'none';
+        
+        const successModal = document.getElementById('success-modal');
+        const successMsg = document.getElementById('success-message');
+        const transferDetails = document.getElementById('transfer-details');
+        
+        if (successModal) successModal.style.display = 'block';
+        
+        if (paymentMethod === 'transfer') {
+          if (successMsg) successMsg.innerText = '¡Reserva confirmada! Completa el pago con los siguientes datos:';
+          if (transferDetails) transferDetails.style.display = 'block';
+        } else if (data.init_point) {
+          if (successMsg) successMsg.innerText = 'Redirigiendo a Mercado Pago... 🚀';
+          if (transferDetails) transferDetails.style.display = 'none';
+          window.location.href = data.init_point;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        btnSubmit.innerText = originalText;
+        btnSubmit.style.backgroundColor = '';
+        btnSubmit.style.color = '';
+        btnSubmit.disabled = false;
+        alert('Ocurrió un error al procesar tu pedido. Intenta nuevamente.');
+      });
     });
   }
 
@@ -158,20 +346,6 @@ function initCheckoutFlow() {
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
-    });
-  }
-
-  // 7. Tarjeta de crédito - formateo automático
-  const cardInput = document.querySelector('input[placeholder="Número de Tarjeta"]');
-  if (cardInput) {
-    cardInput.addEventListener('input', (e) => {
-      let value = e.target.value.replace(/\D/g, '');
-      let formattedValue = '';
-      for (let i = 0; i < value.length; i++) {
-        if (i > 0 && i % 4 === 0) formattedValue += ' ';
-        formattedValue += value[i];
-      }
-      e.target.value = formattedValue.substring(0, 19);
     });
   }
 }
@@ -195,6 +369,10 @@ function initDraggableStickers() {
     { src: '/imagenes/Compu.png', x: 30, y: 50 }
   ];
 
+  const isMobile = window.innerWidth <= 768;
+  const size = isMobile ? 50 : 100;
+  const radius = isMobile ? 22 : 45;
+
   stickerData.forEach((data, index) => {
     const stickerEl = document.createElement('div');
     stickerEl.classList.add('draggable-sticker');
@@ -208,7 +386,7 @@ function initDraggableStickers() {
     const img = document.createElement('img');
     img.src = data.src;
     img.alt = 'Sticker';
-    img.style.maxWidth = '100px';
+    img.style.maxWidth = `${size}px`;
     img.style.height = 'auto';
     img.style.display = 'block';
     img.style.pointerEvents = 'none';
@@ -225,14 +403,14 @@ function initDraggableStickers() {
     const sticker = {
       el: stickerEl,
       id: index,
-      width: 100, // Matching CSS width
-      height: 100,
+      width: size, // Matching CSS width
+      height: size,
       x: (data.x / 100) * window.innerWidth,
       y: (data.y / 100) * (window.innerHeight || document.documentElement.clientHeight),
       vx: (Math.random() - 0.5) * 2, // Random initial velocity
       vy: (Math.random() - 0.5) * 2,
       isDragging: false,
-      radius: 45 // For circular collision detection
+      radius: radius // For circular collision detection
     };
 
     stickers.push(sticker);
@@ -251,10 +429,12 @@ function updateStickers() {
   const headerRect = header ? header.getBoundingClientRect() : { bottom: 0 };
   const footerRect = footer ? footer.getBoundingClientRect() : { top: window.innerHeight };
 
+  const isMobile = window.innerWidth <= 768;
+  const size = isMobile ? 50 : 100;
   const minX = 0;
-  const maxX = window.innerWidth - 100;
+  const maxX = window.innerWidth - size;
   const minY = headerRect.bottom;
-  const maxY = footerRect.top - 100;
+  const maxY = footerRect.top - size;
 
   stickers.forEach((s, i) => {
     if (s.isDragging) return;
@@ -363,6 +543,27 @@ function makeDraggable(sticker) {
   });
 }
 // D. Dynamic Totals Calculation
+
+function calculateCurrentEdition() {
+  const now = new Date();
+  let monthIndex = now.getMonth(); // 0-11
+  const day = now.getDate();
+
+  if (day > 5) {
+    monthIndex = (monthIndex + 1) % 12;
+  }
+  if (isPreorderMode) {
+    monthIndex = (monthIndex + 1) % 12;
+  }
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  return `Edición ${months[monthIndex]}`;
+}
+
 function updateCheckoutTotals() {
   const summarySubtotalLabel = document.getElementById('summary-subtotal-label');
   const summarySubtotal = document.getElementById('summary-subtotal');
@@ -377,30 +578,47 @@ function updateCheckoutTotals() {
   const pricePerBox = isQuarterly ? 40500 : 45000;
   
   const subtotal = qty * pricePerBox;
-  const deliveryFee = 2500; // Fixed fee for now, can be dynamic
+  
+  // Lógica de costo de envío por CP
+  const cpInput = document.getElementById('cpInput');
+  const cp = cpInput ? parseInt(cpInput.value) || 0 : 0;
+  let deliveryFee = 0;
+  let deliveryText = "A calcular";
+
+  if (cp >= 1000 && cp <= 1499) {
+    deliveryFee = 2500; // CABA
+  } else if (cp >= 1600 && cp <= 1900) {
+    deliveryFee = 4000; // GBA
+  } else if (cp > 0) {
+    deliveryFee = 6000; // Interior
+  }
+
+  if (deliveryFee > 0) {
+    deliveryText = `$${deliveryFee.toLocaleString('es-AR')}`;
+  }
  
   if (summarySubtotalLabel) {
-    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (Box 1 de 3):' : 'Subtotal (1 box):';
+    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (3 boxes):' : 'Subtotal (1 box):';
   }
   
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
-  summaryDelivery.innerText = `$${deliveryFee.toLocaleString('es-AR')}`;
+  summaryDelivery.innerText = deliveryText;
   summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
 }
 
 // E. Automated Stock Widget Month
 function updateStockWidget() {
+  const stockWidget = document.querySelector('.stock-widget');
   const stockNum = document.querySelector('.stock-number');
   const stockText = document.querySelector('.stock-text');
-  if (!stockNum || !stockText) return;
 
   const now = new Date();
-  let monthIndex = now.getMonth(); // 0-11
+  let currentSaleMonthIndex = now.getMonth(); // 0-11
   const day = now.getDate();
 
-  // If 15th or later, show next month
-  if (day >= 15) {
-    monthIndex = (monthIndex + 1) % 12;
+  // If 5th or later, the current sale is for the next month
+  if (day > 5) {
+    currentSaleMonthIndex = (currentSaleMonthIndex + 1) % 12;
   }
 
   const months = [
@@ -408,59 +626,26 @@ function updateStockWidget() {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  stockNum.innerText = '50';
-  stockText.innerText = `boxes restantes\npara ${months[monthIndex]}!`;
+  const preorderMonthSpan = document.getElementById('preorder-month');
+  if (preorderMonthSpan) {
+    preorderMonthSpan.innerText = months[(now.getMonth() + 1) % 12];
+  }
+
+  if (!stockNum || !stockText || !stockWidget) return;
+
+  if (AVAILABLE_STOCK <= 0) {
+    stockWidget.classList.add('sold-out');
+    stockNum.innerText = '';
+    stockText.innerText = '¡Edición\nAgotada!';
+    stockText.style.fontWeight = 'bold';
+    stockText.style.fontSize = '1.1rem';
+    return;
+  }
+
+  stockNum.innerText = AVAILABLE_STOCK.toString();
+  stockText.innerText = `boxes restantes\npara ${months[currentSaleMonthIndex]}!`;
 }
 
-// F. Address Pricing Logic
-function initAddressPricing() {
-  const addressInput = document.getElementById('addressInput');
-  if (!addressInput) return;
-
-  addressInput.addEventListener('blur', (e) => {
-    const address = e.target.value.toLowerCase();
-    if (!address.trim()) return;
-
-    const summaryDelivery = document.getElementById('summary-delivery');
-    if (!summaryDelivery) return;
-
-    let fee = 9500;
-    let zonaName = "Zona 2";
-    
-    if (/(florida|olivos|vicente l[oó]pez|vicente lopez|mart[ií]nez|martinez)/.test(address)) {
-      fee = 4500;
-      zonaName = "Zona 0";
-    } else if (/(n[uú][nñ]ez|saavedra|belgrano|palermo|san isidro|san fernando|caba norte|colegiales|villa urquiza|recoleta)/.test(address)) {
-      fee = 6600;
-      zonaName = "Zona 1";
-    } else if (/(pilar|tigre|nordelta|escobar|san miguel|malvinas|jose c paz)/.test(address)) {
-      fee = 11500;
-      zonaName = "Zona 3";
-    } else if (/(caballito|san telmo|lan[uú]s|ramos mej[ií]a|lomas de zamora|quilmes|avellaneda|mor[oó]n|caseros|san justo)/.test(address) || address.includes("buenos aires") || address.includes("caba")) {
-      fee = 9500;
-      zonaName = "Zona 2";
-    } else {
-      fee = 6600;
-      zonaName = "Zona 1 (Por defecto)";
-    }
-
-    summaryDelivery.innerText = `$${fee.toLocaleString('es-AR')} (${zonaName})`;
-    updateCheckoutTotalsFromFee(fee);
-  });
-}
-
-function updateCheckoutTotalsFromFee(deliveryFee) {
-  const summarySubtotal = document.getElementById('summary-subtotal');
-  const summaryTotal = document.getElementById('summary-total');
-
-  if (!summarySubtotal) return;
-
-  const selectedPlan = document.querySelector('input[name="plan"]:checked');
-  const pricePerBox = (selectedPlan && selectedPlan.value === 'quarterly') ? 40500 : 45000;
-  
-  const subtotal = pricePerBox;
-  summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
-}
 
 // G. Dynamic Header Logo Resize
 function initDynamicHeader() {
@@ -491,17 +676,39 @@ function initMysteryReveal() {
   const containers = document.querySelectorAll('.mystery-item-container');
 
   containers.forEach(container => {
-    container.addEventListener('mousemove', (e) => {
+    const handleMove = (clientX, clientY) => {
       const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = clientX - rect.left - (rect.width * 0.05);
+      const y = clientY - rect.top - (rect.height * 0.05);
+      const isMobile = window.innerWidth <= 768;
+      const lensRadius = isMobile ? '30px' : '45px';
 
       container.style.setProperty('--reveal-x', `${x}px`);
       container.style.setProperty('--reveal-y', `${y}px`);
-      container.style.setProperty('--reveal-radius', '45px');
+      container.style.setProperty('--reveal-radius', lensRadius);
+    };
+
+    container.addEventListener('mousemove', (e) => {
+      handleMove(e.clientX, e.clientY);
     });
 
+    container.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
     container.addEventListener('mouseleave', () => {
+      container.style.setProperty('--reveal-radius', '0px');
+    });
+
+    container.addEventListener('touchend', () => {
       container.style.setProperty('--reveal-radius', '0px');
     });
   });
