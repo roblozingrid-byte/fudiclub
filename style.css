@@ -86,6 +86,10 @@ h1, h2, h3 {
   margin-right: 50px;
 }
 
+.ticker:hover .ticker-content {
+  animation-play-state: paused;
+}
+
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -201,6 +205,11 @@ h1, h2, h3 {
   background-color: #bbff2e; /* slightly brighter */
 }
 
+.inline-header-btn {
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* Common Section Styles */
 .neo-border-section {
   max-width: 1200px;
@@ -282,8 +291,10 @@ h1, h2, h3 {
 }
 
 .subtitle {
+  font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 600;
+  text-align: center;
   margin: 0;
   max-width: 400px;
   width: 100%;
@@ -499,7 +510,10 @@ h1, h2, h3 {
   border-radius: 12px;
   padding: 40px 36px;
   animation: slideDown 0.4s ease-out forwards;
+  position: relative;
 }
+
+
 
 .checkout-expanded-card.active {
   display: block;
@@ -654,8 +668,8 @@ h1, h2, h3 {
 }
 
 .qty-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background-color: var(--black);
   color: var(--accent-verde);
   border: 2px solid var(--black);
@@ -736,12 +750,8 @@ h1, h2, h3 {
 /* Waitlist & Sold Out Options */
 .sold-out-options, .waitlist-container {
   text-align: center;
-  padding: 30px 20px;
-  background-color: var(--bg-amarillo);
-  border-radius: 8px;
+  padding: 10px 0px;
   margin-bottom: 24px;
-  border: 2px solid var(--black);
-  box-shadow: 4px 4px 0px var(--black);
 }
 
 .sold-out-options h3, .waitlist-container h3 {
@@ -759,7 +769,7 @@ h1, h2, h3 {
 }
 
 .btn-secondary {
-  background-color: var(--white);
+  background-color: var(--bg-amarillo);
   color: var(--black);
   border: 2px solid var(--black);
   padding: 15px 30px;
@@ -775,7 +785,7 @@ h1, h2, h3 {
 }
 
 .btn-secondary:hover {
-  background-color: #f3f4f6;
+  background-color: #FFF2A8;
 }
 
 .btn-secondary:active {
@@ -793,14 +803,12 @@ h1, h2, h3 {
 }
 
 .waitlist-success {
-  color: var(--accent-verde);
+  color: var(--black);
+  font-family: var(--font-display);
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin-top: 15px;
-  background: white;
-  padding: 10px;
-  border: 2px solid var(--black);
-  border-radius: 4px;
+  animation: slideDown 0.3s ease-out;
 }
 
 /* Sold out state for widget */
@@ -891,6 +899,23 @@ h1, h2, h3 {
 .neo-input:focus {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0px var(--black);
+}
+
+/* Fix browser autofill styling */
+.neo-input:-webkit-autofill,
+.neo-input:-webkit-autofill:hover, 
+.neo-input:-webkit-autofill:focus, 
+.neo-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--white) inset !important;
+  -webkit-text-fill-color: var(--black) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+.neo-input:-webkit-autofill::first-line {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
 }
 
 textarea.neo-input {
@@ -996,7 +1021,7 @@ textarea.neo-input {
 /* Floating Urgency Widget */
 .stock-widget-floating {
   position: fixed;
-  bottom: 20px;
+  bottom: 80px;
   right: 20px;
   background-color: var(--accent-rosa);
   padding: 15px 20px;
@@ -1142,7 +1167,7 @@ textarea.neo-input {
   .neo-border-section { padding: 20px; margin: 30px 15px; }
   .teaser-grid { grid-template-columns: 1fr 1fr; }
   .ticker-content span { font-size: 1rem; }
-  .stock-widget-floating { bottom: 10px; right: 10px; padding: 10px 15px; }
+  .stock-widget-floating { bottom: 70px; right: 10px; padding: 10px 15px; }
   .stock-number { font-size: 2rem; }
   .stock-text { font-size: 0.8rem; }
   .footer-logo img { height: 60px; }
@@ -1447,7 +1472,7 @@ textarea.neo-input {
   
   .neo-input {
     padding: 12px 16px;
-    font-size: 1rem;
+    font-size: 16px;
   }
   
   .checkout-summary {
@@ -1542,7 +1567,7 @@ textarea.neo-input {
   
   .neo-input {
     padding: 10px 14px;
-    font-size: 0.95rem;
+    font-size: 16px;
   }
   
   .faq-question {
@@ -1694,7 +1719,7 @@ textarea.neo-input {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #25D366;
+  background-color: var(--accent-verde);
   color: var(--black);
   padding: 12px 20px;
   border-radius: 50px;
@@ -1725,4 +1750,38 @@ textarea.neo-input {
   padding: 12px;
   margin-top: 10px;
   border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* UX Improvements Animations */
+@keyframes pulse-error {
+  0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); border-color: red; }
+  70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); border-color: red; }
+  100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); border-color: var(--black); }
+}
+
+.error-pulse {
+  animation: pulse-error 0.6s infinite;
+  border: 2px solid red !important;
+}
+
+@keyframes pulse-btn {
+  0% { transform: scale(1); box-shadow: 2px 2px 0px var(--black); }
+  50% { transform: scale(1.1); box-shadow: 4px 4px 0px var(--black); background-color: var(--accent-verde); }
+  100% { transform: scale(1); box-shadow: 2px 2px 0px var(--black); }
+}
+
+.pulsing-play {
+  animation: pulse-btn 1.5s infinite;
+}
+/* Media Queries for Accessibility */
+
+@media (max-width: 768px) {
+  .stock-widget-floating {
+    display: none;
+  }
+  .retro-player .ctrl-btn {
+    width: 44px;
+    height: 44px;
+  }
 }

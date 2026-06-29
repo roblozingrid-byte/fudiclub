@@ -40,6 +40,7 @@ more at retail than the price paid.
 - **WHEN** Fudi Club product, web, social, insert, or checkout copy is created
 - **THEN** it positions the box as a curated mystery experience and accessible
   monthly treat
+- **AND** it explicitly mentions the inclusion of both rare/imported items and familiar classic treats
 - **AND** it does not claim guaranteed retail arbitrage or absolute rarity
 
 ### Requirement: Box Product Model
@@ -350,8 +351,8 @@ contact and intent without payment during the initial phase.
 
 ### Requirement: Support And Claims
 
-Fudi Club SHALL use WhatsApp as the primary support channel, email as the formal
-backup, and Instagram DM for acquisition or lightweight conversation. Support
+Fudi Club SHALL use WhatsApp as the primary support channel, email (`hola@fudiclub.shop`) as the formal
+backup, and Instagram DM (`@somosfudiclub`) for acquisition or lightweight conversation. Support
 SHALL target response within 1 business day, with priority during shipping week.
 
 Damage, missing item, or packing-error claims MUST be reported within 48 hours
@@ -375,7 +376,7 @@ to evaluate the case and claim with the carrier.
 
 ### Requirement: Marketing And Acquisition
 
-Fudi Club SHALL prioritize Instagram/TikTok organic content, selected
+Fudi Club SHALL prioritize Instagram/TikTok (`@somosfudiclub`) organic content, selected
 microinfluencer boxes, lightweight referrals, and user-generated content during
 the pilot. Fudi Club MAY use paid ads later, but paid ads MUST NOT be the only
 validation signal during the first three cycles.

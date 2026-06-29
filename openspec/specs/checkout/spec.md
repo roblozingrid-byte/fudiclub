@@ -24,7 +24,7 @@ El sistema SHALL iniciar el flujo asíncrono para generar un pago al confirmar e
 - **AND** finalmente muestra un mensaje de éxito indicando que el usuario "será redirigido" a Mercado Pago.
 
 ### Requirement: Soporte al Cliente Exclusivo
-El sistema SHALL proveer WhatsApp únicamente como canal de resolución de problemas, sin mezclarse con el flujo comercial.
+El sistema SHALL proveer WhatsApp únicamente como canal de resolución de problemas, sin mezclarse con el flujo comercial. Visualmente, los enlaces o botones hacia WhatsApp SHALL mantener la coherencia con la marca (ej. utilizando el Verde Fudi) en lugar del verde corporativo de la red social.
 
 #### Scenario: Contacto con Soporte
 - **GIVEN** que el usuario navega por la página o experimenta algún inconveniente
@@ -70,3 +70,21 @@ by zone and carrier.
 - **AND** actualiza inmediatamente el subtotal de envío ("Envío")
 - **AND** recalcula el Precio Total a pagar
 - **AND** el desglose distingue claramente el precio de la caja (o plan) del costo de envío
+
+### Requirement: Captura Temprana de Email y Eliminación de Lista de Espera
+El sistema SHALL capturar el email del usuario en la primera interacción (botón "¡Quiero unirme al club!") y registrarlo silenciosamente en el backend como "interesado".
+El sistema MUST NOT presentar un formulario secundario de lista de espera si los cupos están agotados, para reducir la fricción.
+
+#### Scenario: Usuario ingresa email en la portada
+- **GIVEN** que el usuario ingresa su email y presiona el botón de unirse
+- **WHEN** el sistema despliega las opciones de checkout o preventa
+- **THEN** el sistema envía asíncronamente el email al backend para guardarlo
+- **AND** el formulario de checkout principal se pre-llena con este email
+
+#### Scenario: Mensajes dinámicos de Agotado/Cierre según Ciclo de Negocio
+- **GIVEN** que el usuario llega a la pantalla de opciones sin stock inmediato
+- **WHEN** la fecha actual está entre el 6 y el 15 del mes inclusive
+- **THEN** se asume que la ventana de ventas está cerrada por logística
+- **AND** se muestra un mensaje explicando que las ventas cerraron para armar las cajas, y se ofrece preventa para el próximo mes
+- **WHEN** la fecha es menor o igual a 5, o mayor o igual a 16, pero el stock llegó a 0
+- **THEN** se asume venta directa abierta pero agotada, se muestra un mensaje indicando que se agotó el cupo y se ofrece preventa para el próximo mes

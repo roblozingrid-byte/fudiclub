@@ -11,5 +11,10 @@
   },
   "devDependencies": {
     "vite": "^8.0.0"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "posthog-js": "^1.391.2",
+    "xlsx": "^0.18.5"
   }
 }

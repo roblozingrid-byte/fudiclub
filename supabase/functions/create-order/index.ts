@@ -118,7 +118,7 @@ serve(async (req) => {
             <li><strong>CBU:</strong> 0000000000000000000000</li>
             <li><strong>Monto a transferir:</strong> $${total}</li>
           </ul>
-          <p>Por favor, envíanos el comprobante respondiendo a este correo o a soporte@fudiclub.com indicando tu nombre y número de pedido (<strong>${order.id}</strong>).</p>
+          <p>Por favor, envíanos el comprobante respondiendo a este correo o a hola@fudiclub.shop indicando tu nombre y número de pedido (<strong>${order.id}</strong>).</p>
           <p>¡Gracias por sumarte al club!</p>
         `
       })
