@@ -27,20 +27,7 @@ serve(async (req) => {
       throw error
     }
 
-    // Only send welcome email if it was actually inserted (or we could always send it)
-    if (!error) {
-      await sendEmail({
-        to: email,
-        subject: '¡Estás en la lista de espera! - Fudi Club',
-        html: `
-          <h1>¡Hola!</h1>
-          <p>Te hemos anotado en nuestra lista de espera.</p>
-          <p>Te avisaremos apenas se liberen nuevos cupos para que puedas asegurar tu Fudi Club Box antes que nadie.</p>
-          <p>¡Gracias por tu interés!</p>
-        `
-      })
-    }
-
+    // We no longer send an email here. It just captures the lead silently.
     return new Response(
       JSON.stringify({ success: true }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

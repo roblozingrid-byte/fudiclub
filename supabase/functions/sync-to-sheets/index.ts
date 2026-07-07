@@ -26,6 +26,7 @@ serve(async (req: Request) => {
     const spreadsheetId = Deno.env.get("GOOGLE_SPREADSHEET_ID");
     const tabCustomers = Deno.env.get("SHEETS_TAB_CUSTOMERS") || "Clientes (Backup)";
     const tabOrders = Deno.env.get("SHEETS_TAB_ORDERS") || "Pedidos (Backup)";
+    const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || "Leads";
 
     if (!serviceAccountJson || !spreadsheetId) {
       console.error("Faltan variables de entorno para Google Sheets.");
@@ -79,15 +80,25 @@ serve(async (req: Request) => {
       // ID Pedido, Fecha Compra, Cliente, Mes Asignado, Estado Pago, Método Pago, Total, Estado Envío, Tracking
       values = [
         [
-          record.id || "",
-          record.created_at || new Date().toISOString(),
-          record.customer_id || record.customer_name || "", // Idealmente resolver nombre o dejar ID
-          record.edition || record.month || "",
-          record.payment_status || "pending",
+          record.friendly_id || record.id || "",
+          new Date(record.created_at || new Date()).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }),
+          record.customer_name || record.customer_id || "", 
+          (record.edition || "").replace('Edición ', ''),
+          record.status || "pending",
           record.payment_method || "",
-          record.total_amount || 0,
-          record.shipping_status || "pending",
-          record.tracking_code || "",
+          record.total || 0,
+          "pending",
+          "",
+          record.shipping_address || "",
+          record.customer_email || ""
+        ],
+      ];
+    } else if (table === "waitlist") {
+      range = `${tabLeads}!A:B`;
+      values = [
+        [
+          record.email || "",
+          new Date(record.created_at || new Date()).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }),
         ],
       ];
     } else {

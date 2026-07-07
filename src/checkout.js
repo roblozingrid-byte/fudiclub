@@ -59,6 +59,7 @@ export function updateStockWidget() {
 export function updateCheckoutTotals() {
   const summarySubtotalLabel = document.getElementById('summary-subtotal-label');
   const summarySubtotal = document.getElementById('summary-subtotal');
+  const summaryDeliveryLabel = document.getElementById('summary-delivery-label');
   const summaryDelivery = document.getElementById('summary-delivery');
   const summaryTotal = document.getElementById('summary-total');
  
@@ -67,9 +68,9 @@ export function updateCheckoutTotals() {
   const qty = 1;
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
-  const pricePerBox = isQuarterly ? 42750 : 45000;
+  const pricePerBox = isQuarterly ? 33250 : 35000;
   
-  const subtotal = qty * pricePerBox;
+  const subtotal = qty * pricePerBox * (isQuarterly ? 3 : 1);
   
   const cpInput = document.getElementById('cpInput');
   const cpStr = cpInput ? cpInput.value.replace(/\D/g, '') : '';
@@ -85,17 +86,22 @@ export function updateCheckoutTotals() {
     deliveryFee = 6000;
   }
 
+  const totalDeliveryFee = deliveryFee * (isQuarterly ? 3 : 1);
+
   if (deliveryFee > 0) {
-    deliveryText = `$${deliveryFee.toLocaleString('es-AR')}`;
+    deliveryText = `$${totalDeliveryFee.toLocaleString('es-AR')}`;
   }
  
   if (summarySubtotalLabel) {
-    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (3 boxes):' : 'Subtotal (1 box):';
+    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (3 cajas):' : 'Subtotal (1 caja):';
+  }
+  if (summaryDeliveryLabel) {
+    summaryDeliveryLabel.innerText = isQuarterly ? 'Envío (3 meses):' : 'Envío:';
   }
   
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
   summaryDelivery.innerText = deliveryText;
-  summaryTotal.innerText = `$${(subtotal + deliveryFee).toLocaleString('es-AR')}`;
+  summaryTotal.innerText = `$${(subtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
 }
 
 export function initCheckoutFlow() {
@@ -194,7 +200,9 @@ export function initCheckoutFlow() {
           soldOutOptions.style.display = 'block';
         }
       } else {
-        if (paymentForm) paymentForm.style.display = 'block';
+        if (paymentForm) {
+          paymentForm.style.display = 'block';
+        }
       }
 
       if (emailInput && capturedEmail) {
@@ -205,6 +213,9 @@ export function initCheckoutFlow() {
       }
 
       setTimeout(() => {
+        if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
+          return; // Do not scroll for waitlist, user is already looking at the section
+        }
         const headerOffset = 130;
         const elementPosition = expandedCheckout.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -347,17 +358,28 @@ export function initCheckoutFlow() {
         setTimeout(() => {
           paymentForm.style.display = 'none';
           const successModal = document.getElementById('success-modal');
+          const successTitle = document.getElementById('success-title');
           const successMsg = document.getElementById('success-message');
           const transferDetails = document.getElementById('transfer-details');
+          const transferInstructions = document.getElementById('transfer-instructions');
           
-          if (successModal) successModal.style.display = 'block';
+          if (successModal) {
+            successModal.style.display = 'block';
+            setTimeout(() => {
+              successModal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
+          }
           
           if (paymentMethod === 'transfer') {
-            if (successMsg) successMsg.innerText = '¡Reserva confirmada! Completa el pago con los siguientes datos:';
+            if (successTitle) successTitle.innerText = '¡Reserva confirmada! 📦';
+            if (successMsg) successMsg.innerText = 'Completa el pago con los siguientes datos:';
             if (transferDetails) transferDetails.style.display = 'block';
+            if (transferInstructions) transferInstructions.style.display = 'block';
           } else {
+            if (successTitle) successTitle.innerText = '¡Preparando tu pedido! 📦';
             if (successMsg) successMsg.innerText = 'Redirigiendo a Mercado Pago... 🚀';
             if (transferDetails) transferDetails.style.display = 'none';
+            if (transferInstructions) transferInstructions.style.display = 'none';
             setTimeout(() => alert("Mock: Redirección a Mercado Pago exitosa"), 1500);
           }
           btnSubmit.innerText = originalText;
@@ -380,17 +402,28 @@ export function initCheckoutFlow() {
         paymentForm.style.display = 'none';
         
         const successModal = document.getElementById('success-modal');
+        const successTitle = document.getElementById('success-title');
         const successMsg = document.getElementById('success-message');
         const transferDetails = document.getElementById('transfer-details');
+        const transferInstructions = document.getElementById('transfer-instructions');
         
-        if (successModal) successModal.style.display = 'block';
+        if (successModal) {
+          successModal.style.display = 'block';
+          setTimeout(() => {
+            successModal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 50);
+        }
         
         if (paymentMethod === 'transfer') {
-          if (successMsg) successMsg.innerText = '¡Reserva confirmada! Completa el pago con los siguientes datos:';
+          if (successTitle) successTitle.innerText = '¡Reserva confirmada! 📦';
+          if (successMsg) successMsg.innerText = 'Completa el pago con los siguientes datos:';
           if (transferDetails) transferDetails.style.display = 'block';
+          if (transferInstructions) transferInstructions.style.display = 'block';
         } else if (data.init_point) {
+          if (successTitle) successTitle.innerText = '¡Preparando tu pedido! 📦';
           if (successMsg) successMsg.innerText = 'Redirigiendo a Mercado Pago... 🚀';
           if (transferDetails) transferDetails.style.display = 'none';
+          if (transferInstructions) transferInstructions.style.display = 'none';
           window.location.href = data.init_point;
         } else {
           throw new Error('Missing init_point from Mercado Pago');

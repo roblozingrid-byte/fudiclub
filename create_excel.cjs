@@ -86,7 +86,8 @@ async function createFudiClubSheet() {
     { header: 'Método Pago', key: 'metodo_pago', width: 15 },
     { header: 'Total Cobrado', key: 'total', width: 15 },
     { header: 'Estado Envío', key: 'estado_envio', width: 15 },
-    { header: 'Tracking', key: 'tracking', width: 20 }
+    { header: 'Tracking', key: 'tracking', width: 20 },
+    { header: 'Dirección de Envío', key: 'direccion', width: 40 }
   ];
   applyHeaderStyle(wsPedidos, colors.verde);
 

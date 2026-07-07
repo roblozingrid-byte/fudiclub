@@ -10,7 +10,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { email, name, address, cp, allergies, plan, payment_method } = body
+    const { email, name, address, cp, allergies, plan, payment_method, edition } = body
 
     if (!email || !name || !address || !cp || !plan || !payment_method) {
       throw new Error('Missing required fields')
@@ -33,8 +33,8 @@ serve(async (req) => {
     // 2. Calculate Total
     const qty = 1
     const isQuarterly = plan === 'quarterly'
-    const pricePerBox = isQuarterly ? 40500 : 45000
-    const subtotal = qty * pricePerBox
+    const pricePerBox = isQuarterly ? 33250 : 35000
+    const subtotal = qty * pricePerBox * (isQuarterly ? 3 : 1)
     
     const cpNum = parseInt(cp) || 0
     let deliveryFee = 0
@@ -42,17 +42,27 @@ serve(async (req) => {
     else if (cpNum >= 1600 && cpNum <= 1900) deliveryFee = 4000
     else if (cpNum > 0) deliveryFee = 6000
     
-    const total = subtotal + deliveryFee
+    const totalDeliveryFee = deliveryFee * (isQuarterly ? 3 : 1)
+    const total = subtotal + totalDeliveryFee
 
     // 3. Create Order
+    const monthStr = new Date().toLocaleDateString('es-AR', { month: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' });
+    const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const friendlyId = `FUDI-${monthStr}-${randomCode}`;
+
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         customer_id: customer.id,
+        customer_name: name,
+        customer_email: email,
         status: 'pending',
         plan,
         payment_method,
-        total
+        total,
+        edition,
+        shipping_address: `${address} (CP: ${cp})`,
+        friendly_id: friendlyId
       })
       .select()
       .single()
@@ -101,30 +111,60 @@ serve(async (req) => {
         .eq('id', order.id)
 
       return new Response(
-        JSON.stringify({ init_point: mpData.init_point, orderId: order.id }),
+        JSON.stringify({ init_point: mpData.init_point, orderId: friendlyId }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     } else if (payment_method === 'transfer') {
       // Transfer logic: send email instructions
       await sendEmail({
         to: email,
-        subject: 'Instrucciones de Transferencia - Fudi Club',
+        subject: 'Instrucciones de Transferencia',
         html: `
-          <h1>¡Hola ${name}!</h1>
-          <p>Has iniciado la compra de tu Fudi Club Box.</p>
-          <p>Para confirmar tu pedido, realiza la transferencia con los siguientes datos:</p>
-          <ul>
-            <li><strong>Alias:</strong> FUDI.CLUB.OK</li>
-            <li><strong>CBU:</strong> 0000000000000000000000</li>
-            <li><strong>Monto a transferir:</strong> $${total}</li>
-          </ul>
-          <p>Por favor, envíanos el comprobante respondiendo a este correo o a hola@fudiclub.shop indicando tu nombre y número de pedido (<strong>${order.id}</strong>).</p>
-          <p>¡Gracias por sumarte al club!</p>
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+            <style>
+              body { font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111; }
+              .container { max-width: 600px; margin: 0 auto; background-color: #40E0D0; padding: 30px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px; }
+              .header { text-align: center; margin-bottom: 20px; }
+              .header h1 { font-family: 'Corben', Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; margin: 0; }
+              .box { background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 4px; margin: 20px 0; }
+              .box p { margin: 10px 0; font-size: 16px; }
+              .footer { text-align: center; font-size: 14px; font-weight: bold; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <!-- If the logo doesn't load, the text fallback will use Corben font -->
+                <img src="https://fudiclub.shop/imagenes/Logo-blanco-plano.png" alt="Fudi Club" style="max-width: 150px; margin-bottom: 15px; display: inline-block;" />
+                <h1>¡Hola ${name}! 📦</h1>
+              </div>
+              <p style="font-size: 18px; font-weight: bold; text-align: center;">Has iniciado la reserva de tu Fudi Club Box.</p>
+              
+              <div class="box">
+                <p style="margin-top: 0;"><strong>Para confirmar tu pedido, realiza la transferencia con los siguientes datos:</strong></p>
+                <p>Alias: <strong>FUDI.CLUB.OK</strong></p>
+                <p>CBU: <strong>0000000000000000000000</strong></p>
+                <p style="margin-bottom: 0;">Monto a transferir: <strong>$${total}</strong></p>
+              </div>
+              
+              <p style="font-size: 16px; text-align: center; background-color: #FFC0CB; padding: 15px; border: 2px solid #111; border-radius: 4px;">
+                <strong>Por favor, envíanos el comprobante respondiendo a este correo indicando el nombre con el que te registraste.</strong>
+              </p>
+              
+              <div class="footer">
+                <p>¡Gracias por sumarte al club!</p>
+              </div>
+            </div>
+          </body>
+          </html>
         `
       })
 
       return new Response(
-        JSON.stringify({ success: true, orderId: order.id }),
+        JSON.stringify({ success: true, orderId: friendlyId }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }

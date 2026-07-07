@@ -230,13 +230,13 @@
         </div>
         <!-- Success Modal -->
         <div id="success-modal" class="success-modal" style="display: none; text-align: center; margin: 20px 0; padding: 30px; background-color: var(--accent-rosa); border-radius: 8px; border: 2px solid var(--black); box-shadow: 4px 4px 0px var(--black);">
-          <h3>¡Preparando tu pedido! 📦</h3>
+          <h3 id="success-title">¡Preparando tu pedido! 📦</h3>
           <p id="success-message" style="font-size: 1.2rem; margin-top: 10px;">Esperá un momento...</p>
           <div id="transfer-details" style="display: none; text-align: left; background: var(--white); padding: 15px; border: 2px solid var(--black); margin-top: 15px; border-radius: 4px;">
             <p><strong>Alias:</strong> FUDI.CLUB.OK</p>
             <p><strong>CBU:</strong> 0000000000000000000000</p>
-            <p style="margin-top: 10px;">Envíanos el comprobante a <strong>hola@fudiclub.shop</strong> indicando tu nombre.</p>
           </div>
+          <p id="transfer-instructions" style="display: none; margin-top: 15px; font-size: 1rem;">Envíanos el comprobante a <strong>hola@fudiclub.shop</strong> indicando tu nombre o correo con el que te registraste para confirmar tu compra.</p>
         </div>
 
         <form class="payment-form" id="paymentForm">
@@ -249,7 +249,7 @@
                 <input type="radio" name="plan" value="one-time" checked>
                 <div class="radio-neo-content">
                   <span class="plan-name">Compra Única</span>
-                  <span class="plan-price focal-price">$45.000</span>
+                  <span class="plan-price focal-price">$35.000</span>
                   <span class="plan-tag">Sin compromiso</span>
                 </div>
               </label>
@@ -258,8 +258,8 @@
                 <div class="plan-badge-sticker">⭐ MEJOR PRECIO</div>
                 <div class="radio-neo-content">
                   <span class="plan-name">Plan Trimestral (Pago Único)</span>
-                  <span class="plan-price focal-price">$42.750 <small>c/u</small></span>
-                  <span class="plan-tag">Ahorrás $6.750 por ciclo</span>
+                  <span class="plan-price focal-price">$33.250 <small>c/u</small></span>
+                  <span class="plan-tag">Ahorrás $5.250 por ciclo</span>
                   <small class="plan-note">(Sin renovación automática)</small>
                 </div>
               </label>
@@ -311,15 +311,8 @@
           <div class="form-section">
             <h3 class="modal-subtitle">Método de Pago</h3>
             <div class="purchase-options focal" style="margin-top: 10px;">
-              <label class="radio-neo plan-card focal-card selected" id="method-card-mp">
-                <input type="radio" name="payment_method" value="mercado_pago" checked>
-                <div class="radio-neo-content">
-                  <span class="plan-name">Mercado Pago</span>
-                  <span class="plan-tag">Tarjetas, Dinero en cuenta</span>
-                </div>
-              </label>
-              <label class="radio-neo plan-card focal-card" id="method-card-transfer">
-                <input type="radio" name="payment_method" value="transfer">
+              <label class="radio-neo plan-card focal-card selected" id="method-card-transfer">
+                <input type="radio" name="payment_method" value="transfer" checked>
                 <div class="radio-neo-content">
                   <span class="plan-name">Transferencia Bancaria</span>
                   <span class="plan-tag">Alias / CBU</span>
@@ -341,7 +334,7 @@
               <span id="summary-subtotal">$0</span>
             </div>
             <div class="summary-line">
-              <span>Envío:</span>
+              <span id="summary-delivery-label">Envío:</span>
               <span id="summary-delivery">$0</span>
             </div>
             <div class="summary-line total-line">
@@ -414,8 +407,9 @@
   </a>
 
   <!-- Custom Script -->
+  <script type="module" src="/main.js?v=2"></script>
   <script type="module">
-    import { initCheckoutFlow } from './src/checkout.js';
+    import { initCheckoutFlow } from './src/checkout.js?v=2';
     import { initDraggableStickers } from './src/stickers.js';
     import { initRetroPlayer } from './src/audio.js';
     import { fetchStock } from './src/api.js';

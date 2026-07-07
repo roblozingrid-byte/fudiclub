@@ -14,7 +14,7 @@ export const sendEmail = async ({
   }
 
   // Define from email (ideally configured in env)
-  const from = Deno.env.get('RESEND_FROM_EMAIL') || 'hola@fudiclub.com'
+  const from = Deno.env.get('RESEND_FROM_EMAIL') || 'Fudi Club <hola@fudiclub.shop>'
 
   try {
     const res = await fetch('https://api.resend.com/emails', {

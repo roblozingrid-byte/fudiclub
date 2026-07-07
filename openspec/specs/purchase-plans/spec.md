@@ -17,8 +17,9 @@ El sistema SHALL presentar el plan trimestral como un pago único adelantado por
 #### Scenario: Subtotales y aclaraciones de carrito
 - **GIVEN** que el cliente seleccionó el plan trimestral
 - **WHEN** el carrito actualiza sus componentes
-- **THEN** el subtotal refleja explícitamente que se están cobrando "3 boxes"
-- **AND** el cálculo del subtotal utiliza el valor total de las 3 cajas por adelantado
+- **THEN** el subtotal refleja explícitamente que se están cobrando "3 cajas"
+- **AND** el cálculo del subtotal utiliza el valor unitario multiplicado por 3 cajas por adelantado
+- **AND** el costo de envío también se multiplica por 3 meses por adelantado.
 
 ### Requirement: Procesamiento del Plan Elegido
 El sistema SHALL registrar y propagar la elección exacta del plan en el momento de confirmar el checkout.

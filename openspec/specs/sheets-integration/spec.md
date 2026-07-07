@@ -8,6 +8,14 @@ The system SHALL synchronize newly created customers to a specific Google Sheets
 - **WHEN** a new customer is inserted into the `customers` table
 - **THEN** the system appends a new row to the Google Sheet with the customer data (ID, Nombre, Email, WhatsApp, Zona, Alergias, Fecha).
 
+### Requirement: Lead Capture Sync to Sheets
+The system SHALL synchronize captured pre-checkout emails (Leads) to a specific Google Sheets tab ("Leads").
+
+#### Scenario: Pre-checkout lead capture
+- **GIVEN** an active connection to Google Sheets API
+- **WHEN** a new email is inserted into the `waitlist` table (functioning as a leads table)
+- **THEN** the system appends a new row to the "Leads" tab with the email and timestamp.
+
 ### Requirement: Order Sync to Sheets
 The system SHALL synchronize newly created orders to a specific Google Sheets tab ("Pedidos (Backup)").
 

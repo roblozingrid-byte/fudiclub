@@ -5,12 +5,12 @@ TBD
 
 ## Requirements
 
-### Requirement: Waitlist Endpoint
-The system SHALL expose a `join-waitlist` Edge Function that accepts an email address and inserts it into the waitlist database table.
+### Requirement: Lead Capture Endpoint (formerly Waitlist)
+The system SHALL expose a `join-waitlist` Edge Function that accepts an email address and inserts it into the `waitlist` database table to capture leads silently.
 
-#### Scenario: User joins waitlist successfully
-- **WHEN** a user submits their email on the waitlist form
-- **THEN** the system saves the email to the database and sends a welcome/confirmation email using the Resend API.
+#### Scenario: User starts checkout (Lead Capture)
+- **WHEN** a user submits their email on the pre-checkout form
+- **THEN** the system saves the email to the database without sending any confirmation email (silent capture).
 
 #### Scenario: User already in waitlist
 - **WHEN** a user submits an email that is already registered
