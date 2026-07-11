@@ -21,10 +21,10 @@ export function initDraggableStickers() {
 
   const stickerData = [
     { src: '/imagenes/Alfajor sf.webp', x: 5, y: 15 },
-    { src: '/imagenes/Chips sf.webp', x: 80, y: 40 },
+    { src: '/imagenes/Paleta sf.webp', x: 80, y: 40 },
     { src: '/imagenes/Dulces sf.webp', x: 10, y: 35 },
     { src: '/imagenes/Joystick sf.webp', x: 70, y: 80 },
-    { src: '/imagenes/Paleta sf.webp', x: 45, y: 60 },
+    { src: '/imagenes/Chips sf.webp', x: 45, y: 60 },
     { src: '/imagenes/Popcorn sf.webp', x: 20, y: 85 },
     { src: '/imagenes/Camara sf.webp', x: 60, y: 20 },
     { src: '/imagenes/Compu sf.webp', x: 30, y: 50 }
@@ -34,8 +34,49 @@ export function initDraggableStickers() {
   window.addEventListener('resize', updateCaches);
 
   const isMobile = windowWidthCache <= 768;
-  const size = isMobile ? 50 : 100;
-  const radius = isMobile ? 22 : 45;
+  const size = isMobile ? 35 : 100;
+  const radius = isMobile ? 18 : 45;
+  
+  if (isMobile) {
+    const size = 60; // Más grandes
+    const sections = document.querySelectorAll('.neo-border-section, .teaser');
+    
+    sections.forEach((section, index) => {
+      // No poner separador después de la última sección
+      if (index === sections.length - 1) return;
+      
+      let data = stickerData[index % stickerData.length];
+      
+      // Pedido especial: La "compu" después del banner turquesa (about-fudi)
+      if (section.classList.contains('about-fudi')) {
+        const compuSticker = stickerData.find(s => s.src.includes('Compu'));
+        if (compuSticker) data = compuSticker;
+      }
+      
+      const separatorWrap = document.createElement('div');
+      separatorWrap.style.display = 'flex';
+      separatorWrap.style.justifyContent = 'center';
+      separatorWrap.style.alignItems = 'center';
+      separatorWrap.style.width = '100%';
+      separatorWrap.style.margin = '20px 0'; // Mejor espaciado vertical
+      
+      const img = document.createElement('img');
+      img.src = data.src;
+      img.alt = 'Sticker Separador';
+      img.style.width = `${size}px`;
+      img.style.height = 'auto';
+      img.style.display = 'inline-block';
+      img.style.pointerEvents = 'none';
+      
+      // Animación suave de rotación
+      const rotation = (Math.random() - 0.5) * 40;
+      img.style.transform = `rotate(${rotation}deg)`;
+      
+      separatorWrap.appendChild(img);
+      section.insertAdjacentElement('afterend', separatorWrap);
+    });
+    return; // Stop here, no dragging or bouncing for mobile
+  }
 
   stickerData.forEach((data, index) => {
     const stickerEl = document.createElement('div');

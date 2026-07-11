@@ -40,3 +40,28 @@ Modals and floating cards SHALL utilize the retro Windows 95 style title bars.
 #### Scenario: Viewing Checkout
 - **WHEN** the expanded checkout card or waitlist container is displayed
 - **THEN** it renders with a thick top title bar imitating classic 90s OS windows.
+
+### Requirement: Layout Separation and Uniformity
+The system SHALL maintain consistent section padding and avoid forced text breaks on wide screens, while ensuring tight layouts on mobile.
+
+#### Scenario: Mobile vs Desktop Layout
+- **WHEN** viewed on mobile, sections like `.teaser` become `.neo-border-section` containers and texts use `.mobile-break` for forced newlines.
+- **THEN** on desktop, the teaser remains transparent and texts flow naturally without hard breaks.
+
+### Requirement: Retro Support Button
+The WhatsApp support widget SHALL adapt to the platform's constraints while retaining the retro monospace typography.
+
+#### Scenario: Support Button Styling
+- **WHEN** the button is rendered on desktop, it displays as a pill containing the word "Soporte" and uses `--font-mono`.
+- **THEN** on mobile, it gracefully collapses into a circular floating icon button.
+
+### Requirement: Floating Decorative Stickers
+Floating sticker elements SHALL adapt their behavior based on the device to avoid obstructing readable content.
+
+#### Scenario: Mobile Sticker Separators
+- **WHEN** the user views the site on a mobile device
+- **THEN** the stickers behave as block separators between `.neo-border-section` elements instead of freely floating over content.
+- **AND** the retro computer sticker is explicitly prioritized after the "Qué es Fudi Club?" section.
+
+### Requirement: Current Month Indicators
+The UI SHALL display the current operational month (Agosto) in relevant CTAs and stock widgets.

@@ -45,13 +45,13 @@ export function initMysteryReveal() {
 
   containers.forEach(container => {
     let ticking = false;
+    let isMobileRevealed = false;
 
     const handleMove = (clientX, clientY) => {
       const rect = container.getBoundingClientRect();
       const x = clientX - rect.left - (rect.width * 0.05);
       const y = clientY - rect.top - (rect.height * 0.05);
-      const isMobile = window.innerWidth <= 768;
-      const lensRadius = isMobile ? '30px' : '45px';
+      const lensRadius = '45px'; // Solo se usa en desktop ahora
 
       container.style.setProperty('--reveal-x', `${x}px`);
       container.style.setProperty('--reveal-y', `${y}px`);
@@ -59,6 +59,7 @@ export function initMysteryReveal() {
     };
 
     container.addEventListener('mousemove', (e) => {
+      if (window.innerWidth <= 768) return; // Ignorar en móvil
       if (!ticking) {
         window.requestAnimationFrame(() => {
           handleMove(e.clientX, e.clientY);
@@ -68,36 +69,26 @@ export function initMysteryReveal() {
       }
     });
 
-    container.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            handleMove(e.touches[0].clientX, e.touches[0].clientY);
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }
-    }, { passive: true });
-
-    container.addEventListener('touchstart', (e) => {
-      if (e.touches.length > 0) {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            handleMove(e.touches[0].clientX, e.touches[0].clientY);
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }
-    }, { passive: true });
-
     container.addEventListener('mouseleave', () => {
+      if (window.innerWidth <= 768) return;
       container.style.setProperty('--reveal-radius', '0px');
     });
 
-    container.addEventListener('touchend', () => {
-      container.style.setProperty('--reveal-radius', '0px');
+    // Mobile specific: click/tap to temporary full reveal
+    let timeoutId = null;
+    container.addEventListener('click', () => {
+      if (window.innerWidth > 768) return; // Solo en móvil
+      
+      // Expandir lo suficiente para cubrir la imagen
+      container.style.setProperty('--reveal-x', `50%`);
+      container.style.setProperty('--reveal-y', `50%`);
+      container.style.setProperty('--reveal-radius', '150px');
+      
+      if (timeoutId) clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        container.style.setProperty('--reveal-radius', '0px');
+      }, 2000); // Se oculta automáticamente luego de 2 segundos
     });
   });
 }

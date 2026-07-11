@@ -14,7 +14,7 @@
   --border-thick: 3px solid var(--black);
   --shadow-solid: 6px 6px 0px var(--black);
   --shadow-hover: 2px 2px 0px var(--black);
-  --shadow-text: 3px 3px 0px rgba(0,0,0,0.8);
+  --shadow-text: 2px 2px 0px rgba(0,0,0,0.8);
 
   /* Fonts */
   --font-display: 'Corben', serif; /* Cooper BT Alternative */
@@ -114,7 +114,7 @@ h1, h2, h3 {
 .header-logo {
   height: 50px;
   width: auto;
-  filter: drop-shadow(4px 4px 0px var(--black));
+  filter: drop-shadow(2px 2px 0px var(--black));
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -377,8 +377,10 @@ h1, h2, h3 {
   z-index: 60; /* Above stickers-layer (50) */
 }
 
-.teaser-card:hover {
-  transform: translateY(-5px);
+@media (hover: hover) {
+  .teaser-card:hover {
+    transform: translateY(-5px);
+  }
 }
 
 .mystery-item-container {
@@ -418,8 +420,10 @@ h1, h2, h3 {
   transition: filter 0.3s, transform 0.3s ease;
 }
 
-.teaser-card:hover .blur-effect {
-  filter: blur(8px) grayscale(10%);
+@media (hover: hover) {
+  .teaser-card:hover .blur-effect {
+    filter: blur(8px) grayscale(10%);
+  }
 }
 
 .master-disclaimer {
@@ -1303,8 +1307,24 @@ textarea.neo-input {
   100% { transform: scale(1); }
 }
 
+.about-box {
+  background-color: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
 /* Mobile Responsiveness Improvements */
 @media (max-width: 768px) {
+  #stickers-layer {
+    overflow: visible !important;
+    z-index: 5 !important;
+  }
+
   .hero-main-row {
     flex-direction: column;
     gap: 15px;
@@ -1344,10 +1364,30 @@ textarea.neo-input {
     margin: 0 auto;
   }
   
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  .about-fudi p, .about-fudi ul {
+    font-size: 1rem !important;
+  }
+  
+  .about-box {
+    padding: 20px !important;
+    text-align: center !important;
+  }
+  
   .steps-grid {
     grid-template-columns: 1fr !important;
   }
   
+  .neo-border-section {
+    margin: 20px 15px !important;
+    position: relative;
+    z-index: 10;
+  }
+
   .teaser-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 15px !important;
@@ -1364,6 +1404,22 @@ textarea.neo-input {
   
   .purchase-options.focal {
     grid-template-columns: 1fr !important;
+  }
+  
+  .whatsapp-support {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+  }
+  
+  .whatsapp-text {
+    display: none;
+  }
+
+  .mobile-break {
+    display: block;
   }
   
   .social-links {
@@ -1404,8 +1460,8 @@ textarea.neo-input {
 
   /* Sticker Mobile Sizing */
   .draggable-sticker {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
   }
 
   /* How it Works Mobile Adjustments */
@@ -1533,6 +1589,11 @@ textarea.neo-input {
   
   .subtitle {
     font-size: 0.95rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
   }
   
   .teaser-grid {
@@ -1721,10 +1782,12 @@ textarea.neo-input {
   right: 20px;
   background-color: var(--accent-verde);
   color: var(--black);
-  padding: 12px 20px;
-  border-radius: 50px;
+  width: auto;
+  height: auto;
+  padding: 10px 20px;
+  border-radius: 30px;
   font-family: var(--font-mono);
-  font-weight: bold;
+  font-size: 1.3rem;
   text-decoration: none;
   border: 2px solid var(--black);
   box-shadow: 4px 4px 0px var(--black);
@@ -1732,7 +1795,7 @@ textarea.neo-input {
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
 
 .whatsapp-support:hover {
@@ -1780,8 +1843,7 @@ textarea.neo-input {
   .stock-widget-floating {
     display: none;
   }
-  .retro-player .ctrl-btn {
-    width: 44px;
-    height: 44px;
+  .retro-player {
+    display: none !important;
   }
 }
