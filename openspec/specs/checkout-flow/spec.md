@@ -14,7 +14,7 @@ The system SHALL expose a `create-order` Edge Function that receives checkout de
 
 #### Scenario: Checkout with Transferencia Bancaria
 - **WHEN** a user submits the checkout form selecting `transfer`
-- **THEN** the system creates the order in the database, uses Resend API to send a neo-brutalist styled HTML email with transfer instructions (sender "Fudi Club"), and returns a success response.
+- **THEN** the system creates the order in the database, uses Resend API to send a neo-brutalist styled HTML email with transfer instructions (sender "Fudi Club") instructing them to send proof via WhatsApp, and returns a success response. The UI also directs them to WhatsApp.
 
 ### Requirement: Webhook for Mercado Pago
 The system SHALL expose a `webhook-mp` Edge Function to process Instant Payment Notifications from Mercado Pago.

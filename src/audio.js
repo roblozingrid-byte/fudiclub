@@ -13,10 +13,9 @@ export function initRetroPlayer() {
   if (!audio || !playPauseBtn) return;
 
   const playlist = [
-    "/music/track1.mp3", // Track 1: Pop/Synth original
-    "/music/track2_new.mp3", // Track 2: Acústico (Kevin MacLeod - Carefree)
-    "/music/track3.mp3", // Track 3: Electro-pop fuerte
-    "/music/track4_new.mp3"  // Track 4: Blues Acústico (Kevin MacLeod - Fretless)
+    "/music/Clip%201.mp3",
+    "/music/Clip%202.mp3",
+    "/music/Clip%203.mp3"
   ];
   let currentTrack = 0;
 

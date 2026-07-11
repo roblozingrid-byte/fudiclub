@@ -6,13 +6,16 @@ let footerRectCache = null;
 let windowWidthCache = window.innerWidth;
 let windowHeightCache = window.innerHeight;
 
+let pageHeightCache = document.documentElement.scrollHeight;
+
 function updateCaches() {
   const header = document.querySelector('.neo-header');
   const footer = document.querySelector('.neo-footer');
-  headerRectCache = header ? header.getBoundingClientRect() : { bottom: 0 };
-  footerRectCache = footer ? footer.getBoundingClientRect() : { top: window.innerHeight };
+  headerRectCache = header ? header.offsetHeight : 0;
+  footerRectCache = footer ? footer.offsetTop : document.documentElement.scrollHeight;
   windowWidthCache = window.innerWidth;
   windowHeightCache = window.innerHeight;
+  pageHeightCache = footer ? footer.offsetTop : document.documentElement.scrollHeight;
 }
 
 export function initDraggableStickers() {
@@ -108,7 +111,7 @@ export function initDraggableStickers() {
       width: size,
       height: size,
       x: (data.x / 100) * windowWidthCache,
-      y: (data.y / 100) * windowHeightCache,
+      y: (data.y / 100) * pageHeightCache,
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2,
       isDragging: false,
@@ -129,8 +132,8 @@ function updateStickers() {
   const size = isMobile ? 50 : 100;
   const minX = 0;
   const maxX = windowWidthCache - size;
-  const minY = headerRectCache.bottom;
-  const maxY = footerRectCache.top - size;
+  const minY = headerRectCache;
+  const maxY = pageHeightCache - size; // They can bounce anywhere up to the bottom of the page
 
   stickers.forEach((s, i) => {
     if (s.isDragging) return;

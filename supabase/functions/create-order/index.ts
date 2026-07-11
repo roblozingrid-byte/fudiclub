@@ -150,9 +150,12 @@ serve(async (req) => {
                 <p style="margin-bottom: 0;">Monto a transferir: <strong>$${total}</strong></p>
               </div>
               
-              <p style="font-size: 16px; text-align: center; background-color: #FFC0CB; padding: 15px; border: 2px solid #111; border-radius: 4px;">
-                <strong>Por favor, envíanos el comprobante respondiendo a este correo indicando el nombre con el que te registraste.</strong>
-              </p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="https://wa.me/5491100000000?text=Hola,%20soy%20${name},%20adjunto%20comprobante%20de%20mi%20Mistery%20Box" style="background-color: #25D366; color: #fff; padding: 15px 25px; text-decoration: none; font-weight: bold; border: 3px solid #111; border-radius: 6px; display: inline-block; box-shadow: 4px 4px 0px #111;">
+                  📲 Enviar Comprobante por WhatsApp
+                </a>
+                <p style="margin-top: 15px; font-size: 14px; font-weight: bold;">(O envíalo manualmente al +54 9 11 0000-0000)</p>
+              </div>
               
               <div class="footer">
                 <p>¡Gracias por sumarte al club!</p>
