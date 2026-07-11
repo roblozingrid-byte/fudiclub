@@ -20,14 +20,14 @@ export function initDraggableStickers() {
   if (!layer) return;
 
   const stickerData = [
-    { src: '/imagenes/alfajor.png', x: 5, y: 15 },
-    { src: '/imagenes/chips.png', x: 80, y: 40 },
-    { src: '/imagenes/dulces.png', x: 10, y: 35 },
-    { src: '/imagenes/joystick.png', x: 70, y: 80 },
-    { src: '/imagenes/paleta.png', x: 45, y: 60 },
-    { src: '/imagenes/palomitas.png', x: 20, y: 85 },
-    { src: '/imagenes/polaroid.png', x: 60, y: 20 },
-    { src: '/imagenes/Compu.png', x: 30, y: 50 }
+    { src: '/imagenes/Alfajor sf.webp', x: 5, y: 15 },
+    { src: '/imagenes/Chips sf.webp', x: 80, y: 40 },
+    { src: '/imagenes/Dulces sf.webp', x: 10, y: 35 },
+    { src: '/imagenes/Joystick sf.webp', x: 70, y: 80 },
+    { src: '/imagenes/Paleta sf.webp', x: 45, y: 60 },
+    { src: '/imagenes/Popcorn sf.webp', x: 20, y: 85 },
+    { src: '/imagenes/Camara sf.webp', x: 60, y: 20 },
+    { src: '/imagenes/Compu sf.webp', x: 30, y: 50 }
   ];
 
   updateCaches();
