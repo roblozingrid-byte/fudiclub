@@ -319,7 +319,7 @@ export function initCheckoutFlow() {
   const allergyToggle = document.getElementById('allergyToggle');
   const allergyDetails = document.getElementById('allergyDetails');
   const allergyMysteryText = document.querySelector('.checkout-subtitle-inline');
-  const allergyInfo = document.querySelector('textarea[name="allergyInfo"]');
+  const allergyInfo = document.querySelector('input[name="allergyInfo"]');
   const allergyConsent = document.getElementById('allergyConsent');
   if (allergyToggle && allergyDetails) {
     allergyToggle.addEventListener('change', (e) => {
@@ -396,7 +396,7 @@ export function initCheckoutFlow() {
       const name = document.querySelector('input[placeholder="Nombre completo"]').value;
       const address = document.getElementById('addressInput').value;
       const cp = document.getElementById('cpInput').value;
-      const allergiesText = document.querySelector('textarea[name="allergyInfo"]').value;
+      const allergiesText = document.querySelector('input[name="allergyInfo"]').value;
       const hasAllergy = document.getElementById('allergyToggle').checked;
       const allergies = hasAllergy ? allergiesText : '';
       const qtyDisplay = document.getElementById('qty-display');
