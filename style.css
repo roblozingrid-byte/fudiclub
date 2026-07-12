@@ -14,7 +14,7 @@
   --border-thick: 3px solid var(--black);
   --shadow-solid: 6px 6px 0px var(--black);
   --shadow-hover: 2px 2px 0px var(--black);
-  --shadow-text: 2px 2px 0px rgba(0,0,0,0.8);
+  --shadow-text: 0px 0px 0px rgba(0,0,0,0.8); /* Reducida a pedido para no separar tanto del texto (el stroke ya da borde) */
 
   /* Fonts */
   --font-display: 'Corben', serif; /* Cooper BT Alternative */
@@ -168,7 +168,7 @@ h1, h2, h3 {
   background-color: var(--accent-verde);
   color: var(--black);
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
   padding: 12px 24px;
   border: var(--border-thick);
   box-shadow: var(--shadow-solid);
@@ -358,9 +358,16 @@ h1, h2, h3 {
 
 .teaser-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
   margin-bottom: 30px;
+}
+
+@media (min-width: 768px) {
+  .teaser-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
 }
 
 .teaser-card {
@@ -525,7 +532,7 @@ h1, h2, h3 {
 
 .checkout-card-title {
   margin-bottom: 28px;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw + 0.5rem, 2rem);
 }
 
 /* Plan Focal Section */
@@ -535,7 +542,7 @@ h1, h2, h3 {
 
 .plan-focal-label {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 3vw + 0.5rem, 1.4rem);
   font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
@@ -546,10 +553,16 @@ h1, h2, h3 {
 /* Purchase Options — Focal Layout */
 .purchase-options.focal {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
   width: 100%;
   margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .purchase-options.focal {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .plan-card.focal-card {
@@ -717,7 +730,6 @@ h1, h2, h3 {
 .current-edition-banner {
   background-color: var(--white);
   padding: 15px 20px;
-  margin-top: 24px;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
@@ -731,7 +743,7 @@ h1, h2, h3 {
 }
 
 .edition-value {
-  background-color: var(--accent-verde);
+  background-color: var(--bg-turquesa);
   padding: 4px 10px;
   border: 2px solid var(--black);
   border-radius: 4px;
@@ -760,7 +772,7 @@ h1, h2, h3 {
 
 .sold-out-options h3, .waitlist-container h3 {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 6vw, 2rem);
   margin-bottom: 10px;
 }
 
@@ -988,8 +1000,14 @@ textarea.neo-input {
 
 .split-inputs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .split-inputs {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .modal-subtitle {
@@ -1203,9 +1221,15 @@ textarea.neo-input {
 
 .how-it-works .steps-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 30px;
   margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .how-it-works .steps-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .step-card {
@@ -1368,9 +1392,7 @@ textarea.neo-input {
     text-align: center !important;
   }
   
-  .steps-grid {
-    grid-template-columns: 1fr !important;
-  }
+
   
   .neo-border-section {
     margin: 20px 15px !important;
@@ -1378,10 +1400,7 @@ textarea.neo-input {
     z-index: 10;
   }
 
-  .teaser-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 15px !important;
-  }
+
   
   .teaser-card {
     padding: 15px;
@@ -1392,9 +1411,7 @@ textarea.neo-input {
     height: 120px;
   }
   
-  .purchase-options.focal {
-    grid-template-columns: 1fr !important;
-  }
+
   
   .whatsapp-support {
     width: 40px !important;
@@ -1406,6 +1423,10 @@ textarea.neo-input {
   
   .whatsapp-text {
     display: none;
+  }
+  
+  .hide-on-mobile {
+    display: none !important;
   }
 
   .mobile-break {
@@ -1486,15 +1507,7 @@ textarea.neo-input {
     padding: 25px 20px;
   }
   
-  .checkout-card-title {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-  }
-  
-  .plan-focal-label {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
+
   
   .focal-price {
     font-size: 1.9rem !important;

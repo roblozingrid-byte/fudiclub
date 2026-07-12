@@ -15,7 +15,7 @@ export function calculateCurrentEdition() {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  return `Edición ${months[monthIndex]}`;
+  return months[monthIndex];
 }
 
 export function updateStockWidget() {
@@ -65,38 +65,49 @@ export function updateCheckoutTotals() {
  
   if (!summarySubtotal) return;
  
-  const qty = 1;
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
-  const pricePerBox = isQuarterly ? 33250 : 35000;
   
-  const subtotal = qty * pricePerBox * (isQuarterly ? 3 : 1);
+  let pricePerBox = 35000;
+  let boxesCount = 1;
+  
+  if (isQuarterly) {
+    pricePerBox = 33250;
+    boxesCount = 3;
+  }
+  
+  const qtyDisplay = document.getElementById('qty-display');
+  const userQty = qtyDisplay ? (parseInt(qtyDisplay.innerText, 10) || 1) : 1;
+  
+  const subtotal = pricePerBox * boxesCount * userQty;
+  const totalBoxes = boxesCount * userQty;
   
   const cpInput = document.getElementById('cpInput');
   const cpStr = cpInput ? cpInput.value.replace(/\D/g, '') : '';
   const cp = parseInt(cpStr, 10) || 0;
-  let deliveryFee = 0;
+  
+  let deliveryFeePerMonth = 0;
   let deliveryText = "A calcular";
 
   if (cp >= 1000 && cp <= 1499) {
-    deliveryFee = 2500;
+    deliveryFeePerMonth = 2500;
   } else if (cp >= 1500 && cp <= 1900) {
-    deliveryFee = 4000;
+    deliveryFeePerMonth = 4000;
   } else if (cp > 0) {
-    deliveryFee = 6000;
+    deliveryFeePerMonth = 6000;
   }
 
-  const totalDeliveryFee = deliveryFee * (isQuarterly ? 3 : 1);
+  const totalDeliveryFee = deliveryFeePerMonth * totalBoxes;
 
-  if (deliveryFee > 0) {
+  if (deliveryFeePerMonth > 0) {
     deliveryText = `$${totalDeliveryFee.toLocaleString('es-AR')}`;
   }
  
   if (summarySubtotalLabel) {
-    summarySubtotalLabel.innerText = isQuarterly ? 'Subtotal (3 cajas):' : 'Subtotal (1 caja):';
+    summarySubtotalLabel.innerText = isQuarterly ? `Subtotal (${userQty} x Trimestral = ${totalBoxes} Boxes):` : `Subtotal (${totalBoxes} Mistery Box${totalBoxes > 1 ? 'es' : ''}):`;
   }
   if (summaryDeliveryLabel) {
-    summaryDeliveryLabel.innerText = isQuarterly ? 'Envío (3 meses):' : 'Envío:';
+    summaryDeliveryLabel.innerText = isQuarterly ? `Envío (${totalBoxes} cajas):` : `Envío (${userQty} caja${userQty > 1 ? 's' : ''}):`;
   }
   
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
@@ -119,7 +130,7 @@ export function initCheckoutFlow() {
   }
   const dynamicIntroMonth = document.getElementById('dynamic-intro-month');
   if (dynamicIntroMonth) {
-    dynamicIntroMonth.innerText = calculateCurrentEdition().replace('Edición ', '');
+    dynamicIntroMonth.innerText = calculateCurrentEdition();
   }
   
   updateStockWidget();
@@ -237,6 +248,57 @@ export function initCheckoutFlow() {
     });
   });
 
+  const btnQtyMinus = document.getElementById('btn-qty-minus');
+  const btnQtyPlus = document.getElementById('btn-qty-plus');
+  const qtyDisplay = document.getElementById('qty-display');
+
+  if (btnQtyMinus && btnQtyPlus && qtyDisplay) {
+    const updateQtyButtons = (current) => {
+      if (current <= 1) {
+        btnQtyMinus.style.opacity = '0.5';
+        btnQtyMinus.style.pointerEvents = 'none';
+        btnQtyMinus.style.backgroundColor = '#ccc';
+        btnQtyMinus.style.borderColor = '#999';
+      } else {
+        btnQtyMinus.style.opacity = '1';
+        btnQtyMinus.style.pointerEvents = 'auto';
+        btnQtyMinus.style.backgroundColor = '';
+        btnQtyMinus.style.borderColor = '';
+      }
+      
+      if (current >= 3) {
+        btnQtyPlus.style.opacity = '0.5';
+        btnQtyPlus.style.pointerEvents = 'none';
+        btnQtyPlus.style.backgroundColor = '#ccc';
+        btnQtyPlus.style.borderColor = '#999';
+      } else {
+        btnQtyPlus.style.opacity = '1';
+        btnQtyPlus.style.pointerEvents = 'auto';
+        btnQtyPlus.style.backgroundColor = '';
+        btnQtyPlus.style.borderColor = '';
+      }
+    };
+
+    btnQtyMinus.addEventListener('click', () => {
+      let current = parseInt(qtyDisplay.innerText, 10) || 1;
+      if (current > 1) {
+        current--;
+        qtyDisplay.innerText = current;
+        updateQtyButtons(current);
+        updateCheckoutTotals();
+      }
+    });
+    btnQtyPlus.addEventListener('click', () => {
+      let current = parseInt(qtyDisplay.innerText, 10) || 1;
+      if (current < 3) {
+        current++;
+        qtyDisplay.innerText = current;
+        updateQtyButtons(current);
+        updateCheckoutTotals();
+      }
+    });
+  }
+
   const btnPreorder = document.getElementById('btn-preorder');
   const soldOutOptions = document.getElementById('sold-out-options');
 
@@ -249,7 +311,7 @@ export function initCheckoutFlow() {
       if (currentEditionDisplay) {
         currentEditionDisplay.innerText = calculateCurrentEdition();
         currentEditionDisplay.style.backgroundColor = 'var(--bg-amarillo)';
-        setTimeout(() => currentEditionDisplay.style.backgroundColor = 'var(--accent-verde)', 1500);
+        setTimeout(() => currentEditionDisplay.style.backgroundColor = 'var(--bg-turquesa)', 1500);
       }
     });
   }
@@ -325,7 +387,7 @@ export function initCheckoutFlow() {
       const allInputs = paymentForm.querySelectorAll('input, textarea');
       allInputs.forEach(input => input.disabled = true);
 
-      const editionAssigned = calculateCurrentEdition();
+      const editionAssigned = `Edición ${calculateCurrentEdition()}`;
       const planValue = document.querySelector('input[name="plan"]:checked').value;
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
       const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'mercado_pago';
@@ -337,6 +399,8 @@ export function initCheckoutFlow() {
       const allergiesText = document.querySelector('textarea[name="allergyInfo"]').value;
       const hasAllergy = document.getElementById('allergyToggle').checked;
       const allergies = hasAllergy ? allergiesText : '';
+      const qtyDisplay = document.getElementById('qty-display');
+      const orderQuantity = qtyDisplay ? (parseInt(qtyDisplay.innerText, 10) || 1) : 1;
 
       const payload = {
         email,
@@ -347,7 +411,8 @@ export function initCheckoutFlow() {
         plan: planValue,
         payment_method: paymentMethod,
         edition: editionAssigned,
-        is_preorder: isPreorderMode
+        is_preorder: isPreorderMode,
+        quantity: orderQuantity
       };
 
       const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';

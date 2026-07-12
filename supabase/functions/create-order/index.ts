@@ -10,7 +10,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { email, name, address, cp, allergies, plan, payment_method, edition } = body
+    const { email, name, address, cp, allergies, plan, payment_method, edition, quantity } = body
 
     if (!email || !name || !address || !cp || !plan || !payment_method) {
       throw new Error('Missing required fields')
@@ -31,7 +31,7 @@ serve(async (req) => {
     if (customerError) throw customerError
 
     // 2. Calculate Total
-    const qty = 1
+    const qty = quantity ? parseInt(quantity, 10) : 1
     const isQuarterly = plan === 'quarterly'
     const pricePerBox = isQuarterly ? 33250 : 35000
     const subtotal = qty * pricePerBox * (isQuarterly ? 3 : 1)
@@ -42,7 +42,8 @@ serve(async (req) => {
     else if (cpNum >= 1600 && cpNum <= 1900) deliveryFee = 4000
     else if (cpNum > 0) deliveryFee = 6000
     
-    const totalDeliveryFee = deliveryFee * (isQuarterly ? 3 : 1)
+    const totalBoxes = qty * (isQuarterly ? 3 : 1)
+    const totalDeliveryFee = deliveryFee * totalBoxes
     const total = subtotal + totalDeliveryFee
 
     // 3. Create Order

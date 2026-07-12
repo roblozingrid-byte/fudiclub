@@ -112,7 +112,7 @@
     </section>
 
     <!-- Teaser Section -->
-    <section class="teaser">
+    <section class="teaser neo-border-section" id="teasers" style="background-color: var(--bg-lila);">
       <h2 class="section-title" style="margin-bottom: 25px;">Lo que podés recibir</h2>
       <div class="teaser-grid">
         <!-- Item 1 -->
@@ -203,7 +203,7 @@
 
     <!-- Checkout / Security Filter -->
     <section class="checkout neo-border-section" id="registro">
-      <h2 class="section-title">Unite al club - Agosto!</h2>
+      <h2 class="section-title">Unite al club <span class="hide-on-mobile">- Agosto!</span></h2>
 
       <!-- Email pre-registro + CTA -->
       <div id="cta-join-wrapper">
@@ -255,7 +255,6 @@
                 <div class="radio-neo-content">
                   <span class="plan-name">Compra Única</span>
                   <span class="plan-price focal-price">$35.000</span>
-                  <span class="plan-tag">Sin compromiso</span>
                 </div>
               </label>
               <label class="radio-neo plan-card focal-card" id="plan-card-quarterly">
@@ -265,12 +264,19 @@
                   <span class="plan-name">Plan Trimestral (Pago Único)</span>
                   <span class="plan-price focal-price">$33.250 <small>c/u</small></span>
                   <span class="plan-tag">Ahorrás $5.250 por ciclo</span>
-                  <small class="plan-note">(Sin renovación automática)</small>
                 </div>
               </label>
             </div>
+          </div>
 
-
+          <!-- Selector de Cantidad -->
+          <div class="form-section quantity-section" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="modal-subtitle" style="margin: 0;">Cantidad de Boxes</h3>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <button type="button" id="btn-qty-minus" class="cta-button" style="padding: 5px 15px; min-width: 40px; font-size: 1.2rem; opacity: 0.5; pointer-events: none; background-color: #ccc; border-color: #999;">-</button>
+              <span id="qty-display" style="font-size: 1.2rem; font-weight: bold;">1</span>
+              <button type="button" id="btn-qty-plus" class="cta-button" style="padding: 5px 15px; min-width: 40px; font-size: 1.2rem;">+</button>
+            </div>
           </div>
 
           <!-- Separator -->
@@ -287,7 +293,7 @@
             <div style="display: flex; gap: 10px;">
               <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
                 required style="flex: 2;">
-              <input type="text" id="cpInput" class="neo-input" placeholder="Código Postal" required maxlength="8" style="flex: 1;">
+              <input type="text" id="cpInput" class="neo-input" placeholder="CP" required maxlength="8" style="flex: 1;">
             </div>
 
 
@@ -313,7 +319,7 @@
           </div>
 
           <!-- 3. MÉTODO DE PAGO -->
-          <div class="form-section">
+          <div class="form-section" style="margin-bottom: 5px;">
             <h3 class="modal-subtitle">Método de Pago</h3>
             <div class="purchase-options focal" style="margin-top: 10px;">
               <label class="radio-neo plan-card focal-card selected" id="method-card-transfer">
@@ -335,7 +341,7 @@
           <!-- Order Summary / Totals -->
           <div class="checkout-summary neo-border">
             <div class="summary-line">
-              <span id="summary-subtotal-label">Subtotal (1 box):</span>
+              <span id="summary-subtotal-label">Subtotal (1 Mistery Box):</span>
               <span id="summary-subtotal">$0</span>
             </div>
             <div class="summary-line">
@@ -353,7 +359,7 @@
               de entrega es de <strong>hasta 2 días hábiles</strong> posteriores, dependiendo de tu zona.</p>
           </div>
 
-          <button type="submit" class="cta-button massive cta-green">Confirmar y Pagar</button>
+          <button type="submit" class="cta-button massive cta-green">Ver datos para transferir</button>
         </form>
       </div>
     </section>

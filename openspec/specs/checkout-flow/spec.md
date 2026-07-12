@@ -6,11 +6,11 @@ TBD
 ## Requirements
 
 ### Requirement: Checkout Endpoint
-The system SHALL expose a `create-order` Edge Function that receives checkout details, saves the customer, creates a pending order, calculates shipping, and responds according to the selected payment method.
+The system SHALL expose a `create-order` Edge Function that receives checkout details (including `quantity`, max 3), saves the customer, creates a pending order, calculates shipping (multiplied by quantity), and responds according to the selected payment method.
 
 #### Scenario: Checkout with Mercado Pago
-- **WHEN** a user submits the checkout form selecting `mercado_pago`
-- **THEN** the system generates an order in the database, communicates with Mercado Pago API to create a preference, and returns the checkout URL to redirect the user.
+- **WHEN** a user submits the checkout form selecting `mercado_pago` with `quantity` N
+- **THEN** the system generates an order in the database, communicates with Mercado Pago API to create a preference for the total price, and returns the checkout URL to redirect the user.
 
 #### Scenario: Checkout with Transferencia Bancaria
 - **WHEN** a user submits the checkout form selecting `transfer`
