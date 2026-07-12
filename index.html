@@ -228,22 +228,6 @@
             <button id="btn-preorder" class="cta-button cta-green">Sí, quiero mi box de <span id="preorder-month">...</span></button>
           </div>
         </div>
-        <!-- Success Modal -->
-        <div id="success-modal" class="success-modal" style="display: none; text-align: center; margin: 20px 0; padding: 30px; background-color: var(--accent-rosa); border-radius: 8px; border: 2px solid var(--black); box-shadow: 4px 4px 0px var(--black);">
-          <h3 id="success-title">¡Preparando tu pedido! 📦</h3>
-          <p id="success-message" style="font-size: 1.2rem; margin-top: 10px;">Esperá un momento...</p>
-          <div id="transfer-details" style="display: none; text-align: left; background: var(--white); padding: 15px; border: 2px solid var(--black); margin-top: 15px; border-radius: 4px;">
-            <p><strong>Alias:</strong> FUDI.CLUB.OK</p>
-            <p><strong>CBU:</strong> 0000000000000000000000</p>
-          </div>
-          <p id="transfer-instructions" style="display: none; margin-top: 15px; font-size: 1rem; text-align: center;">
-            <a href="https://wa.me/5491100000000?text=Hola,%20adjunto%20comprobante%20de%20mi%20Mistery%20Box" target="_blank" class="checkout-btn" style="display: inline-block; background-color: #25D366; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border: 2px solid var(--black); border-radius: 4px;">
-              Enviar comprobante por WhatsApp
-            </a>
-            <br><small style="display: block; margin-top: 10px;">(O envíalo manualmente al +54 9 11 0000-0000)</small>
-          </p>
-        </div>
-
         <form class="payment-form" id="paymentForm">
 
           <!-- 1. PLANES DE COMPRA — pieza focal -->
@@ -361,8 +345,24 @@
 
           <button type="submit" class="cta-button massive cta-green">Ver datos para transferir</button>
         </form>
+    </div>
+
+    <!-- Success Modal (Moved outside) -->
+    <div id="success-modal" class="success-modal" style="display: none; text-align: center; margin: 20px auto; padding: 30px; background-color: var(--accent-rosa); border-radius: 8px; border: 2px solid var(--black); box-shadow: 4px 4px 0px var(--black); max-width: 600px;">
+      <h3 id="success-title">¡Preparando tu pedido! 📦</h3>
+      <p id="success-message" style="font-size: 1.2rem; margin-top: 10px;">Esperá un momento...</p>
+      <div id="transfer-details" style="display: none; text-align: left; background: var(--white); padding: 15px; border: 2px solid var(--black); margin-top: 15px; border-radius: 4px;">
+        <p><strong>Alias:</strong> FUDI.CLUB.OK</p>
+        <p><strong>CBU:</strong> 0000000000000000000000</p>
       </div>
-    </section>
+      <p id="transfer-instructions" style="display: none; margin-top: 15px; font-size: 1rem; text-align: center;">
+        <a href="https://wa.me/5491100000000?text=Hola,%20adjunto%20comprobante%20de%20mi%20Mistery%20Box" target="_blank" class="checkout-btn" style="display: inline-block; background-color: #25D366; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border: 2px solid var(--black); border-radius: 4px;">
+          Enviar comprobante por WhatsApp
+        </a>
+        <br><small style="display: block; margin-top: 10px;">(O envíalo manualmente al +54 9 11 0000-0000)</small>
+      </p>
+    </div>
+  </section>
   </main>
 
   <!-- Floating Urgency Stock Widget -->

@@ -422,6 +422,7 @@ export function initCheckoutFlow() {
         console.warn("Falta VITE_SUPABASE_ANON_KEY en .env. Simulando compra (Mock)...");
         setTimeout(() => {
           paymentForm.style.display = 'none';
+          document.getElementById('expandedCheckout').style.display = 'none';
           const successModal = document.getElementById('success-modal');
           const successTitle = document.getElementById('success-title');
           const successMsg = document.getElementById('success-message');
@@ -465,6 +466,7 @@ export function initCheckoutFlow() {
         if (!res.ok) throw new Error(data.error || 'Error procesando la orden');
         
         paymentForm.style.display = 'none';
+        document.getElementById('expandedCheckout').style.display = 'none';
         
         const successModal = document.getElementById('success-modal');
         const successTitle = document.getElementById('success-title');
