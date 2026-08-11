@@ -279,7 +279,8 @@ export function initCheckoutFlow() {
       }
     };
 
-    btnQtyMinus.addEventListener('click', () => {
+    btnQtyMinus.addEventListener('click', (e) => {
+      e.preventDefault();
       let current = parseInt(qtyDisplay.innerText, 10) || 1;
       if (current > 1) {
         current--;
@@ -288,7 +289,8 @@ export function initCheckoutFlow() {
         updateCheckoutTotals();
       }
     });
-    btnQtyPlus.addEventListener('click', () => {
+    btnQtyPlus.addEventListener('click', (e) => {
+      e.preventDefault();
       let current = parseInt(qtyDisplay.innerText, 10) || 1;
       if (current < 3) {
         current++;
