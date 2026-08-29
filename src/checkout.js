@@ -77,7 +77,7 @@ export function updateCheckoutTotals() {
   }
   
   const qtyDisplay = document.getElementById('qty-display');
-  const userQty = qtyDisplay ? (parseInt(qtyDisplay.innerText, 10) || 1) : 1;
+  const userQty = qtyDisplay ? (parseInt(qtyDisplay.textContent, 10) || 1) : 1;
   
   const subtotal = pricePerBox * boxesCount * userQty;
   const totalBoxes = boxesCount * userQty;
@@ -281,20 +281,20 @@ export function initCheckoutFlow() {
 
     btnQtyMinus.addEventListener('click', (e) => {
       e.preventDefault();
-      let current = parseInt(qtyDisplay.innerText, 10) || 1;
+      let current = parseInt(qtyDisplay.textContent, 10) || 1;
       if (current > 1) {
         current--;
-        qtyDisplay.innerText = current;
+        qtyDisplay.textContent = current;
         updateQtyButtons(current);
         updateCheckoutTotals();
       }
     });
     btnQtyPlus.addEventListener('click', (e) => {
       e.preventDefault();
-      let current = parseInt(qtyDisplay.innerText, 10) || 1;
+      let current = parseInt(qtyDisplay.textContent, 10) || 1;
       if (current < 3) {
         current++;
-        qtyDisplay.innerText = current;
+        qtyDisplay.textContent = current;
         updateQtyButtons(current);
         updateCheckoutTotals();
       }
@@ -402,7 +402,7 @@ export function initCheckoutFlow() {
       const hasAllergy = document.getElementById('allergyToggle').checked;
       const allergies = hasAllergy ? allergiesText : '';
       const qtyDisplay = document.getElementById('qty-display');
-      const orderQuantity = qtyDisplay ? (parseInt(qtyDisplay.innerText, 10) || 1) : 1;
+      const orderQuantity = qtyDisplay ? (parseInt(qtyDisplay.textContent, 10) || 1) : 1;
 
       const payload = {
         email,
