@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fudi Club | Mistery Box</title>
+  <!-- Fonts: Corben para la vibra Cooper BT, Space Grotesk para cuerpo, VT323 para números -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=VT323&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <!-- Overlay/Grain Effect -->
+  <div class="grain-overlay"></div>
+
+  <!-- Ticker / Marquee -->
+  <div class="ticker">
+    <div class="ticker-content">
+      <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO
+        30 BOXES
+        AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
+      <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO
+        30 BOXES
+        AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="neo-header">
+    <a href="/" class="logo-container">
+      <img src="/imagenes/Logo-blanco-plano.png" alt="Fudi Club Logo" class="header-logo" />
+    </a>
+    <nav class="header-nav">
+      <div class="social-links">
+        <a href="https://www.instagram.com/somosfudiclub/" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@somosfudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+      <a href="#registro" class="cta-button cta-green inline-header-btn">Unite
+        Ahora</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero neo-border-section">
+      <div class="hero-content">
+        <!-- Logo de Fudi Club con relieve (reemplazar src con imagen real) -->
+        <div class="hero-main-row animate-fade-in-up">
+          <img src="/imagenes/Logo%20Turquesa%20sf.webp" alt="Fudi Club Logo" class="hero-logo-relief" />
+          <div class="hero-text-col">
+            <h2 class="hero-title">Mistery Box</h2>
+            <p class="subtitle">Una nueva experiencia<br>cada mes</p>
+          </div>
+        </div>
+        <div class="box-container" id="boxContainer">
+          <!-- 3D Box Image Placeholder. Reemplaza src con image9.webp -->
+          <div class="mystery-box">
+            <img src="/imagenes/Mockup%20caja.webp" alt="Fudi Club Box" class="box-image" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What is Fudi Club Section -->
+    <section class="about-fudi neo-border-section" style="background-color: var(--bg-turquesa); text-align: center;">
+      <h2 class="section-title" style="margin-bottom: 20px;">Qué es Fudi Club?</h2>
+      
+      <div class="about-box">
+        <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 20px;">
+          <strong>Fudi Club</strong> es tu pasaporte mensual a los mejores sabores. Cada mes armamos una selección secreta pensada para vos, que incluye:
+        </p>
+        <ul style="list-style: none; padding-left: 0; font-size: 1.15rem; line-height: 1.6; margin-bottom: 25px;">
+          <li style="margin-bottom: 10px;">🔥 <strong>Snacks virales:</strong><span class="mobile-break"></span> Eso que es tendencia y todos quieren probar.</li>
+          <li style="margin-bottom: 10px;">🌍 <strong>Golosinas importadas:</strong><span class="mobile-break"></span> Sabores de todo el mundo, difíciles de conseguir.</li>
+          <li style="margin-bottom: 10px;">📺 <strong>Joyitas retro:</strong><span class="mobile-break"></span> Dulces que te desbloquean recuerdos de la infancia.</li>
+          <li style="margin-bottom: 10px;">🍬 <strong>Clásicos de siempre:</strong><span class="mobile-break"></span> Los favoritos locales que nunca fallan.</li>
+        </ul>
+        <p style="font-size: 1.2rem; line-height: 1.6; margin: 0;">
+          Más allá de lo raro que sea un producto, nuestro verdadero diferencial es la <strong>cuidadosa curaduría</strong> de cada caja y la experiencia única de descubrir y disfrutar cosas nuevas. <br><br><strong>¡Queremos sorprenderte!</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="how-it-works neo-border-section">
+      <h2 class="section-title">Cómo funciona?</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Unite al club</h3>
+          <p class="step-desc">Asegurá tu lugar eligiendo una compra única o nuestro Plan Trimestral.<br><br>¡Apurate porque los cupos de cada mes son súper limitados!</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Preparamos tu box</h3>
+          <p class="step-desc">Cada mes armamos una selección que mezcla productos:<br><br>importados, retro, virales y esos clásicos de siempre que tanto te gustan.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Recibí y disfrutá</h3>
+          <p class="step-desc">A partir del 15 de cada mes enviamos la caja directo a tu puerta.<br><br>Preparate para la mejor parte: el unboxing, la sorpresa y descubrir tu nuevo snack favorito.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Teaser Section -->
+    <section class="teaser neo-border-section" id="teasers" style="background-color: var(--bg-lila);">
+      <h2 class="section-title" style="margin-bottom: 25px;">Lo que podés recibir</h2>
+      <div class="teaser-grid">
+        <!-- Item 1 -->
+        <div class="teaser-card neo-border">
+          <div class="mystery-item-container">
+            <img src="/imagenes/hubba.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            <img src="/imagenes/hubba.webp" class="mystery-reveal" alt="Producto Revelado" />
+          </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="teaser-card neo-border">
+          <div class="mystery-item-container">
+            <img src="/imagenes/twix.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            <img src="/imagenes/twix.webp" class="mystery-reveal" alt="Producto Revelado" />
+          </div>
+        </div>
+        <!-- Item 3 -->
+        <div class="teaser-card neo-border">
+          <div class="mystery-item-container">
+            <img src="/imagenes/oreo.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            <img src="/imagenes/oreo.webp" class="mystery-reveal" alt="Producto Revelado" />
+          </div>
+        </div>
+        <!-- Item 4 -->
+        <div class="teaser-card neo-border">
+          <div class="mystery-item-container">
+            <img src="/imagenes/takis.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
+            <img src="/imagenes/takis.webp" class="mystery-reveal" alt="Producto Revelado" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Single Disclaimer at the bottom -->
+      <div class="disclaimer-label master-disclaimer">PRODUCTOS DE REFERENCIA - VARIAN CADA MES</div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section neo-border-section" id="faq">
+      <h2 class="section-title">Preguntas Frecuentes</h2>
+      <div class="faq-container">
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Cuándo me llega la caja?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Los despachos se realizan los días 15 de cada mes. La demora es de 3 a 7 días hábiles según tu zona de envío.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Qué pasa si un producto llega dañado?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Tenés hasta 48hs desde que recibís la caja para reportarlo. Escribinos a nuestro WhatsApp de soporte con fotos del producto y lo solucionaremos.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Es una suscripción que se renueva sola?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No. Pagás por única vez por 1 caja, o elegís el Plan Trimestral (3 cajas, 1 por mes) que se cobra de una vez. No guardamos tus tarjetas ni hacemos débitos sorpresa.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Puedo elegir qué trae la caja? / ¿Qué incluye?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Es una Mistery Box. ¡Esa es la gracia! Es un secreto, pero siempre incluimos entre 5 y 8 productos geniales. Mezclamos snacks importados tendencia con esas golosinas de tu infancia que te desbloquean recuerdos, y sorpresas increíbles que no vas a encontrar en ningún otro lado.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿En qué zonas hacen envíos?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Por ahora hacemos envíos en todo CABA, GBA Norte, Sur, Oeste y algunas zonas de GBA Extendido. El costo de envío se calculará automáticamente cuando ingreses tu Código Postal en el formulario de pago.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout / Security Filter -->
+    <section class="checkout neo-border-section" id="registro">
+      <h2 class="section-title">Unite al club</h2>
+
+      <!-- Email pre-registro + CTA -->
+      <div id="cta-join-wrapper">
+        <div class="pre-register-box">
+          <p class="pre-register-desc" style="font-size: 1.2rem; margin-bottom: 5px; font-weight: 500; text-align: center;">
+            Regístrate con tu email y obten tu box de <strong id="dynamic-intro-month">...</strong>. <br>
+            <span style="font-size: 1rem; font-weight: normal;">(Cupos limitados cada mes)</span>
+          </p>
+          <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico"
+            autocomplete="email">
+          <button class="cta-button massive cta-green" id="btn-join-club" disabled>¡Quiero unirme al club!</button>
+        </div>
+      </div>
+
+      <!-- Expanded Checkout Card — oculto hasta que se clickea el botón -->
+      <div class="checkout-expanded-card neo-border" id="expandedCheckout">
+        <!-- Opciones cuando no hay stock -->
+        <div id="sold-out-options" class="sold-out-options" style="display: none;">
+          <h3 id="sold-out-title">...</h3>
+          <p id="sold-out-desc">...</p>
+          <div class="sold-out-buttons">
+            <button id="btn-preorder" class="cta-button cta-green">Sí, quiero mi box de <span id="preorder-month">...</span></button>
+          </div>
+        </div>
+        <form class="payment-form" id="paymentForm">
+
+          <!-- 1. PLANES DE COMPRA — pieza focal -->
+          <div class="plan-focal-section">
+            <p class="plan-focal-label">Elegí tu plan</p>
+            <div class="purchase-options focal">
+              <label class="radio-neo plan-card focal-card" id="plan-card-one">
+                <input type="radio" name="plan" value="one-time" checked>
+                <div class="radio-neo-content">
+                  <span class="plan-name">Compra Única</span>
+                  <span class="plan-price focal-price">$35.000</span>
+                </div>
+              </label>
+              <label class="radio-neo plan-card focal-card" id="plan-card-quarterly">
+                <input type="radio" name="plan" value="quarterly">
+                <div class="plan-badge-sticker">⭐ MEJOR PRECIO</div>
+                <div class="radio-neo-content">
+                  <span class="plan-name">Plan Trimestral (Pago Único)</span>
+                  <span class="plan-price focal-price">$33.250 <small>c/u</small></span>
+                  <span class="plan-tag">Ahorrás $5.250 por ciclo</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Selector de Cantidad -->
+          <div class="form-section quantity-section" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="modal-subtitle" style="margin: 0;">Cantidad de Boxes</h3>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <button type="button" id="btn-qty-minus" class="cta-button" style="padding: 5px 15px; min-width: 40px; font-size: 1.2rem; opacity: 0.5; pointer-events: none; background-color: #ccc; border-color: #999;">-</button>
+              <span id="qty-display" style="font-size: 1.2rem; font-weight: bold;">1</span>
+              <button type="button" id="btn-qty-plus" class="cta-button" style="padding: 5px 15px; min-width: 40px; font-size: 1.2rem;">+</button>
+            </div>
+          </div>
+
+          <!-- Separator -->
+          <div class="checkout-divider">
+            <span>Tus datos y pago</span>
+          </div>
+
+          <!-- 2. DATOS PERSONALES -->
+          <div class="form-section">
+            <h3 class="modal-subtitle">Tus Datos</h3>
+            <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico"
+              required autocomplete="email">
+            <input type="text" class="neo-input" placeholder="Nombre completo" required>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
+                required style="flex: 2;">
+              <input type="text" id="cpInput" class="neo-input" placeholder="CP" required maxlength="8" style="flex: 1;">
+            </div>
+
+
+            <!-- Allergy Toggle -->
+            <div class="toggle-group neo-border" style="margin-top: 15px;">
+              <label class="toggle-control">
+                <input type="checkbox" name="hasAllergy" id="allergyToggle">
+                <span class="control"></span>
+                <span class="label">Sos alérgico a algún alimento?</span>
+              </label>
+            </div>
+            <div class="allergy-details" id="allergyDetails">
+              <input type="text" name="allergyInfo" class="neo-input" placeholder="Contanos a qué sos alérgico...">
+              <div class="allergy-warning neo-border">
+                <label style="display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: 0.9rem;">
+                  <input type="checkbox" id="allergyConsent" style="margin-top: 4px;">
+                  <span>Entiendo que Fudi Club intenta adaptar la caja, pero no puede garantizar la ausencia de trazas cruzadas de alérgenos. Me comprometo a revisar las etiquetas de los productos originales antes de consumirlos.</span>
+                </label>
+              </div>
+            </div>
+            <p class="checkout-subtitle-inline">No te diremos qué hay en tu box, pero intentaremos hacerlo único para vos.</p>
+
+          </div>
+
+          <!-- 3. MÉTODO DE PAGO -->
+          <div class="form-section" style="margin-bottom: 5px;">
+            <h3 class="modal-subtitle">Método de Pago</h3>
+            <div class="purchase-options focal" style="margin-top: 10px;">
+              <label class="radio-neo plan-card focal-card selected" id="method-card-transfer">
+                <input type="radio" name="payment_method" value="transfer" checked>
+                <div class="radio-neo-content">
+                  <span class="plan-name">Transferencia Bancaria</span>
+                  <span class="plan-tag">Alias / CBU</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Edición a recibir -->
+          <div class="current-edition-banner neo-border">
+            <span class="edition-label">Edición a recibir:</span>
+            <span class="edition-value" id="current-edition-display">Calculando...</span>
+          </div>
+
+          <!-- Order Summary / Totals -->
+          <div class="checkout-summary neo-border">
+            <div class="summary-line">
+              <span id="summary-subtotal-label">Subtotal (1 Mistery Box):</span>
+              <span id="summary-subtotal">$0</span>
+            </div>
+            <div class="summary-line">
+              <span id="summary-delivery-label">Envío:</span>
+              <span id="summary-delivery">$0</span>
+            </div>
+            <div class="summary-line total-line">
+              <span>Total:</span>
+              <span id="summary-total">$0</span>
+            </div>
+          </div>
+
+          <div class="modal-disclaimer neo-border">
+            <p><strong>⚠️ Importante:</strong> La fecha de lanzamiento es el <strong>15 de cada mes</strong>. El tiempo
+              de entrega es de <strong>hasta 2 días hábiles</strong> posteriores, dependiendo de tu zona.</p>
+          </div>
+
+          <button type="submit" class="cta-button massive cta-green">Ver datos para transferir</button>
+        </form>
+    </div>
+
+    <!-- Success Modal (Moved outside) -->
+    <div id="success-modal" class="success-modal" style="display: none; text-align: center; margin: 20px auto; padding: 30px; background-color: var(--accent-rosa); border-radius: 8px; border: 2px solid var(--black); box-shadow: 4px 4px 0px var(--black); max-width: 600px;">
+      <h3 id="success-title">¡Preparando tu pedido! 📦</h3>
+      <p id="success-message" style="font-size: 1.2rem; margin-top: 10px;">Esperá un momento...</p>
+      <div id="transfer-details" style="display: none; text-align: left; background: var(--white); padding: 15px; border: 2px solid var(--black); margin-top: 15px; border-radius: 4px;">
+        <p><strong>Alias:</strong> FUDI.CLUB.OK</p>
+        <p><strong>CBU:</strong> 0000000000000000000000</p>
+      </div>
+      <p id="transfer-instructions" style="display: none; margin-top: 15px; font-size: 1rem; text-align: center;">
+        <a href="https://wa.me/5491100000000?text=Hola,%20adjunto%20comprobante%20de%20mi%20Mistery%20Box" target="_blank" class="checkout-btn" style="display: inline-block; background-color: #25D366; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border: 2px solid var(--black); border-radius: 4px;">
+          Enviar comprobante por WhatsApp
+        </a>
+        <br><small style="display: block; margin-top: 10px;">(O envíalo manualmente al +54 9 11 0000-0000)</small>
+      </p>
+    </div>
+  </section>
+  </main>
+
+  <!-- Floating Urgency Stock Widget -->
+  <div class="stock-widget-floating neo-border">
+    <div class="stock-info">
+      <span class="stock-number">30</span>
+      <span class="stock-text">Boxes disponibles<br><strong style="font-size: 1.3rem;">Agosto</strong></span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="neo-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="/imagenes/Logo-blanco-plano.png" alt="Fudi Club Logo" />
+      </div>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/somosfudiclub/" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@somosfudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+      <p class="footer-copy">&copy; 2026 Fudi Club. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Ultra-compact Retro Music Player -->
+  <div class="retro-player neo-border" id="retroPlayer">
+    <div class="player-header">
+      <span class="player-title">FUDI_CLUB_RADIO<span class="blink">_</span></span>
+      <button class="player-min-btn" id="playerMinBtn">-</button>
+    </div>
+    <div class="player-controls">
+      <button class="ctrl-btn" id="prevBtn" title="Previous Track"><i class="fas fa-step-backward"></i></button>
+      <button class="ctrl-btn play-btn" id="playPauseBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
+      <button class="ctrl-btn" id="stopBtn" title="Stop"><i class="fas fa-stop"></i></button>
+      <button class="ctrl-btn" id="nextBtn" title="Next Track"><i class="fas fa-step-forward"></i></button>
+    </div>
+    <div class="player-volume">
+      <i class="fas fa-volume-down" style="color:#000;"></i>
+      <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.6">
+      <i class="fas fa-volume-up" style="color:#000;"></i>
+    </div>
+    <audio id="bgMusic">
+      <!-- Tracks are dynamically added via Javascript to loop endlessly -->
+    </audio>
+  </div>
+
+  <!-- Draggable Stickers Container (Appended via JS) -->
+  <div id="stickers-layer"></div>
+
+  
+  <a href="https://wa.me/1234567890" target="_blank" class="whatsapp-support" aria-label="Soporte por WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="whatsapp-text" style="margin-left: 8px;">Soporte</span>
+  </a>
+
+  <!-- Custom Script -->
+  <script type="module" src="/main.js?v=2"></script>
+  <script type="module">
+    import { initCheckoutFlow } from './src/checkout.js?v=3';
+    import { initDraggableStickers } from './src/stickers.js';
+    import { initRetroPlayer } from './src/audio.js';
+    import { fetchStock } from './src/api.js';
+    import { initMysteryReveal, initFAQ, initDynamicHeader } from './main.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchStock();
+      initDraggableStickers();
+      initCheckoutFlow();
+      initDynamicHeader();
+      initMysteryReveal();
+      initFAQ();
+      initRetroPlayer();
+    });
+  </script>
+</body>
+
+</html>
