@@ -320,7 +320,7 @@ h1, h2, h3 {
 
 .box-image {
   display: block;
-  width: 840px; /* Escala 3x (antes 280px) */
+  width: 450px; /* Reducido desde 840px para que no ocupe tanto espacio */
   max-width: 100%; /* Asegura que no rompa el diseño en móviles */
   margin: 0 auto;
   height: auto;
