@@ -116,7 +116,7 @@
       <h1 class="landing-title">Próximamente</h1>
       <p class="landing-subtitle">El misterio está por revelarse.<br>Preparate para una experiencia única cada mes.</p>
       
-      <form id="subscribe-form" style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin-bottom: 25px;" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte! Te avisaremos muy pronto.'); this.reset();">
+      <form id="subscribe-form" style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin-bottom: 25px;">
         <input type="email" class="neo-input" placeholder="Tu correo electrónico" required style="width: 100%; box-sizing: border-box; text-align: center;">
         <button type="submit" class="cta-button cta-green" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 12px 10px;">Avisame del lanzamiento</button>
       </form>
@@ -134,6 +134,47 @@
     import { initDraggableStickers } from './src/stickers.js';
     document.addEventListener('DOMContentLoaded', () => {
       initDraggableStickers();
+      
+      const form = document.getElementById('subscribe-form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const emailInput = form.querySelector('input[type="email"]');
+          const email = emailInput.value.trim();
+          if (!email) return;
+
+          const btn = form.querySelector('button');
+          const originalText = btn.innerText;
+          btn.innerText = 'Enviando...';
+          btn.disabled = true;
+
+          try {
+            const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+            const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
+            
+            // Llama a la Edge Function igual que hacía app.html antes
+            await fetch(`${functionsUrl}/join-waitlist`, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify({ email: email })
+            });
+            
+            // Guarda en localStorage como querías
+            localStorage.setItem('fudiclub_prereg_email', email);
+            
+            alert('¡Gracias por suscribirte! Te avisaremos muy pronto.');
+            form.reset();
+          } catch (err) {
+            console.error('[Waitlist] Error:', err);
+            alert('Hubo un problema de conexión. Intentá de nuevo por favor.');
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
+        });
+      }
     });
   </script>
 </body>

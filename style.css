@@ -229,17 +229,17 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   overflow: visible;
-  padding: 40px 20px; /* Padding equilibrado */
+  padding: 25px 15px; /* Padding reducido */
 }
 
 .hero-main-row {
   display: flex;
   align-items: center; /* Centrar verticalmente logo y texto */
   justify-content: center;
-  gap: 40px; /* Espacio entre logo y texto */
+  gap: 25px; /* Espacio reducido entre logo y texto */
   width: 100%;
-  max-width: 1000px;
-  margin-bottom: 30px;
+  max-width: 900px; /* Reducido */
+  margin-bottom: 20px; /* Reducido */
 }
 
 .hero-text-col {
@@ -248,8 +248,8 @@ h1, h2, h3 {
   align-items: center;
   text-align: center;
   align-self: flex-end; /* Move to the bottom of the row */
-  padding-bottom: 20px; /* Give it some breathing room from the box below */
-  margin-bottom: 30px;
+  padding-bottom: 15px; /* Give it some breathing room from the box below */
+  margin-bottom: 20px; /* Reducido */
 }
 
 /* Animations */
@@ -269,9 +269,9 @@ h1, h2, h3 {
 }
 
 .hero-logo-relief {
-  max-width: 400px; /* Ajustado para el layout de dos columnas */
+  max-width: 300px; /* Ajustado para hacerlo más chico */
   margin: 0;
-  filter: drop-shadow(6px 6px 0px var(--black));
+  filter: drop-shadow(5px 5px 0px var(--black));
   transform: rotate(-3deg);
   transition: transform 0.2s ease;
 }
@@ -281,22 +281,22 @@ h1, h2, h3 {
 }
 
 .hero-title {
-  font-size: clamp(2.2rem, 6vw + 1rem, 3.5rem);
+  font-size: clamp(2rem, 5vw + 1rem, 3rem); /* Reducido */
   color: var(--white);
   text-shadow: var(--shadow-text);
   -webkit-text-stroke: 2px var(--black);
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   transform: rotate(-2deg);
   display: block;
 }
 
 .subtitle {
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 3vw + 0.5rem, 1.3rem);
+  font-size: clamp(1rem, 2.5vw + 0.5rem, 1.15rem); /* Reducido */
   font-weight: 600;
   text-align: center;
   margin: 0;
-  max-width: 400px;
+  max-width: 380px;
   width: 100%;
 }
 
@@ -1357,7 +1357,7 @@ textarea.neo-input {
   }
   
   .hero-logo-relief {
-    max-width: 240px;
+    max-width: 200px;
     width: auto;
     margin: 0 auto;
     filter: drop-shadow(4px 4px 0px var(--black));
