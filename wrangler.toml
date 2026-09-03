@@ -1,3 +1,7 @@
 name = "fudi-club"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-03-20"
+
+[env.production]
+# Cuando se despliegue en la rama principal, usará este entorno.
+pages_build_output_dir = "dist"
