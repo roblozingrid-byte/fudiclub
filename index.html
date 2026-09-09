@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fudi Club | Próximamente</title>
   
@@ -98,6 +98,49 @@
         transform: translateY(0);
       }
     }
+    /* Modal Styles */
+    .custom-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .custom-modal {
+      background: var(--bg-rosa, #FFB7D5);
+      border: 3px solid var(--black, #000);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0px var(--black, #000);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .custom-modal-overlay.active .custom-modal {
+      transform: translateY(0);
+    }
+    .custom-modal h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .custom-modal p {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -131,11 +174,44 @@
 
   <div id="stickers-layer"></div>
 
+  <!-- Custom Modal -->
+  <div id="custom-modal-overlay" class="custom-modal-overlay">
+    <div class="custom-modal">
+      <h3 id="custom-modal-title">Título</h3>
+      <p id="custom-modal-message">Mensaje</p>
+      <button id="custom-modal-btn" class="cta-button cta-amarillo" style="font-size: 1rem; padding: 10px 20px;">Cerrar</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initDraggableStickers } from './src/stickers.js';
     document.addEventListener('DOMContentLoaded', () => {
       initDraggableStickers();
       
+      const modalOverlay = document.getElementById('custom-modal-overlay');
+      const modalTitle = document.getElementById('custom-modal-title');
+      const modalMessage = document.getElementById('custom-modal-message');
+      const modalBtn = document.getElementById('custom-modal-btn');
+
+      function showModal(title, message, isError = false) {
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        
+        // Cambiar color dependiendo del tipo de mensaje
+        const modalBox = modalOverlay.querySelector('.custom-modal');
+        if (isError) {
+          modalBox.style.background = 'var(--bg-amarillo, #FFF4BD)';
+        } else {
+          modalBox.style.background = 'var(--bg-rosa, #FFB7D5)';
+        }
+
+        modalOverlay.classList.add('active');
+      }
+
+      modalBtn.addEventListener('click', () => {
+        modalOverlay.classList.remove('active');
+      });
+
       const form = document.getElementById('subscribe-form');
       if (form) {
         form.addEventListener('submit', async (e) => {
@@ -150,26 +226,30 @@
           btn.disabled = true;
 
           try {
-            const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+            const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'https://oxoodwpkbprkyenxiqsf.supabase.co/functions/v1';
             const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
             const headers = { 'Content-Type': 'application/json' };
             if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
             
             // Llama a la Edge Function igual que hacía app.html antes
-            await fetch(`${functionsUrl}/join-waitlist`, {
+            const res = await fetch(`${functionsUrl}/join-waitlist`, {
               method: 'POST',
               headers: headers,
               body: JSON.stringify({ email: email })
             });
+
+            if (!res.ok) {
+              throw new Error('Error al enviar');
+            }
             
             // Guarda en localStorage como querías
             localStorage.setItem('fudiclub_prereg_email', email);
             
-            alert('¡Gracias por suscribirte! Te avisaremos muy pronto.');
+            showModal('¡Bienvenidx!', '¡Gracias por suscribirte! Te avisaremos muy pronto sobre el lanzamiento.', false);
             form.reset();
           } catch (err) {
             console.error('[Waitlist] Error:', err);
-            alert('Hubo un problema de conexión. Intentá de nuevo por favor.');
+            showModal('Ups...', 'Hubo un problema de conexión. Intentá de nuevo por favor.', true);
           } finally {
             btn.innerText = originalText;
             btn.disabled = false;
