@@ -1,0 +1,8 @@
+{
+  "type": "AAAA",
+  "name": "@",
+  "content": "100::",
+  "ttl": 1,
+  "proxied": true,
+  "comment": "Cloudflare Workers proxy - apex"
+}

@@ -1,0 +1,4 @@
+{
+  "pattern": "fudiclub.shop/*",
+  "script": "fudi-club"
+}
