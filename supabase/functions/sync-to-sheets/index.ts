@@ -59,6 +59,12 @@ serve(async (req: Request) => {
     let range = "";
     let values: any[] = [];
 
+    // Helper para formatear fechas
+    const formatDate = (isoString) => {
+      const date = isoString ? new Date(isoString) : new Date();
+      return date.toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' });
+    };
+
     if (table === "customers") {
       range = `${tabCustomers}!A:G`;
       // Mapeo basado en las columnas definidas en el Excel:
@@ -71,7 +77,7 @@ serve(async (req: Request) => {
           record.whatsapp || record.phone || "",
           record.address || record.zone || "",
           record.allergies || record.restrictions || "",
-          record.created_at || new Date().toISOString(),
+          formatDate(record.created_at),
         ],
       ];
     } else if (table === "orders") {
@@ -80,25 +86,25 @@ serve(async (req: Request) => {
       // ID Pedido, Fecha Compra, Cliente, Mes Asignado, Estado Pago, Método Pago, Total, Estado Envío, Tracking
       values = [
         [
-          record.friendly_id || record.id || "",
-          new Date(record.created_at || new Date()).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }),
-          record.customer_name || record.customer_id || "", 
-          (record.edition || "").replace('Edición ', ''),
-          record.status || "pending",
+          record.id || "",
+          formatDate(record.created_at),
+          record.customer_id || record.customer_name || "", // Idealmente resolver nombre o dejar ID
+          record.edition || record.month || "",
+          record.payment_status || "pending",
           record.payment_method || "",
-          record.total || 0,
-          "pending",
-          "",
-          record.shipping_address || "",
-          record.customer_email || ""
+          record.total_amount || 0,
+          record.shipping_status || "pending",
+          record.tracking_code || "",
         ],
       ];
     } else if (table === "waitlist") {
-      range = `${tabLeads}!A:B`;
+      const tabWaitlist = Deno.env.get("SHEETS_TAB_WAITLIST") || "Waitlist (Backup)";
+      range = `${tabWaitlist}!A:C`;
       values = [
         [
+          record.id || "",
           record.email || "",
-          new Date(record.created_at || new Date()).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }),
+          formatDate(record.created_at),
         ],
       ];
     } else {
