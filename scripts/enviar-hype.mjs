@@ -1,0 +1,83 @@
+﻿import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, '../.env.prod') });
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const resendApiKey = process.env.RESEND_API_KEY;
+const fromEmail = process.env.RESEND_FROM_EMAIL || 'Fudi Club <hola@fudiclub.shop>';
+
+if (!supabaseUrl || !supabaseKey || !resendApiKey) {
+  console.error("Faltan credenciales en .env.prod");
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+const resend = new Resend(resendApiKey);
+
+const htmlTemplate = \
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#D7BEE7; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#D7BEE7; padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" max-width="600" border="0" cellspacing="0" cellpadding="0" style="max-width:600px; background-color:#ffffff; border:3px solid #000; border-radius:12px; box-shadow:6px 6px 0px #000;">
+          <tr>
+            <td style="padding:40px 30px;">
+              <h1 style="color:#000; font-size:24px; text-align:center; margin-bottom: 25px;">¿Te acordás de la emoción de abrir algo y no saber qué te iba a tocar?</h1>
+              
+              <p style="font-size:16px; color:#333; line-height:1.6; margin-bottom: 20px;">
+                Faltan solo 24 horas para revivir eso. Mañana lanzamos oficialmente nuestra primera <strong>Mystery Box</strong>, armada a mano y pensada para que te des un lujo súper nostálgico.
+              </p>
+              
+              <div style="background-color:#FFF4BD; padding:20px; border-radius:8px; border:2px solid #000; margin:30px 0; text-align:center;">
+                <strong>⚠️ Atent@ al mail de mañana, vas a tener prioridad.</strong>
+              </div>
+              
+              <p style="font-size:16px; color:#333; line-height:1.6; text-align:center; margin-top: 30px;">
+                Fudi Club 👾<br>
+                <em>La nostalgia tiene un nuevo sabor.</em>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+\;
+
+async function main() {
+  console.log("Obteniendo lista de correos desde Supabase...");
+  const { data, error } = await supabase.from('waitlist').select('email');
+  if (error) { console.error("Error:", error); return; }
+  if (!data || data.length === 0) { console.log("No hay correos en la lista."); return; }
+
+  const uniqueEmails = [...new Set(data.map(r => r.email.toLowerCase().trim()))];
+  console.log(\Se enviará a \ personas.\);
+
+  const emailsToSend = uniqueEmails.map(email => ({
+    from: fromEmail,
+    to: [email],
+    subject: "Mañana te devolvemos un pedacito de tu infancia 🕹️",
+    html: htmlTemplate
+  }));
+  
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < emailsToSend.length; i += BATCH_SIZE) {
+    const batch = emailsToSend.slice(i, i + BATCH_SIZE);
+    console.log(\Enviando lote \ de \...\);
+    const { error: resendError } = await resend.batch.send(batch);
+    if (resendError) console.error("Error de Resend:", resendError);
+    else console.log("Lote enviado correctamente.");
+  }
+  console.log("¡Correo de Hype enviado con éxito!");
+}
+main();
