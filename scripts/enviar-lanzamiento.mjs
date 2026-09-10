@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -46,10 +46,20 @@ const htmlTemplate = \
                 </a>
               </div>
               
-              <p style="font-size:16px; color:#333; line-height:1.6; text-align:center; margin-top: 30px;">
-                Fudi Club 👾<br>
-                <em>La nostalgia tiene un nuevo sabor.</em>
-              </p>
+              <div style="text-align:center; margin-top: 30px;">
+                <img src="https://fudiclub.shop/imagenes/Logo-Plano-lila.png" alt="Fudi Club" width="150" style="max-width:100%; height:auto; display:block; margin:0 auto;" />
+                <p style="font-size:16px; color:#333; line-height:1.6; margin-top: 10px; font-style:italic;">
+                  Una experiencia nueva cada mes
+                </p>
+              </div>
+
+              <div style="text-align:center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <p style="font-size:11px; color:#999; line-height:1.4; margin:0;">
+                  Fudi Club &bull; Buenos Aires, Argentina<br>
+                  Recibiste este correo porque te uniste a nuestra lista VIP.<br>
+                  Si no querés recibir más correos, podés <a href="mailto:hola@fudiclub.shop?subject=Desuscribirme" style="color:#999; text-decoration:underline;">desuscribirte acá</a>.
+                </p>
+              </div>
             </td>
           </tr>
         </table>
