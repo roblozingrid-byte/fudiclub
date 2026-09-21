@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2">
+  <link rel="manifest" href="/site.webmanifest?v=2">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fudi Club | Próximamente</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./style.css" />
+  
+  <style>
+    body {
+      background-color: var(--bg-turquesa, #7FE3D7);
+      margin: 0;
+      position: relative;
+      overflow-x: hidden; /* Permitimos scroll vertical si la pantalla es muy chica */
+      overflow-y: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .landing-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .landing-content {
+      z-index: 10;
+      background: var(--bg-lila, #D7BEE7);
+      padding: 30px; /* Reducido para que ocupe menos espacio vertical */
+      border: 3px solid var(--black, #000);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0px var(--black, #000);
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    .landing-logo {
+      max-width: 220px; /* Un poco más chico */
+      margin-bottom: 15px;
+      filter: drop-shadow(2px 2px 0px var(--black, #000));
+    }
+    .landing-title {
+      font-family: 'Corben', serif;
+      font-size: clamp(1.2rem, 7.5vw, 2.2rem);
+      margin-bottom: 5px;
+      color: var(--black, #000);
+      white-space: nowrap;
+    }
+    .landing-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+    }
+    /* El ticker ya tiene estilos en style.css, pero nos aseguramos que funcione bien aquí */
+    .ticker {
+      /* Eliminado position: absolute para que empuje el contenido hacia abajo y no lo tape */
+      width: 100%;
+      z-index: 100;
+      display: flex;
+    }
+    .ticker-content {
+      display: flex; /* Evita espacios en blanco inline */
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+    #stickers-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .draggable-sticker {
+      pointer-events: auto;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Modal Styles */
+    .custom-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .custom-modal {
+      background: var(--bg-rosa, #FFB7D5);
+      border: 3px solid var(--black, #000);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0px var(--black, #000);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .custom-modal-overlay.active .custom-modal {
+      transform: translateY(0);
+    }
+    .custom-modal h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .custom-modal p {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="grain-overlay"></div>
+  
+  <!-- Ticker con mensaje de próximamente -->
+  <div class="ticker">
+    <div class="ticker-content">
+      <span>MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub // MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub // MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub //&nbsp;</span>
+      <span>MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub // MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub // MISTERY BOX // PRÓXIMAMENTE // SEGUINOS EN REDES @somosfudiclub //&nbsp;</span>
+    </div>
+  </div>
+
+  <div class="landing-wrapper">
+    <div class="landing-content">
+      <img src="/imagenes/Logo Turquesa sf.webp" alt="Fudi Club Logo" class="landing-logo" onerror="this.src='/imagenes/Logo-blanco-plano.png'" />
+      <h1 class="landing-title">Próximamente</h1>
+      <p class="landing-subtitle">El misterio está por revelarse.<br>Preparate para una experiencia única cada mes.</p>
+      
+      <form id="subscribe-form" style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin-bottom: 25px;">
+        <input type="email" class="neo-input" placeholder="Tu correo electrónico" required style="width: 100%; box-sizing: border-box; text-align: center;">
+        <button type="submit" class="cta-button cta-green" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 12px 10px;">Avisame del lanzamiento</button>
+      </form>
+      
+      <div class="landing-socials" style="display: flex; justify-content: center; gap: 20px;">
+        <a href="https://www.instagram.com/somosfudiclub/" class="social-icon ig" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@somosfudiclub" class="social-icon tt" title="TikTok" style="background-color: var(--bg-amarillo);"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="stickers-layer"></div>
+
+  <!-- Custom Modal -->
+  <div id="custom-modal-overlay" class="custom-modal-overlay">
+    <div class="custom-modal">
+      <h3 id="custom-modal-title">Título</h3>
+      <p id="custom-modal-message">Mensaje</p>
+      <button id="custom-modal-btn" class="cta-button cta-amarillo" style="font-size: 1rem; padding: 10px 20px;">Cerrar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initDraggableStickers } from './src/stickers.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      initDraggableStickers();
+      
+      const modalOverlay = document.getElementById('custom-modal-overlay');
+      const modalTitle = document.getElementById('custom-modal-title');
+      const modalMessage = document.getElementById('custom-modal-message');
+      const modalBtn = document.getElementById('custom-modal-btn');
+
+      function showModal(title, message, isError = false) {
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        
+        // Cambiar color dependiendo del tipo de mensaje
+        const modalBox = modalOverlay.querySelector('.custom-modal');
+        if (isError) {
+          modalBox.style.background = 'var(--bg-amarillo, #FFF4BD)';
+        } else {
+          modalBox.style.background = 'var(--bg-rosa, #FFB7D5)';
+        }
+
+        modalOverlay.classList.add('active');
+      }
+
+      modalBtn.addEventListener('click', () => {
+        modalOverlay.classList.remove('active');
+      });
+
+      const form = document.getElementById('subscribe-form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const emailInput = form.querySelector('input[type="email"]');
+          const email = emailInput.value.trim();
+          if (!email) return;
+
+          const btn = form.querySelector('button');
+          const originalText = btn.innerText;
+          btn.innerText = 'Enviando...';
+          btn.disabled = true;
+
+          try {
+            const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'https://oxoodwpkbprkyenxiqsf.supabase.co/functions/v1';
+            const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
+            
+            // Llama a la Edge Function igual que hacía app.html antes
+            const res = await fetch(`${functionsUrl}/join-waitlist`, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify({ email: email })
+            });
+
+            if (!res.ok) {
+              throw new Error('Error al enviar');
+            }
+            
+            // Guarda en localStorage como querías
+            localStorage.setItem('fudiclub_prereg_email', email);
+            
+            showModal('¡Bienvenidx!', '¡Gracias por suscribirte! Te avisaremos muy pronto sobre el lanzamiento.', false);
+            form.reset();
+          } catch (err) {
+            console.error('[Waitlist] Error:', err);
+            showModal('Ups...', 'Hubo un problema de conexión. Intentá de nuevo por favor.', true);
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -12,6 +12,8 @@ export async function fetchStock() {
     const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     if (!anonKey) return;
     const res = await fetch(`${supabaseUrl}/rest/v1/orders?select=id`, {
+      method: 'GET',
+      cache: 'no-store',
       headers: {
         'apikey': anonKey,
         'Authorization': `Bearer ${anonKey}`
@@ -20,6 +22,10 @@ export async function fetchStock() {
     if (res.ok) {
       const orders = await res.json();
       AVAILABLE_STOCK = Math.max(0, 30 - orders.length);
+      const stockNum = document.getElementById('stock-number');
+      if (stockNum) {
+        stockNum.innerText = AVAILABLE_STOCK.toString();
+      }
     }
   } catch (e) {
     console.error("Error fetching stock dynamically", e);
