@@ -4,11 +4,12 @@ To make the Fudi Club mystery box more accessible and attractive to a broader au
 
 ## What Changes
 
-- **BREAKING**: Lower the base one-time box price hypothesis from $45,000 ARS to $35,000 - $39,000 ARS across business specifications, frontend checkout, and backend order creation.
-- Adjust the quarterly prepaid plan calculation to reflect the new discounted base price.
+- **BREAKING**: Set the base one-time box price hypothesis to $44,900 ARS, explicitly including Free Shipping for CABA and GBA.
+- Adjust the quarterly prepaid plan calculation to $127,900 ARS, displaying the total upfront cost prominently on the UI.
+- Update the product cost budget (COGS) allowance to up to $15,000 ARS per box.
 - Update the standard box configuration to a flexible range of between 6 and 10 items per box (with 10 as the maximum), giving curation flexibility for larger/premium items while protecting our ≥40% gross margin target without resorting to cheap filler products.
-- Standardize physical packaging around a 23x21.5x9cm white corrugated box ($925.44 ARS), customized monthly with a DIY colored cardstock belly band (e.g. 5x60cm strips cut from standard sheets), a logo sticker, interior tissue paper ($108 ARS), a gift sticker sheet, and a thank-you card.
-- Enclose the entire package in a 40x50 cm colored inviolable e-commerce bag (e.g., Lilac or Mint Green) to ensure a premium, branded unboxing experience starting at delivery.
+- Standardize physical packaging around a 23x21.5x9cm white corrugated box ($925.44 ARS), customized monthly with branding stickers (Logo $342 ARS, Sello $189 ARS) instead of a belly band. Interior includes tissue paper ($108 ARS), a gift sticker sheet ($517 ARS), a thank-you card ($375 ARS), and a member ID card ($167 ARS).
+- Enclose the entire package in a 40x50 cm colored inviolable e-commerce bag (e.g., Lilac or Mint Green) at $380 ARS to ensure a premium, branded unboxing experience starting at delivery.
 
 ## Capabilities
 

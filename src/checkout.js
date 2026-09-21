@@ -68,18 +68,21 @@ export function updateCheckoutTotals() {
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
   
-  let pricePerBox = 35000;
+  let subtotal = 0;
   let boxesCount = 1;
   
   if (isQuarterly) {
-    pricePerBox = 33250;
     boxesCount = 3;
+    subtotal = 127900;
+  } else {
+    boxesCount = 1;
+    subtotal = 44900;
   }
   
   const qtyDisplay = document.getElementById('qty-display');
   const userQty = qtyDisplay ? (parseInt(qtyDisplay.textContent, 10) || 1) : 1;
   
-  const subtotal = pricePerBox * boxesCount * userQty;
+  subtotal = subtotal * userQty;
   const totalBoxes = boxesCount * userQty;
   
   const cpInput = document.getElementById('cpInput');
@@ -87,14 +90,16 @@ export function updateCheckoutTotals() {
   const cp = parseInt(cpStr, 10) || 0;
   
   let deliveryFeePerMonth = 0;
-  let deliveryText = "A calcular";
+  let deliveryText = "Envío Gratis CABA y GBA";
+  let isValidZone = true;
 
-  if (cp >= 1000 && cp <= 1499) {
-    deliveryFeePerMonth = 2500;
-  } else if (cp >= 1500 && cp <= 1900) {
-    deliveryFeePerMonth = 4000;
+  if (cp >= 1000 && cp <= 1900) {
+    deliveryFeePerMonth = 0;
+    deliveryText = "¡Gratis!";
   } else if (cp > 0) {
-    deliveryFeePerMonth = 6000;
+    isValidZone = false;
+    deliveryFeePerMonth = 0;
+    deliveryText = "Fuera de zona (solo CABA/GBA)";
   }
 
   const totalDeliveryFee = deliveryFeePerMonth * totalBoxes;
@@ -102,17 +107,57 @@ export function updateCheckoutTotals() {
   if (deliveryFeePerMonth > 0) {
     deliveryText = `$${totalDeliveryFee.toLocaleString('es-AR')}`;
   }
+  
+  if (summaryDelivery) {
+    if (!isValidZone && cp > 0) {
+      summaryDelivery.style.color = 'red';
+      summaryDelivery.style.fontWeight = 'bold';
+    } else {
+      summaryDelivery.style.color = '';
+      summaryDelivery.style.fontWeight = '';
+    }
+  }
+
+  const btnSubmit = document.querySelector('#paymentForm button[type="submit"]');
+  if (btnSubmit) {
+    if (!isValidZone && cp > 0) {
+      btnSubmit.disabled = true;
+      btnSubmit.style.opacity = '0.5';
+    } else {
+      btnSubmit.disabled = false;
+      btnSubmit.style.opacity = '1';
+    }
+  }
  
   if (summarySubtotalLabel) {
-    summarySubtotalLabel.innerText = isQuarterly ? `Subtotal (${userQty} x Trimestral = ${totalBoxes} Boxes):` : `Subtotal (${totalBoxes} Mistery Box${totalBoxes > 1 ? 'es' : ''}):`;
+    summarySubtotalLabel.innerText = isQuarterly ? `Subtotal (${userQty} x Trimestral = ${totalBoxes} Boxes):` : `Subtotal (${totalBoxes} Mystery Box${totalBoxes > 1 ? 'es' : ''}):`;
   }
   if (summaryDeliveryLabel) {
-    summaryDeliveryLabel.innerText = isQuarterly ? `Envío (${totalBoxes} cajas):` : `Envío (${userQty} caja${userQty > 1 ? 's' : ''}):`;
+    summaryDeliveryLabel.innerText = isQuarterly ? `Envío (${totalBoxes} Boxes):` : `Envío (${userQty} Box${userQty > 1 ? 'es' : ''}):`;
   }
   
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
   summaryDelivery.innerText = deliveryText;
   summaryTotal.innerText = `$${(subtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
+  
+  const transferAmount = document.getElementById('transfer-amount');
+  if (transferAmount) {
+    transferAmount.innerText = `$${(subtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
+  }
+
+  const currentEditionDisplay = document.getElementById('current-edition-display');
+  if (currentEditionDisplay) {
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const baseEdition = calculateCurrentEdition();
+    const bIndex = months.indexOf(baseEdition);
+    if (isQuarterly) {
+      const m2 = months[(bIndex + 1) % 12];
+      const m3 = months[(bIndex + 2) % 12];
+      currentEditionDisplay.innerText = `${baseEdition}, ${m2} y ${m3}`;
+    } else {
+      currentEditionDisplay.innerText = baseEdition;
+    }
+  }
 }
 
 export function initCheckoutFlow() {
@@ -344,10 +389,39 @@ export function initCheckoutFlow() {
       const cpStr = cpInput.value.replace(/\D/g, '');
       const cp = parseInt(cpStr, 10) || 0;
       if (cpStr.length > 0) {
+        const emailField = document.getElementById('emailInput');
+        const userEmail = emailField ? emailField.value.trim() : '';
+
         posthog.capture('zone_validation', {
           zipCode: cpStr,
-          isValid: cp > 0
+          isValid: cp >= 1000 && cp <= 1900,
+          email: userEmail
         });
+        if (cp < 1000 || cp > 1900) {
+          const modal = document.getElementById('out-of-zone-modal');
+          if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+              modal.style.opacity = '1';
+              modal.children[0].style.transform = 'translateY(0)';
+            }, 10);
+          }
+        }
+      }
+    });
+  }
+
+  const closeZoneModalBtn = document.getElementById('close-zone-modal');
+  if (closeZoneModalBtn) {
+    closeZoneModalBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = document.getElementById('out-of-zone-modal');
+      if (modal) {
+        modal.style.opacity = '0';
+        modal.children[0].style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
       }
     });
   }

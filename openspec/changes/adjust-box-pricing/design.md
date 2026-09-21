@@ -7,8 +7,8 @@ To achieve this price reduction while maintaining our required gross margin (tar
 ## Goals / Non-Goals
 
 **Goals:**
-- Update the one-time box price hypothesis in business specifications and checkout calculations to $35,000 - $39,000 ARS.
-- Update the quarterly prepaid plan pricing to maintain the existing ≤5% per-box discount structure based on the new price point.
+- Update the one-time box price hypothesis in business specifications and checkout calculations to $44,900 ARS, explicitly including "Free Shipping" for CABA/GBA.
+- Update the quarterly prepaid plan pricing to $127,900 ARS, maintaining the ≤5% per-box discount structure based on the new price point.
 - Standardize the item count per box to a flexible range of between 6 and 10 items (with 10 as the maximum), allowing curation of larger/premium items while protecting unit economics (>50% margin) at the lower price point without cheap filler candy.
 - Standardize physical packaging dimensions around 23x21.5x9cm to optimize fulfillment density, product protection, and shipping volumetric costs.
 
@@ -24,12 +24,12 @@ To achieve this price reduction while maintaining our required gross margin (tar
 - **Alternatives Considered:** A fixed count of 10 items was rejected due to inflation risk and lack of flexibility for bulky items; reducing to 5-8 items was rejected because 10 items fit safely and profitably in months where snack sizing allows.
 
 ### 2. Packaging Size Standardization and Brand Experience (23x21.5x9cm)
-- **Decision:** Adopt a standard white corrugated cardboard box of 23x21.5x9cm ($925.44 ARS/piece), customized monthly via a colored cardstock belly band (faja de cartulina) sealed with a logo sticker. Interior includes tissue paper ($108 ARS), a gift sticker sheet, and a welcome/thank-you card, enclosed in an outer plastic shipping bag.
+- **Decision:** Adopt a standard white corrugated cardboard box of 23x21.5x9cm ($925.44 ARS/piece), customized monthly with branding stickers instead of a belly band. Specifically: a logo sticker ($342 ARS), a stamp/sello ($189 ARS), and a mini sticker sheet gift ($517 ARS). Interior includes tissue paper ($108 ARS), a welcome/thank-you card ($375 ARS), and a member ID card ($167 ARS), enclosed in an outer plastic shipping bag.
 - **Rationale:** Volumetric and Tetris layout analysis confirmed that 6 to 10 items (including bulky items like Nissin Cup Noodles and nachos) occupy between ~30% and ~40% of the 4,450.5 cm³ box volume, which is the ideal e-commerce density factor. Placing rigid/heavy items at the bottom (noodles horizontal, nachos flat) and delicate treats on top under the tissue paper ensures zero crushing while creating a visually exploding, abundant unboxing experience across the entire 6-10 item range.
-- **[Decision: Packaging customization via DIY Cardstock]** → To keep base box costs stable ($925.44 ARS) and unit economics highly favorable, we decided to differentiate monthly editions using a DIY colored cardstock belly band (faja), manually cut from bulk sheets (e.g. Cartulina 44.5x63cm), rather than investing in custom-printed or fully redesigned sleeves. This is a highly cost-effective MVP pilot strategy.
+- **[Decision: Packaging customization via Stickers]** → To keep base box costs stable ($925.44 ARS) and unit economics highly favorable, we decided to differentiate monthly editions using high-quality stickers (Logo, Sello, Mini Plancha) and eliminated the DIY colored cardstock belly band (faja). This simplifies fulfillment while delivering a premium, cost-effective MVP pilot strategy.
 - **[Decision: 40x50 Colored Shipping Bags]** → We selected 40x50 cm inviolable e-commerce bags in pastel colors matching the brand (Lilac / Mint Green). Although 40x50 cm is slightly large for a 23x21.5x9cm box, folding the excess plastic over the back acts as a custom envelope seal, delivering an exceptional UX unboxing moment before the package is even opened.
 
 ## Risks / Trade-offs
 
-- **[Risk: Packaging quote overruns]** → *Mitigation:* We replaced expensive printed fajas with DIY colored cardstock, driving the belly band cost down to ~$50 ARS. Along with finding colored 40x50 cm bags at $380 ARS, our total landed cost (including inbound wholesale shipping) remains well under the ~$3,000 ARS packaging allowance.
+- **[Risk: Packaging quote overruns]** → *Mitigation:* We eliminated the belly band entirely and opted for cost-effective stickers (Logo, Sello, Plancha totaling $1,048 ARS). Along with finding colored 40x50 cm bags at $380 ARS, our total landed cost (including inbound wholesale shipping) remains well under the ~$3,000 ARS packaging allowance.
 - **[Risk: Quarterly subscriber repricing confusion]** → *Mitigation:* Explicitly communicate new pricing tiers on the pricing selection cards during checkout and in renewal emails.

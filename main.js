@@ -47,11 +47,13 @@ export function initMysteryReveal() {
     let ticking = false;
     let isMobileRevealed = false;
 
+    const isTouchDevice = () => window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.innerWidth <= 768;
+
     const handleMove = (clientX, clientY) => {
       const rect = container.getBoundingClientRect();
       const x = clientX - rect.left - (rect.width * 0.05);
       const y = clientY - rect.top - (rect.height * 0.05);
-      const lensRadius = '45px'; // Solo se usa en desktop ahora
+      const lensRadius = '45px'; 
 
       container.style.setProperty('--reveal-x', `${x}px`);
       container.style.setProperty('--reveal-y', `${y}px`);
@@ -59,7 +61,7 @@ export function initMysteryReveal() {
     };
 
     container.addEventListener('mousemove', (e) => {
-      if (window.innerWidth <= 768) return; // Ignorar en móvil
+      if (isTouchDevice()) return; // Ignorar si es tactil o movil
       if (!ticking) {
         window.requestAnimationFrame(() => {
           handleMove(e.clientX, e.clientY);
@@ -70,14 +72,14 @@ export function initMysteryReveal() {
     });
 
     container.addEventListener('mouseleave', () => {
-      if (window.innerWidth <= 768) return;
+      if (isTouchDevice()) return;
       container.style.setProperty('--reveal-radius', '0px');
     });
 
-    // Mobile specific: click/tap to temporary full reveal
+    // Mobile specific: click/tap to temporary full reveal (sin efecto lupa, se revela completo)
     let timeoutId = null;
     container.addEventListener('click', () => {
-      if (window.innerWidth > 768) return; // Solo en móvil
+      if (!isTouchDevice()) return; // Solo en tactil/movil
       
       // Expandir lo suficiente para cubrir la imagen
       container.style.setProperty('--reveal-x', `50%`);

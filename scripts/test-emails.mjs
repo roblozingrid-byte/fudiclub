@@ -96,24 +96,52 @@ const launchHtml = `
 `;
 
 async function main() {
-  console.log("Enviando correo de PRUEBA: Hype...");
-  const { error: err1 } = await resend.emails.send({
+  console.log("Enviando correo de PRUEBA: Transferencia (Checkout)...");
+  const checkoutHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+        body { font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #4ebaba; padding: 30px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px; font-family: 'Space Grotesk', Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-family: 'Corben', Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; margin: 0; }
+        .box { background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 4px; margin: 20px 0; font-family: 'Space Grotesk', Arial, sans-serif; }
+        .box p { margin: 10px 0; font-size: 16px; font-family: 'Space Grotesk', Arial, sans-serif; }
+        .footer { text-align: center; font-size: 14px; font-weight: bold; margin-top: 20px; font-family: 'Space Grotesk', Arial, sans-serif; }
+      </style>
+    </head>
+    <body style="font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111;">
+      <div class="container" style="max-width: 600px; margin: 0 auto; background-color: #4ebaba; padding: 30px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px; font-family: 'Space Grotesk', Arial, sans-serif;">
+        <div class="header" style="text-align: center; margin-bottom: 20px;">
+          <img src="https://fudiclub.shop/imagenes/Logo-blanco-plano.png" alt="Fudi Club" style="max-width: 150px; margin-bottom: 15px; display: inline-block;" />
+          <h1 style="font-family: 'Corben', Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; margin: 0;">¡Hola Ingrid (Prueba)! 📦</h1>
+        </div>
+        <p style="font-size: 18px; font-weight: bold; text-align: center; font-family: 'Space Grotesk', Arial, sans-serif;">Has iniciado la reserva de tu Fudi Club Box.</p>
+        <div class="box" style="background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 4px; margin: 20px 0; font-family: 'Space Grotesk', Arial, sans-serif;">
+          <p style="margin-top: 0; font-family: 'Space Grotesk', Arial, sans-serif;"><strong>Para confirmar tu pedido, realiza la transferencia con los siguientes datos y envianos tu comprobante:</strong></p>
+          <p style="font-family: 'Space Grotesk', Arial, sans-serif;">Alias: <strong>roblesingrid.bna</strong></p>
+          <p style="font-family: 'Space Grotesk', Arial, sans-serif;">CBU: <strong>0110036530003610750715</strong></p>
+          <p style="margin-bottom: 0; font-family: 'Space Grotesk', Arial, sans-serif;">Monto a transferir: <strong>$45000</strong></p>
+        </div>
+        <div style="text-align: center; margin: 30px 0; font-family: 'Space Grotesk', Arial, sans-serif;">
+          <a href="https://wa.me/5491139264426?text=Hola,%20soy%20Ingrid,%20adjunto%20comprobante%20de%20mi%20Mystery%20Box" style="font-family: 'Space Grotesk', Arial, sans-serif; background-color: #d1ff5e; color: #111; padding: 15px 25px; text-decoration: none; font-weight: bold; border: 3px solid #111; border-radius: 6px; display: inline-block; box-shadow: 4px 4px 0px #111;">
+            📲 Enviar Comprobante por WhatsApp
+          </a>
+          <p style="margin-top: 15px; font-size: 14px; font-weight: bold; font-family: 'Space Grotesk', Arial, sans-serif;">(O envíalo manualmente al +54 9 11 3926-4426)</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  const { error: err3 } = await resend.emails.send({
     from: fromEmail,
     to: toEmail,
-    subject: "[PRUEBA] Mañana te devolvemos un pedacito de tu infancia 🕹️",
-    html: hypeHtml
+    subject: "[PRUEBA] Tus datos de transferencia para la Mystery Box",
+    html: checkoutHtml
   });
-  if (err1) console.error("Error Hype:", err1);
-  else console.log("Hype enviado correctamente.");
-
-  console.log("Enviando correo de PRUEBA: Lanzamiento...");
-  const { error: err2 } = await resend.emails.send({
-    from: fromEmail,
-    to: toEmail,
-    subject: "[PRUEBA] La Mystery Box está lista. ¿La destapamos? 🍭",
-    html: launchHtml
-  });
-  if (err2) console.error("Error Lanzamiento:", err2);
-  else console.log("Lanzamiento enviado correctamente.");
+  if (err3) console.error("Error Checkout:", err3);
+  else console.log("Checkout enviado correctamente.");
 }
 main();
