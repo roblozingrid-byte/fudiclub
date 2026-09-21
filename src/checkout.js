@@ -56,6 +56,12 @@ export function updateStockWidget() {
   stockText.innerHTML = `Boxes disponibles<br><strong style="font-size: 1.3rem;">${months[currentSaleMonthIndex]}</strong>`;
 }
 
+if (typeof window !== 'undefined') {
+  window.addEventListener('stockUpdated', () => {
+    updateStockWidget();
+  });
+}
+
 export function updateCheckoutTotals() {
   const summarySubtotalLabel = document.getElementById('summary-subtotal-label');
   const summarySubtotal = document.getElementById('summary-subtotal');
