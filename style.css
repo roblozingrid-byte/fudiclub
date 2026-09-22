@@ -112,7 +112,10 @@ h1, h2, h3 {
   z-index: 90;
 }
 
-/* .logo-container — no custom styles needed */
+.logo-container {
+  display: flex;
+  align-items: center;
+}
 
 .header-logo {
   height: 40px;
@@ -1463,33 +1466,37 @@ textarea.neo-input {
   
   /* Header Mobile Adjustments */
   .neo-header {
-    height: 50px;
-    padding: 0 15px;
-    top: 35px;
+    height: 58px;
+    padding: 0 16px;
+    top: calc(35px + env(safe-area-inset-top, 0px));
   }
   
   .header-logo {
-    height: 25px;
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    transition: height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   
   .header-logo.grown {
-    height: 40px;
+    height: 35px;
   }
   
   .neo-header .cta-button {
-    font-size: 0.8rem;
-    padding: 6px 12px;
-    box-shadow: 3px 3px 0px var(--black);
+    font-size: 0.82rem;
+    padding: 7px 14px;
+    box-shadow: 2.5px 2.5px 0px var(--black);
     border-width: 2px;
+    white-space: nowrap;
   }
   
   .neo-header .cta-button:hover {
-    transform: translate(2px, 2px);
+    transform: translate(1.5px, 1.5px);
     box-shadow: 1px 1px 0px var(--black);
   }
   
   .neo-header .cta-button:active {
-    transform: translate(3px, 3px);
+    transform: translate(2.5px, 2.5px);
     box-shadow: 0px 0px 0px var(--black);
   }
 
