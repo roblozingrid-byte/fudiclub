@@ -365,6 +365,16 @@ h1, h2, h3 {
   -webkit-text-stroke: 2px var(--black);
 }
 
+.teaser-instruction {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--black);
+  margin-top: -15px;
+  margin-bottom: 30px;
+}
+
 .teaser-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1204,6 +1214,9 @@ textarea.neo-input {
   .stock-text { font-size: 0.8rem; }
   .footer-logo img { height: 60px; }
   .hero-content { gap: 20px; padding: 10px 5px; }
+  .teaser-instruction { display: none; }
+  .blur-effect { filter: none !important; }
+  .mystery-reveal { display: none !important; }
 }
 
 /* --- NEW IMPROVEMENTS --- */

@@ -75,22 +75,5 @@ export function initMysteryReveal() {
       if (isTouchDevice()) return;
       container.style.setProperty('--reveal-radius', '0px');
     });
-
-    // Mobile specific: click/tap to temporary full reveal (sin efecto lupa, se revela completo)
-    let timeoutId = null;
-    container.addEventListener('click', () => {
-      if (!isTouchDevice()) return; // Solo en tactil/movil
-      
-      // Expandir lo suficiente para cubrir la imagen
-      container.style.setProperty('--reveal-x', `50%`);
-      container.style.setProperty('--reveal-y', `50%`);
-      container.style.setProperty('--reveal-radius', '150px');
-      
-      if (timeoutId) clearTimeout(timeoutId);
-      
-      timeoutId = setTimeout(() => {
-        container.style.setProperty('--reveal-radius', '0px');
-      }, 2000); // Se oculta automáticamente luego de 2 segundos
-    });
   });
 }
