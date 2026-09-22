@@ -238,14 +238,17 @@ h1, h2, h3 {
   margin-top: 25px; /* Achica el espacio con el header */
 }
 
-.hero-main-row {
+.hero-content {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 80px;
-  width: 100%;
+  flex-wrap: wrap;
+  padding: 20px;
   max-width: 1100px;
-  margin-bottom: 20px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .hero-text-col {
@@ -1200,6 +1203,7 @@ textarea.neo-input {
   .stock-number { font-size: 2rem; }
   .stock-text { font-size: 0.8rem; }
   .footer-logo img { height: 60px; }
+  .hero-content { gap: 20px; padding: 10px 5px; }
 }
 
 /* --- NEW IMPROVEMENTS --- */
@@ -1588,8 +1592,14 @@ textarea.neo-input {
 
 /* Extra Small Screens (Phones in Portrait) */
 @media (max-width: 480px) {
+  .hero-content {
+    gap: 15px;
+    padding: 5px 0;
+  }
+
   .hero-logo-relief {
     max-width: 180px;
+    margin: 0 auto 12px auto !important;
   }
   
   .hero-title {
