@@ -82,7 +82,8 @@ h1, h2, h3 {
 .ticker-content {
   display: flex;
   width: max-content;
-  animation: marquee 20s linear infinite;
+  animation: marquee 25s linear infinite;
+  will-change: transform;
 }
 
 .ticker-content span {
@@ -142,6 +143,30 @@ h1, h2, h3 {
 .social-links {
   display: flex;
   gap: 12px;
+}
+
+.header-empresas-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--bg-turquesa);
+  color: var(--black);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  border: 2px solid var(--black);
+  box-shadow: 2.5px 2.5px 0px var(--black);
+  border-radius: 6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.header-empresas-btn:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 4px 4px 0px var(--black);
+  background-color: #3aa8a8;
 }
 
 .social-icon {
@@ -1498,6 +1523,13 @@ textarea.neo-input {
   .neo-header .cta-button:active {
     transform: translate(2.5px, 2.5px);
     box-shadow: 0px 0px 0px var(--black);
+  }
+
+  .neo-header .header-empresas-btn {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    box-shadow: 2px 2px 0px var(--black);
+    margin-right: 4px;
   }
 
   /* Sticker Mobile Sizing */

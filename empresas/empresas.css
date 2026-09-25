@@ -1,0 +1,420 @@
+/* Estilos específicos para Fudi Club Empresas */
+
+.corpo-hero {
+  text-align: center;
+  padding: 35px 20px 40px 20px;
+  margin-top: 25px; /* Misma medida que en la página principal */
+  background-color: var(--bg-amarillo);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Header override for Empresas page */
+.neo-header {
+  background-color: var(--bg-turquesa);
+}
+
+.corpo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-turquesa);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: bold;
+  padding: 6px 16px;
+  border: var(--border-thick);
+  box-shadow: 3px 3px 0px var(--black);
+  border-radius: 999px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.corpo-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.3;
+  max-width: 900px;
+  margin: 0 auto 20px auto;
+  color: var(--black);
+}
+
+.corpo-title .highlight-pink {
+  background-color: var(--accent-rosa);
+  padding: 2px 10px;
+  border: 2px solid var(--black);
+  box-shadow: 3px 3px 0px var(--black);
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: middle;
+  transform: rotate(-1deg);
+  margin: 0 4px;
+}
+
+.corpo-subtitle {
+  font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+  max-width: 680px;
+  margin: 0 auto 24px auto;
+  line-height: 1.5;
+  color: #222;
+}
+
+.corpo-hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 25px 0;
+  width: 100%;
+}
+
+.corpo-hero-actions .cta-button {
+  font-size: 1.15rem;
+  padding: 14px 28px;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.corpo-highlights-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.corpo-highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  padding: 6px 14px;
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0px var(--black);
+  border-radius: 6px;
+}
+
+/* Casos de Uso / Solutions Grid */
+.corpo-solutions {
+  background-color: var(--bg-lila);
+  padding: 45px 20px;
+}
+
+.corpo-solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 860px;
+  margin: 25px auto 0 auto;
+}
+
+@media (max-width: 680px) {
+  .corpo-solutions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.solution-card {
+  background: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  padding: 28px 22px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.solution-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px var(--black);
+}
+
+.solution-sticker {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  filter: drop-shadow(3px 3px 0px var(--black));
+  transition: transform 0.2s ease;
+}
+
+.solution-card:hover .solution-sticker {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.solution-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--black);
+}
+
+.solution-card p {
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: #333;
+  margin-bottom: 18px;
+  flex-grow: 1;
+}
+
+.solution-tag {
+  align-self: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border: 2px solid var(--black);
+  border-radius: 999px;
+  background: var(--bg-amarillo);
+  box-shadow: 2.5px 2.5px 0px var(--black);
+  color: var(--black);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Benefits Grid */
+.corpo-benefits {
+  background-color: var(--bg-turquesa);
+  padding: 50px 20px;
+}
+
+.corpo-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 30px auto 0 auto;
+}
+
+.benefit-card {
+  background: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  padding: 24px 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.benefit-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px var(--black);
+}
+
+.benefit-sticker {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin: 0 auto 12px auto;
+  filter: drop-shadow(2.5px 2.5px 0px var(--black));
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.benefit-sticker.sticker-paleta {
+  width: 78px;
+  height: 78px;
+  margin-top: -9px;
+  margin-bottom: 3px;
+}
+
+.benefit-card:hover .benefit-sticker {
+  transform: scale(1.12) rotate(4deg);
+}
+
+.benefit-card:hover .benefit-sticker.sticker-paleta {
+  transform: scale(1.15) rotate(-4deg);
+}
+
+.benefit-card h4 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: var(--black);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "hlig" 0;
+}
+
+.benefit-card p {
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* Quote Form Section */
+.corpo-quote-section {
+  background-color: var(--bg-amarillo);
+  padding: 50px 20px;
+  scroll-margin-top: 130px;
+}
+
+@media (max-width: 768px) {
+  .corpo-quote-section {
+    scroll-margin-top: 110px;
+  }
+}
+
+.corpo-form-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: var(--white);
+  border: var(--border-thick);
+  box-shadow: 8px 8px 0px var(--black);
+  border-radius: 12px;
+  padding: 32px 24px;
+}
+
+.corpo-form-intro {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.corpo-form-intro p {
+  font-size: 1rem;
+  color: #444;
+  margin-top: 6px;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .form-group-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.corpo-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.corpo-input,
+.corpo-select,
+.corpo-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  border: 2px solid var(--black);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0px var(--black);
+  outline: none;
+  background: var(--white);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-bottom: 16px;
+}
+
+.corpo-input:focus,
+.corpo-select:focus,
+.corpo-textarea:focus {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px var(--black);
+  border-color: var(--black);
+}
+
+.corpo-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.corpo-submit-btn {
+  width: auto;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  padding: 13px 26px;
+  cursor: pointer;
+  margin: 15px auto 0 auto;
+}
+
+/* Success Card */
+.corpo-success-card {
+  display: none;
+  text-align: center;
+  background: var(--accent-verde);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  border-radius: 12px;
+  padding: 30px 20px;
+  margin-top: 20px;
+}
+
+.corpo-success-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+.corpo-success-card p {
+  font-size: 1.05rem;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+/* Nav Link in Main site header */
+.header-empresas-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-turquesa);
+  color: var(--black);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border: 2px solid var(--black);
+  box-shadow: 3px 3px 0px var(--black);
+  border-radius: 6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-right: 8px;
+}
+
+.header-empresas-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--black);
+  background: #3aa8a8;
+}
+
+.nav-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--black);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0px var(--black);
+  border-radius: 6px;
+  transition: transform 0.15s ease;
+}
+
+.nav-back-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--black);
+}

@@ -29,7 +29,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { email } = body
+    const { email, note } = body
 
     if (!email) {
       throw new Error('Email is required')
@@ -39,10 +39,17 @@ serve(async (req) => {
 
     const { error } = await supabase
       .from('waitlist')
-      .insert({ email })
+      .insert({ email, note: note || 'Interesado (Pre-checkout)' })
 
-    // Ignore duplicate email error for waitlist
-    if (error && error.code !== '23505') {
+    // Ignore duplicate email error for waitlist, update note if provided
+    if (error && error.code === '23505') {
+      if (note) {
+        await supabase
+          .from('waitlist')
+          .update({ note })
+          .eq('email', email)
+      }
+    } else if (error) {
       throw error
     }
 

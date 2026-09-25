@@ -211,7 +211,7 @@ export function initCheckoutFlow() {
       fetch(`${functionsUrl}/join-waitlist`, {
         method: 'POST',
         headers: headers,
-        body: JSON.stringify({ email: capturedEmail })
+        body: JSON.stringify({ email: capturedEmail, note: 'Interesado (Pre-checkout)' })
       }).catch(err => console.error('[Waitlist] Error:', err));
     }
 
@@ -404,6 +404,19 @@ export function initCheckoutFlow() {
           email: userEmail
         });
         if (cp < 1000 || cp > 1900) {
+          const emailToLog = userEmail || (preEmailInput ? preEmailInput.value.trim() : '') || localStorage.getItem('fudiclub_prereg_email') || '';
+          if (emailToLog) {
+            const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+            const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
+            fetch(`${functionsUrl}/join-waitlist`, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify({ email: emailToLog, note: `Fuera de zona (CP: ${cpStr})` })
+            }).catch(err => console.error('[Waitlist Out-of-Zone] Error:', err));
+          }
+
           const modal = document.getElementById('out-of-zone-modal');
           if (modal) {
             modal.style.display = 'flex';

@@ -26,7 +26,7 @@ serve(async (req: Request) => {
     const spreadsheetId = Deno.env.get("GOOGLE_SPREADSHEET_ID");
     const tabCustomers = Deno.env.get("SHEETS_TAB_CUSTOMERS") || "Clientes (Backup)";
     const tabOrders = Deno.env.get("SHEETS_TAB_ORDERS") || "Pedidos (Backup)";
-    const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || "Leads";
+    const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || Deno.env.get("SHEETS_TAB_WAITLIST") || "Leads";
 
     if (!serviceAccountJson || !spreadsheetId) {
       console.error("Faltan variables de entorno para Google Sheets.");
@@ -98,13 +98,12 @@ serve(async (req: Request) => {
         ],
       ];
     } else if (table === "waitlist") {
-      const tabWaitlist = Deno.env.get("SHEETS_TAB_WAITLIST") || "Waitlist (Backup)";
-      range = `${tabWaitlist}!A:C`;
+      range = `${tabLeads}!A:C`;
       values = [
         [
-          record.id || "",
           record.email || "",
           formatDate(record.created_at),
+          record.note || "Interesado (Pre-checkout)",
         ],
       ];
     } else {
