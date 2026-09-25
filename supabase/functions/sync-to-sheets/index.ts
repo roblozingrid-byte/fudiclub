@@ -26,7 +26,7 @@ serve(async (req: Request) => {
     const spreadsheetId = Deno.env.get("GOOGLE_SPREADSHEET_ID");
     const tabCustomers = Deno.env.get("SHEETS_TAB_CUSTOMERS") || "Clientes (Backup)";
     const tabOrders = Deno.env.get("SHEETS_TAB_ORDERS") || "Pedidos (Backup)";
-    const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || Deno.env.get("SHEETS_TAB_WAITLIST") || "Leads";
+    const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || "Leads";
 
     if (!serviceAccountJson || !spreadsheetId) {
       console.error("Faltan variables de entorno para Google Sheets.");
