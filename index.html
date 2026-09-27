@@ -500,7 +500,7 @@
     import { initDraggableStickers } from './src/stickers.js';
     import { initRetroPlayer } from './src/audio.js';
     import { fetchStock } from './src/api.js';
-    import { initMysteryReveal, initFAQ, initDynamicHeader } from './main.js';
+    import { initMysteryReveal, initFAQ, initDynamicHeader, initScrollDepthTracking } from './main.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchStock();
@@ -510,6 +510,7 @@
       initMysteryReveal();
       initFAQ();
       initRetroPlayer();
+      initScrollDepthTracking();
     });
   </script>
 </body>

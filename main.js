@@ -1,10 +1,76 @@
 import posthog from 'posthog-js';
 
 // Initialize PostHog
-posthog.init(import.meta.env.VITE_POSTHOG_KEY || 'phc_placeholder_key', {
-  api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
+posthog.init(import.meta.env.VITE_POSTHOG_KEY || 'phc_t68UYpC6MhUBAvyNwyKZgZztEWs5WqUFzqBhV7ApvmkM', {
+  api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com',
   person_profiles: 'identified_only',
+  defaults: '2026-05-30',
 });
+
+let isScrollTrackingInitialized = false;
+
+export function initScrollDepthTracking() {
+  if (isScrollTrackingInitialized) return;
+  isScrollTrackingInitialized = true;
+
+  const milestones = [25, 50, 75, 90, 100];
+  const reachedMilestones = new Set();
+  let ticking = false;
+
+  const checkScrollDepth = () => {
+    const scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const docHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.clientHeight
+    );
+
+    const totalScrollable = docHeight - windowHeight;
+    if (totalScrollable <= 0) return;
+
+    const currentPercentage = Math.min(100, Math.round(((scrollPosition + windowHeight) / docHeight) * 100));
+
+    milestones.forEach((milestone) => {
+      if (currentPercentage >= milestone && !reachedMilestones.has(milestone)) {
+        reachedMilestones.add(milestone);
+        posthog.capture('scroll_depth', {
+          depth: milestone,
+          scroll_percentage: currentPercentage,
+          page_path: window.location.pathname,
+          page_title: document.title,
+        });
+      }
+    });
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkScrollDepth();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkScrollDepth, { once: true });
+  } else {
+    checkScrollDepth();
+  }
+}
+
+// Iniciar automáticamente el rastreo de scroll
+initScrollDepthTracking();
+
 
 export function initFAQ() {
   const faqItems = document.querySelectorAll('.faq-item');
