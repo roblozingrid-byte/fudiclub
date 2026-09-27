@@ -108,7 +108,68 @@ serve(async (req) => {
 
     if (orderError) throw orderError
 
-    // 4. Payment Logic
+    // 4. Send Admin Notification Email
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'robloz.ingrid@gmail.com';
+    const planName = isQuarterly ? 'Plan Trimestral' : 'Compra Única';
+    const paymentMethodLabel = payment_method === 'transfer' ? 'Transferencia Bancaria 📲' : 'Mercado Pago 💳';
+    const formattedTotal = total.toLocaleString('es-AR');
+
+    try {
+      await sendEmail({
+        to: adminEmail,
+        subject: `🔔 ¡Nuevo Pedido ${friendlyId}! - ${name} ($${formattedTotal})`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111; }
+            </style>
+          </head>
+          <body style="font-family: Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffd84d; padding: 25px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px;">
+              <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://fudiclub.shop/imagenes/Logo-blanco-plano.png" alt="Fudi Club" style="max-width: 130px; margin-bottom: 10px; display: inline-block;" />
+                <h1 style="font-size: 22px; font-weight: 700; text-transform: uppercase; margin: 0; color: #111;">¡Nuevo Pedido Recibido! 📦✨</h1>
+                <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold; color: #222;">Se acaba de registrar una compra en la web.</p>
+              </div>
+
+              <div style="background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 6px; margin: 15px 0;">
+                <p style="margin: 6px 0; font-size: 15px;"><strong>ID Pedido:</strong> <span style="font-family: monospace; font-size: 16px; background-color: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${friendlyId}</span></p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Cliente:</strong> ${name}</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #2563eb;">${email}</a></p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Dirección:</strong> ${address} (CP: ${cp})</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Alergias / Restricciones:</strong> ${allergies || 'Ninguna'}</p>
+                
+                <hr style="border: 0; border-top: 2px dashed #111; margin: 15px 0;" />
+                
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Tipo de Compra:</strong> <span style="background-color: ${isQuarterly ? '#d1ff5e' : '#4ebaba'}; padding: 3px 8px; border: 1px solid #111; font-weight: bold; border-radius: 4px;">${planName}</span></p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Edición / Meses:</strong> <strong>${finalEdition}</strong></p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Cantidad:</strong> <strong>${qty}</strong> pack(s) &rarr; <strong>${totalBoxes} box(es) en total</strong> (${qty} por mes)</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Método de Pago:</strong> <strong>${paymentMethodLabel}</strong></p>
+                <p style="margin: 6px 0; font-size: 18px;"><strong>Total a Cobrar:</strong> <strong style="color: #059669;">$${formattedTotal}</strong></p>
+              </div>
+
+              ${payment_method === 'transfer' ? `
+              <div style="background-color: #d1ff5e; padding: 15px; border: 3px solid #111; border-radius: 6px; margin: 15px 0; text-align: center;">
+                <p style="margin: 0; font-weight: bold; font-size: 15px;">📲 Pago por Transferencia Bancaria</p>
+                <p style="margin: 5px 0 0 0; font-size: 13px;">El cliente recibió los datos de CBU/Alias y el botón directo para enviar su comprobante por WhatsApp.</p>
+              </div>
+              ` : ''}
+
+              <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #555;">
+                <p style="margin: 0;">Fudi Club &bull; Notificación Automática de Pedido</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `
+      });
+    } catch (adminEmailErr) {
+      console.error('Error enviando notificación al admin:', adminEmailErr);
+    }
+
+    // 5. Payment Logic
     if (payment_method === 'mercado_pago') {
       const MP_ACCESS_TOKEN = Deno.env.get('MP_ACCESS_TOKEN')
       if (!MP_ACCESS_TOKEN) throw new Error('Missing MP_ACCESS_TOKEN')
