@@ -482,8 +482,14 @@ export function initCheckoutFlow() {
       const allInputs = paymentForm.querySelectorAll('input, textarea');
       allInputs.forEach(input => input.disabled = true);
 
-      const editionAssigned = `Edición ${calculateCurrentEdition()}`;
       const planValue = document.querySelector('input[name="plan"]:checked').value;
+      const isQuarterly = planValue === 'quarterly';
+      const baseEdition = calculateCurrentEdition();
+      const monthsList = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const bIndex = monthsList.indexOf(baseEdition);
+      const m2 = monthsList[(bIndex + 1) % 12];
+      const m3 = monthsList[(bIndex + 2) % 12];
+      const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}` : `Edición ${baseEdition}`;
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
       const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'mercado_pago';
 

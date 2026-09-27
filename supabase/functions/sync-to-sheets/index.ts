@@ -81,20 +81,83 @@ serve(async (req: Request) => {
         ],
       ];
     } else if (table === "orders") {
-      range = `${tabOrders}!A:I`;
-      // Mapeo basado en las columnas definidas en el Excel:
-      // ID Pedido, Fecha Compra, Cliente, Mes Asignado, Estado Pago, Método Pago, Total, Estado Envío, Tracking
+      range = `${tabOrders}!A:L`;
+      // Mapeo de columnas para Google Sheets:
+      // A: ID Pedido
+      // B: Fecha Compra
+      // C: Cliente
+      // D: Mes Asignado
+      // E: Estado Pago
+      // F: Método Pago
+      // G: Total Cobrado
+      // H: Estado Envío
+      // I: Tipo de Compra (Plan)
+      // J: Cantidad
+      // K: Cantidad de Boxes
+      // L: Dirección de Envío
+
+      const isQuarterly = record.plan === "quarterly";
+      const planLabel = isQuarterly ? "Plan Trimestral" : "Compra Única";
+      const totalAmount = record.total ?? record.total_amount ?? 0;
+      const unitPrice = isQuarterly ? 127900 : 44900;
+      const qty = record.quantity || (totalAmount > 0 ? Math.round(totalAmount / unitPrice) : 1);
+      const totalBoxes = record.total_boxes || (qty * (isQuarterly ? 3 : 1));
+
+      const customerDisplay = record.customer_name
+        ? (record.customer_email ? `${record.customer_name} (${record.customer_email})` : record.customer_name)
+        : (record.customer_email || record.customer_id || "");
+
+      const paymentStatus = record.status || record.payment_status || "pending";
+      const paymentStatusDisplay = paymentStatus === "approved" ? "Aprobado" : (paymentStatus === "pending" ? "Pendiente" : paymentStatus);
+
+      const paymentMethodDisplay = record.payment_method === "transfer"
+        ? "Transferencia"
+        : (record.payment_method === "mercado_pago" ? "Mercado Pago" : (record.payment_method || ""));
+
+      const shippingStatusDisplay = record.shipping_status || "Pendiente";
+
+      // Determinar edición con los 3 meses para suscripción trimestral
+      const monthsList = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+      const rawEdition = record.edition || record.month || "";
+      let editionDisplay = rawEdition;
+      if (isQuarterly) {
+        let baseMonth = "";
+        for (const m of monthsList) {
+          if (rawEdition.includes(m)) {
+            baseMonth = m;
+            break;
+          }
+        }
+        if (!baseMonth) {
+          const d = record.created_at ? new Date(record.created_at) : new Date();
+          let mIdx = d.getMonth();
+          if (d.getDate() > 5) mIdx = (mIdx + 1) % 12;
+          baseMonth = monthsList[mIdx];
+        }
+        const bIdx = monthsList.indexOf(baseMonth);
+        const m1 = monthsList[bIdx];
+        const m2 = monthsList[(bIdx + 1) % 12];
+        const m3 = monthsList[(bIdx + 2) % 12];
+        editionDisplay = `${m1} - ${m2} - ${m3}`;
+      }
+
       values = [
         [
-          record.id || "",
+          record.friendly_id || record.id || "",
           formatDate(record.created_at),
-          record.customer_id || record.customer_name || "", // Idealmente resolver nombre o dejar ID
-          record.edition || record.month || "",
-          record.payment_status || "pending",
-          record.payment_method || "",
-          record.total_amount || 0,
-          record.shipping_status || "pending",
-          record.tracking_code || "",
+          customerDisplay,
+          editionDisplay,
+          paymentStatusDisplay,
+          paymentMethodDisplay,
+          totalAmount,
+          shippingStatusDisplay,
+          planLabel,
+          qty,
+          totalBoxes,
+          record.shipping_address || "",
         ],
       ];
     } else if (table === "waitlist") {

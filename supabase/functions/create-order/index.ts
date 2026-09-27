@@ -46,22 +46,65 @@ serve(async (req) => {
     const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
     const friendlyId = `FUDI-${monthStr}-${randomCode}`;
 
-    const { data: order, error: orderError } = await supabase
+    // Format edition: if quarterly, ensure all 3 covered months are represented
+    const monthsList = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    let finalEdition = edition;
+    if (isQuarterly) {
+      let baseMonth = '';
+      for (const m of monthsList) {
+        if (edition?.includes(m)) {
+          baseMonth = m;
+          break;
+        }
+      }
+      if (!baseMonth) {
+        const argDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+        let mIdx = argDate.getMonth();
+        if (argDate.getDate() > 5) mIdx = (mIdx + 1) % 12;
+        baseMonth = monthsList[mIdx];
+      }
+      const bIdx = monthsList.indexOf(baseMonth);
+      const m2 = monthsList[(bIdx + 1) % 12];
+      const m3 = monthsList[(bIdx + 2) % 12];
+      finalEdition = `${baseMonth} - ${m2} - ${m3}`;
+    }
+
+    const orderPayload: any = {
+      customer_id: customer.id,
+      customer_name: name,
+      customer_email: email,
+      status: 'pending',
+      plan,
+      payment_method,
+      total,
+      edition: finalEdition,
+      shipping_address: `${address} (CP: ${cp})`,
+      friendly_id: friendlyId,
+      quantity: qty,
+      total_boxes: totalBoxes,
+    }
+
+    let { data: order, error: orderError } = await supabase
       .from('orders')
-      .insert({
-        customer_id: customer.id,
-        customer_name: name,
-        customer_email: email,
-        status: 'pending',
-        plan,
-        payment_method,
-        total,
-        edition,
-        shipping_address: `${address} (CP: ${cp})`,
-        friendly_id: friendlyId
-      })
+      .insert(orderPayload)
       .select()
       .single()
+
+    // Fallback if quantity or total_boxes columns do not exist yet in schema
+    if (orderError && (orderError.message?.includes('quantity') || orderError.message?.includes('total_boxes'))) {
+      delete orderPayload.quantity;
+      delete orderPayload.total_boxes;
+      const retry = await supabase
+        .from('orders')
+        .insert(orderPayload)
+        .select()
+        .single();
+      order = retry.data;
+      orderError = retry.error;
+    }
 
     if (orderError) throw orderError
 
