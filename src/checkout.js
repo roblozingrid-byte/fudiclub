@@ -248,7 +248,7 @@ export function initCheckoutFlow() {
 
           if (isSaleWindowClosed) {
             if (soldOutTitle) soldOutTitle.innerText = `¡Venta de ${exhaustedMonth} cerrada! 📦`;
-            if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran el día 5 de cada mes para hacer la curaduría, armar tu mistery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
+            if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran el día 5 de cada mes para hacer la curaduría, armar tu mystery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
           } else {
             if (soldOutTitle) soldOutTitle.innerText = `¡La edición de ${exhaustedMonth} voló! 😱`;
             if (soldOutDesc) soldOutDesc.innerText = `Cerramos las ventas de este mes porque llegamos al límite de cupos. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
@@ -539,7 +539,7 @@ export function initCheckoutFlow() {
           
           if (paymentMethod === 'transfer') {
             if (successTitle) successTitle.innerText = '¡Reserva confirmada! 📦';
-            if (successMsg) successMsg.innerText = 'Completa el pago con los siguientes datos:';
+            if (successMsg) successMsg.innerText = 'Completá el pago con los siguientes datos:';
             if (transferDetails) transferDetails.style.display = 'block';
             if (transferInstructions) transferInstructions.style.display = 'block';
           } else {
@@ -584,7 +584,7 @@ export function initCheckoutFlow() {
         
         if (paymentMethod === 'transfer') {
           if (successTitle) successTitle.innerText = '¡Reserva confirmada! 📦';
-          if (successMsg) successMsg.innerText = 'Completa el pago con los siguientes datos:';
+          if (successMsg) successMsg.innerText = 'Completá el pago con los siguientes datos:';
           if (transferDetails) transferDetails.style.display = 'block';
           if (transferInstructions) transferInstructions.style.display = 'block';
         } else if (data.init_point) {
@@ -606,7 +606,7 @@ export function initCheckoutFlow() {
         
         allInputs.forEach(input => input.disabled = false);
         
-        alert('Ocurrió un error al procesar tu pedido. Intenta nuevamente.');
+        alert('Ocurrió un error al procesar tu pedido. Intentá nuevamente.');
       });
     });
   }
