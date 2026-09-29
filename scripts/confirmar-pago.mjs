@@ -73,26 +73,34 @@ async function main() {
   console.log(`   Plan:    ${order.plan} (${order.edition || 'Edición actual'})`);
   console.log(`   Estado:  ${order.status.toUpperCase()}`);
 
-  if (order.status === 'paid' || order.status === 'approved') {
+  const forceEmail = process.argv.includes('--send-email') || process.argv.includes('--force');
+
+  if ((order.status === 'paid' || order.status === 'approved') && !forceEmail) {
     console.log('\n⚠️ Este pedido YA está confirmado como pagado.');
+    console.log('💡 Para reenviarle o enviarle el correo de confirmación de todos modos, ejecutá:');
+    console.log(`   rtk node scripts/confirmar-pago.mjs ${target} --send-email\n`);
     return;
   }
 
-  // Actualizar estado a 'paid'
-  const { error: updateErr } = await supabase
-    .from('orders')
-    .update({
-      status: 'paid',
-      updated_at: new Date().toISOString()
-    })
-    .eq('id', order.id);
+  // Actualizar estado a 'paid' si no lo estaba
+  if (order.status !== 'paid') {
+    const { error: updateErr } = await supabase
+      .from('orders')
+      .update({
+        status: 'paid',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', order.id);
 
-  if (updateErr) {
-    console.error('❌ Error actualizando pedido en Supabase:', updateErr.message);
-    process.exit(1);
+    if (updateErr) {
+      console.error('❌ Error actualizando pedido en Supabase:', updateErr.message);
+      process.exit(1);
+    }
+
+    console.log('\n✅ ¡Estado actualizado a PAGADO ("paid") en Supabase con éxito!');
+  } else {
+    console.log('\nℹ️ El pedido ya estaba pagado en Supabase. Enviando correo de confirmación...');
   }
-
-  console.log('\n✅ ¡Estado actualizado a PAGADO ("paid") en Supabase con éxito!');
 
   // Enviar email de confirmación al cliente
   if (customerEmail && resendApiKey) {
@@ -100,16 +108,25 @@ async function main() {
       const resend = new Resend(resendApiKey);
       console.log(`📧 Enviando correo de confirmación a ${customerEmail}...`);
 
+      const isQuarterly = order.plan === 'quarterly';
+      const subject = isQuarterly
+        ? '⭐ ¡Plan Trimestral confirmado! Tus Mystery Boxes están aseguradas 📦'
+        : '🎉 ¡Pago confirmado! Tu Mystery Box está asegurada 📦';
+
       const { data, error: emailErr } = await resend.emails.send({
         from: fromEmail,
         to: customerEmail,
-        subject: '🎉 ¡Pago confirmado! Tu Mystery Box está asegurada 📦',
+        subject,
         html: buildPaymentConfirmedEmail({
           customerName,
           friendlyId,
           edition: order.edition || 'Mystery Box',
           formattedTotal: totalFormatted,
-          shippingAddress: order.shipping_address || 'Tu dirección registrada'
+          shippingAddress: order.shipping_address || 'Tu dirección registrada',
+          plan: order.plan,
+          isQuarterly,
+          quantity: order.quantity,
+          totalBoxes: order.total_boxes
         })
       });
 
