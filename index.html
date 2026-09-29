@@ -267,15 +267,49 @@
       <!-- Email pre-registro + CTA -->
       <div id="cta-join-wrapper">
         <div class="pre-register-box">
-          <p class="pre-register-desc" style="font-size: 1.2rem; margin-bottom: 5px; font-weight: 500; text-align: center;">
-            Registrate con tu email y obtené tu box de <strong id="dynamic-intro-month">...</strong>. <br>
-            <span style="font-size: 1rem; font-weight: normal;">(Cupos limitados cada mes)</span>
-          </p>
-          <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico"
-            autocomplete="email">
-          <div id="preEmailSuggestion" class="email-suggestion-box"></div>
-          <div id="preEmailError" class="email-error-hint"></div>
-          <button class="cta-button massive cta-green" id="btn-join-club" disabled>Quiero unirme al club!</button>
+
+          <!-- Pricing & Value Preview Card (Opción 1) -->
+          <div class="pricing-preview-card neo-border">
+            <div class="pricing-preview-header">
+              <span class="preview-edition-badge">Edición <strong id="dynamic-intro-month">...</strong></span>
+              <span class="preview-stock-badge">🔥 Cupos muy limitados</span>
+            </div>
+
+            <div class="pricing-preview-price-box">
+              <span class="pricing-preview-label">Mystery Box mensual</span>
+              <div class="pricing-preview-amount-row">
+                <span class="pricing-preview-price">$44.900</span>
+                <span class="pricing-preview-period">/ caja</span>
+              </div>
+              <span class="pricing-preview-quarterly-hint">o $42.633 c/u con Plan Trimestral</span>
+            </div>
+
+            <div class="pricing-preview-perks">
+              <div class="preview-perk">
+                <i class="fas fa-check-circle"></i> <span><strong>6 a 10 snacks</strong> virales, importados y retro</span>
+              </div>
+              <div class="preview-perk">
+                <i class="fas fa-truck-fast"></i> <span><strong>Envío Gratis</strong> en todo CABA y GBA</span>
+              </div>
+              <div class="preview-perk">
+                <i class="fas fa-shield-halved"></i> <span><strong>Sin suscripción forzada:</strong> pagás por transferencia</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pre-register-form-wrap">
+            <p class="pre-register-prompt">
+              Ingresá tu email para asegurar tu lugar e ir al pago:
+            </p>
+            <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico"
+              autocomplete="email">
+            <div id="preEmailSuggestion" class="email-suggestion-box"></div>
+            <div id="preEmailError" class="email-error-hint"></div>
+            <button class="cta-button massive cta-green" id="btn-join-club">Quiero unirme al club!</button>
+            <p class="pre-register-trust-note">
+              🔒 Paso 1 de 2 · No se realiza ningún cobro hasta confirmar los datos
+            </p>
+          </div>
         </div>
       </div>
 
@@ -335,8 +369,10 @@
             <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico"
               required autocomplete="email">
             <div id="emailSuggestion" class="email-suggestion-box"></div>
-            <div id="emailError" class="email-error-hint"></div>
-            <input type="text" class="neo-input" placeholder="Nombre completo" required>
+            <div>
+              <input type="text" name="name" id="nameInput" class="neo-input" placeholder="Nombre y apellido" required autocomplete="name">
+              <div id="nameError" class="email-error-hint"></div>
+            </div>
             <div>
               <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Calle y altura (ej: Av. Corrientes 1500)"
                 required autocomplete="street-address">

@@ -531,16 +531,143 @@ h1, h2, h3 {
   justify-content: center;
   margin-bottom: 10px;
   width: 100%;
-  max-width: 500px;
+  max-width: 540px;
 }
 
-/* Pre-register box: email + botón */
+/* Pre-register box */
 .pre-register-box {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
   align-items: center;
+}
+
+/* Pricing & Value Preview Card (Opción 1) */
+.pricing-preview-card {
+  background-color: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  border-radius: 12px;
+  padding: 24px 22px;
+  width: 100%;
+  text-align: center;
+}
+
+.pricing-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.preview-edition-badge {
+  background-color: var(--bg-turquesa);
+  border: 2px solid var(--black);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.preview-stock-badge {
+  background-color: var(--bg-amarillo);
+  border: 2px solid var(--black);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.pricing-preview-price-box {
+  margin-bottom: 16px;
+}
+
+.pricing-preview-label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.pricing-preview-amount-row {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.pricing-preview-price {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 6vw, 2.9rem);
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.1;
+}
+
+.pricing-preview-period {
+  font-size: 1.05rem;
+  color: #555;
+  font-weight: 600;
+}
+
+.pricing-preview-quarterly-hint {
+  display: inline-block;
+  background-color: var(--accent-verde);
+  border: 1.5px solid var(--black);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.pricing-preview-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  background: #fdfdfd;
+  border: 2px dashed #999;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+
+.preview-perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--black);
+}
+
+.preview-perk i {
+  color: #1a9e3f;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.pre-register-form-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.pre-register-prompt {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2px;
 }
 
 .pre-email-input {
@@ -549,12 +676,33 @@ h1, h2, h3 {
   font-size: 1.15rem;
 }
 
-/* Botón deshabilitado */
-#btn-join-club:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: var(--shadow-solid) !important;
+.pre-register-form-wrap .cta-button.massive {
+  margin: 6px auto 0;
+}
+
+.pre-register-trust-note {
+  font-size: 0.85rem;
+  color: #222;
+  opacity: 0.85;
+  text-align: center;
+  margin-top: 4px;
+}
+
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.neo-input-shake {
+  animation: shakeInput 0.4s ease-in-out;
+  border-color: #ff2a5f !important;
+  background-color: #fff0f3 !important;
+}
+
+/* Botón con estado inválido opcional */
+#btn-join-club[data-invalid="true"] {
+  opacity: 0.85;
 }
 
 /* Expanded Checkout Card */

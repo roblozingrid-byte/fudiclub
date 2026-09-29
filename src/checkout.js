@@ -1,6 +1,6 @@
 import { AVAILABLE_STOCK, isPreorderMode, setPreorderMode } from './api.js';
 import posthog from 'posthog-js';
-import { validateEmailSyntax, isDisposableEmail, suggestEmailCorrection, validateAddress } from './email-validator.js';
+import { validateEmailSyntax, isDisposableEmail, suggestEmailCorrection, validateAddress, validateFullName } from './email-validator.js';
 
 export function calculateCurrentEdition() {
   const now = new Date();
@@ -266,9 +266,11 @@ export function initCheckoutFlow() {
     const preErrorEl = document.getElementById('preEmailError');
 
     setupEmailValidationUI(preEmailInput, preSuggestionEl, preErrorEl, (isValid) => {
-      btnJoin.disabled = !isValid;
       if (isValid) {
+        btnJoin.removeAttribute('data-invalid');
         localStorage.setItem('fudiclub_prereg_email', preEmailInput.value.trim());
+      } else {
+        btnJoin.setAttribute('data-invalid', 'true');
       }
     });
   }
@@ -278,6 +280,38 @@ export function initCheckoutFlow() {
     const emailErrorEl = document.getElementById('emailError');
 
     setupEmailValidationUI(emailInput, emailSuggestionEl, emailErrorEl);
+  }
+
+  const nameInput = document.getElementById('nameInput') || document.querySelector('input[placeholder*="Nombre"]');
+  const nameErrorEl = document.getElementById('nameError');
+
+  if (nameInput) {
+    const handleNameValidation = () => {
+      const val = nameInput.value.trim();
+      if (!val) {
+        if (nameErrorEl) nameErrorEl.classList.remove('active');
+        return;
+      }
+      const validation = validateFullName(val);
+      if (!validation.valid) {
+        if (nameErrorEl) {
+          nameErrorEl.textContent = validation.reason || 'Por favor ingresá tu nombre y apellido.';
+          nameErrorEl.classList.add('active');
+        }
+      } else {
+        if (nameErrorEl) nameErrorEl.classList.remove('active');
+      }
+    };
+
+    nameInput.addEventListener('blur', handleNameValidation);
+    nameInput.addEventListener('input', () => {
+      if (nameErrorEl && nameErrorEl.classList.contains('active')) {
+        const validation = validateFullName(nameInput.value.trim());
+        if (validation.valid) {
+          nameErrorEl.classList.remove('active');
+        }
+      }
+    });
   }
 
   const addressInput = document.getElementById('addressInput');
@@ -313,8 +347,33 @@ export function initCheckoutFlow() {
   }
 
   btnJoin.addEventListener('click', () => {
-    posthog.capture('checkout_started');
     const capturedEmail = preEmailInput ? preEmailInput.value.trim() : '';
+    const preErrorEl = document.getElementById('preEmailError');
+
+    if (!capturedEmail) {
+      if (preEmailInput) {
+        preEmailInput.focus();
+        preEmailInput.classList.add('neo-input-shake');
+        setTimeout(() => preEmailInput.classList.remove('neo-input-shake'), 600);
+      }
+      if (preErrorEl) {
+        preErrorEl.textContent = 'Por favor ingresá tu correo electrónico para continuar.';
+        preErrorEl.classList.add('active');
+      }
+      return;
+    }
+
+    const syntax = validateEmailSyntax(capturedEmail);
+    if (!syntax.valid) {
+      if (preEmailInput) preEmailInput.focus();
+      if (preErrorEl) {
+        preErrorEl.textContent = syntax.reason || 'Por favor ingresá un correo electrónico válido.';
+        preErrorEl.classList.add('active');
+      }
+      return;
+    }
+
+    posthog.capture('checkout_started');
 
     if (capturedEmail) {
       const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
@@ -630,7 +689,28 @@ export function initCheckoutFlow() {
         }
       }
 
-      const name = document.querySelector('input[placeholder="Nombre completo"]').value;
+      const nameInputElem = document.getElementById('nameInput') || document.querySelector('input[placeholder*="Nombre"]');
+      const name = nameInputElem ? nameInputElem.value.trim() : '';
+
+      if (name) {
+        const nameValidation = validateFullName(name);
+        if (!nameValidation.valid) {
+          alert(nameValidation.reason || 'Por favor ingresá tu nombre y apellido.');
+          const nameErrEl = document.getElementById('nameError');
+          if (nameErrEl) {
+            nameErrEl.textContent = nameValidation.reason || 'Por favor ingresá tu nombre y apellido.';
+            nameErrEl.classList.add('active');
+          }
+          if (nameInputElem) nameInputElem.focus();
+          btnSubmit.innerText = originalText;
+          btnSubmit.style.backgroundColor = '';
+          btnSubmit.style.color = '';
+          btnSubmit.disabled = false;
+          allInputs.forEach(input => input.disabled = false);
+          return;
+        }
+      }
+
       const rawAddressInput = document.getElementById('addressInput');
       const rawAddress = rawAddressInput ? rawAddressInput.value.trim() : '';
       const apartmentInput = document.getElementById('apartmentInput');
