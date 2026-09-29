@@ -9,7 +9,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        empresas: resolve(__dirname, 'empresas/index.html')
+        // empresas: resolve(__dirname, 'empresas/index.html') // Temporalmente oculto de producción hasta lanzamiento
       }
     }
   }
