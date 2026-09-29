@@ -1,5 +1,6 @@
 import { AVAILABLE_STOCK, isPreorderMode, setPreorderMode } from './api.js';
 import posthog from 'posthog-js';
+import { validateEmailSyntax, isDisposableEmail, suggestEmailCorrection, validateAddress } from './email-validator.js';
 
 export function calculateCurrentEdition() {
   const now = new Date();
@@ -166,6 +167,77 @@ export function updateCheckoutTotals() {
   }
 }
 
+export function setupEmailValidationUI(inputElement, suggestionEl, errorEl, onValidChange) {
+  if (!inputElement) return;
+
+  const updateValidation = () => {
+    const rawVal = inputElement.value;
+    const val = rawVal ? rawVal.trim() : '';
+
+    if (!val) {
+      if (suggestionEl) suggestionEl.classList.remove('active');
+      if (errorEl) errorEl.classList.remove('active');
+      if (onValidChange) onValidChange(false);
+      return;
+    }
+
+    // Check disposable
+    if (isDisposableEmail(val)) {
+      if (suggestionEl) suggestionEl.classList.remove('active');
+      if (errorEl) {
+        errorEl.textContent = 'No se permiten correos temporales. Por favor ingresá un email válido.';
+        errorEl.classList.add('active');
+      }
+      if (onValidChange) onValidChange(false);
+      return;
+    }
+
+    // Check syntax
+    const syntax = validateEmailSyntax(val);
+    const isBasicValid = inputElement.validity ? inputElement.validity.valid : true;
+    if (!syntax.valid || !isBasicValid) {
+      if (errorEl && val.includes('@') && val.length > 5) {
+        errorEl.textContent = syntax.reason || 'Correo electrónico inválido.';
+        errorEl.classList.add('active');
+      } else if (errorEl) {
+        errorEl.classList.remove('active');
+      }
+      if (suggestionEl) suggestionEl.classList.remove('active');
+      if (onValidChange) onValidChange(false);
+      return;
+    }
+
+    // Syntax is valid
+    if (errorEl) errorEl.classList.remove('active');
+
+    // Check typo suggestion
+    const suggestion = suggestEmailCorrection(val);
+    if (suggestion && suggestionEl) {
+      suggestionEl.innerHTML = `¿Quisiste decir <strong>${suggestion}</strong>? <button type="button" class="email-suggestion-btn">Corregir</button>`;
+      suggestionEl.classList.add('active');
+
+      const btn = suggestionEl.querySelector('.email-suggestion-btn');
+      if (btn) {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          inputElement.value = suggestion;
+          suggestionEl.classList.remove('active');
+          inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+          inputElement.focus();
+        };
+      }
+    } else if (suggestionEl) {
+      suggestionEl.classList.remove('active');
+    }
+
+    if (onValidChange) onValidChange(true);
+  };
+
+  inputElement.addEventListener('input', updateValidation);
+  inputElement.addEventListener('blur', updateValidation);
+}
+
 export function initCheckoutFlow() {
   const btnJoin = document.getElementById('btn-join-club');
   const ctaWrapper = document.getElementById('cta-join-wrapper');
@@ -190,11 +262,52 @@ export function initCheckoutFlow() {
   if (!btnJoin || !expandedCheckout) return;
 
   if (preEmailInput) {
-    preEmailInput.addEventListener('input', () => {
-      const isValid = preEmailInput.validity.valid && preEmailInput.value.trim() !== '';
+    const preSuggestionEl = document.getElementById('preEmailSuggestion');
+    const preErrorEl = document.getElementById('preEmailError');
+
+    setupEmailValidationUI(preEmailInput, preSuggestionEl, preErrorEl, (isValid) => {
       btnJoin.disabled = !isValid;
       if (isValid) {
         localStorage.setItem('fudiclub_prereg_email', preEmailInput.value.trim());
+      }
+    });
+  }
+
+  if (emailInput) {
+    const emailSuggestionEl = document.getElementById('emailSuggestion');
+    const emailErrorEl = document.getElementById('emailError');
+
+    setupEmailValidationUI(emailInput, emailSuggestionEl, emailErrorEl);
+  }
+
+  const addressInput = document.getElementById('addressInput');
+  const addressErrorEl = document.getElementById('addressError');
+
+  if (addressInput) {
+    const handleAddressValidation = () => {
+      const val = addressInput.value.trim();
+      if (!val) {
+        if (addressErrorEl) addressErrorEl.classList.remove('active');
+        return;
+      }
+      const validation = validateAddress(val);
+      if (!validation.valid) {
+        if (addressErrorEl) {
+          addressErrorEl.textContent = validation.reason || 'Falta la altura / número de la calle.';
+          addressErrorEl.classList.add('active');
+        }
+      } else {
+        if (addressErrorEl) addressErrorEl.classList.remove('active');
+      }
+    };
+
+    addressInput.addEventListener('blur', handleAddressValidation);
+    addressInput.addEventListener('input', () => {
+      if (addressErrorEl && addressErrorEl.classList.contains('active')) {
+        const validation = validateAddress(addressInput.value.trim());
+        if (validation.valid) {
+          addressErrorEl.classList.remove('active');
+        }
       }
     });
   }
@@ -492,10 +605,57 @@ export function initCheckoutFlow() {
       const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}` : `Edición ${baseEdition}`;
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
       const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'mercado_pago';
+      const emailInputElem = document.getElementById('emailInput');
+      const email = emailInputElem ? emailInputElem.value.trim() : '';
 
-      const email = document.getElementById('emailInput').value;
+      if (email) {
+        if (isDisposableEmail(email)) {
+          alert('No se permiten correos temporales. Por favor ingresá un email válido.');
+          btnSubmit.innerText = originalText;
+          btnSubmit.style.backgroundColor = '';
+          btnSubmit.style.color = '';
+          btnSubmit.disabled = false;
+          allInputs.forEach(input => input.disabled = false);
+          return;
+        }
+        const syntax = validateEmailSyntax(email);
+        if (!syntax.valid) {
+          alert(syntax.reason || 'Por favor ingresá un correo válido.');
+          btnSubmit.innerText = originalText;
+          btnSubmit.style.backgroundColor = '';
+          btnSubmit.style.color = '';
+          btnSubmit.disabled = false;
+          allInputs.forEach(input => input.disabled = false);
+          return;
+        }
+      }
+
       const name = document.querySelector('input[placeholder="Nombre completo"]').value;
-      const address = document.getElementById('addressInput').value;
+      const rawAddressInput = document.getElementById('addressInput');
+      const rawAddress = rawAddressInput ? rawAddressInput.value.trim() : '';
+      const apartmentInput = document.getElementById('apartmentInput');
+      const apartment = apartmentInput ? apartmentInput.value.trim() : '';
+
+      if (rawAddress) {
+        const addressValidation = validateAddress(rawAddress);
+        if (!addressValidation.valid) {
+          alert(addressValidation.reason || 'Por favor ingresá tu dirección con calle y altura.');
+          const addressErrEl = document.getElementById('addressError');
+          if (addressErrEl) {
+            addressErrEl.textContent = addressValidation.reason || 'Falta la altura / número de la calle.';
+            addressErrEl.classList.add('active');
+          }
+          if (rawAddressInput) rawAddressInput.focus();
+          btnSubmit.innerText = originalText;
+          btnSubmit.style.backgroundColor = '';
+          btnSubmit.style.color = '';
+          btnSubmit.disabled = false;
+          allInputs.forEach(input => input.disabled = false);
+          return;
+        }
+      }
+
+      const address = apartment ? `${rawAddress}, ${apartment}` : rawAddress;
       const cp = document.getElementById('cpInput').value;
       const allergiesText = document.querySelector('input[name="allergyInfo"]').value;
       const hasAllergy = document.getElementById('allergyToggle').checked;
@@ -542,6 +702,36 @@ export function initCheckoutFlow() {
             if (successMsg) successMsg.innerText = 'Completá el pago con los siguientes datos:';
             if (transferDetails) transferDetails.style.display = 'block';
             if (transferInstructions) transferInstructions.style.display = 'block';
+
+            const btnWhatsapp = document.getElementById('btn-whatsapp-proof');
+            if (btnWhatsapp) {
+              const msg = `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (MOCK-ORDER)`;
+              btnWhatsapp.href = `https://wa.me/5491139264426?text=${encodeURIComponent(msg)}`;
+              btnWhatsapp.onclick = () => {
+                posthog.capture('whatsapp_receipt_clicked', {
+                  order_id: 'MOCK-ORDER',
+                  email: email,
+                  plan: planValue
+                });
+              };
+            }
+
+            try {
+              posthog.identify(email, {
+                email: email,
+                name: name,
+                plan: planValue,
+                payment_method: paymentMethod,
+                edition: editionAssigned
+              });
+              posthog.capture('transfer_details_viewed', {
+                order_id: 'MOCK-ORDER',
+                amount: payload.total,
+                plan: planValue,
+                edition: editionAssigned,
+                quantity: orderQuantity
+              });
+            } catch (e) {}
           } else {
             if (successTitle) successTitle.innerText = '¡Preparando tu pedido! 📦';
             if (successMsg) successMsg.innerText = 'Redirigiendo a Mercado Pago... 🚀';
@@ -587,6 +777,40 @@ export function initCheckoutFlow() {
           if (successMsg) successMsg.innerText = 'Completá el pago con los siguientes datos:';
           if (transferDetails) transferDetails.style.display = 'block';
           if (transferInstructions) transferInstructions.style.display = 'block';
+
+          const btnWhatsapp = document.getElementById('btn-whatsapp-proof');
+          if (btnWhatsapp) {
+            const friendlyOrderId = data.orderId || '';
+            const msg = `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId})`;
+            btnWhatsapp.href = `https://wa.me/5491139264426?text=${encodeURIComponent(msg)}`;
+            btnWhatsapp.onclick = () => {
+              posthog.capture('whatsapp_receipt_clicked', {
+                order_id: friendlyOrderId,
+                email: email,
+                plan: planValue,
+                total: payload.total
+              });
+            };
+          }
+
+          try {
+            posthog.identify(email, {
+              email: email,
+              name: name,
+              plan: planValue,
+              payment_method: paymentMethod,
+              edition: editionAssigned
+            });
+            posthog.capture('transfer_details_viewed', {
+              order_id: data.orderId,
+              amount: payload.total,
+              plan: planValue,
+              edition: editionAssigned,
+              quantity: orderQuantity
+            });
+          } catch (e) {
+            console.error('PostHog error:', e);
+          }
         } else if (data.init_point) {
           if (successTitle) successTitle.innerText = '¡Preparando tu pedido! 📦';
           if (successMsg) successMsg.innerText = 'Redirigiendo a Mercado Pago... 🚀';
@@ -606,7 +830,10 @@ export function initCheckoutFlow() {
         
         allInputs.forEach(input => input.disabled = false);
         
-        alert('Ocurrió un error al procesar tu pedido. Intentá nuevamente.');
+        const displayMsg = (err.message && err.message !== 'Connection failure' && !err.message.includes('fetch'))
+          ? err.message
+          : 'Ocurrió un error al procesar tu pedido. Intentá nuevamente.';
+        alert(displayMsg);
       });
     });
   }

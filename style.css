@@ -1909,6 +1909,63 @@ textarea.neo-input {
 .pulsing-play {
   animation: pulse-btn 1.5s infinite;
 }
+
+/* Email Typo Suggestion and Validation Hints */
+.email-suggestion-box {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: var(--accent-amarillo, #ffd84d);
+  border: 2px solid var(--black, #111);
+  box-shadow: 2px 2px 0px var(--black, #111);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--black, #111);
+  text-align: left;
+}
+
+.email-suggestion-box.active {
+  display: block;
+}
+
+.email-suggestion-btn {
+  background-color: var(--accent-verde, #d1ff5e);
+  color: var(--black, #111);
+  border: 1.5px solid var(--black, #111);
+  box-shadow: 1px 1px 0px var(--black, #111);
+  border-radius: 4px;
+  font-weight: 700;
+  padding: 3px 8px;
+  margin-left: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: transform 0.1s;
+}
+
+.email-suggestion-btn:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 0px 0px 0px var(--black, #111);
+}
+
+.email-error-hint {
+  display: none;
+  margin-top: 6px;
+  padding: 6px 10px;
+  background-color: #ffc4c4;
+  border: 2px solid var(--black, #111);
+  box-shadow: 2px 2px 0px var(--black, #111);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #990000;
+  text-align: left;
+}
+
+.email-error-hint.active {
+  display: block;
+}
+
 /* Media Queries for Accessibility */
 
 @media (max-width: 768px) {

@@ -2,6 +2,9 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { corsHeaders } from '../_shared/cors.ts'
 import { getSupabaseClient } from '../_shared/supabase.ts'
 import { sendEmail } from '../_shared/resend.ts'
+import { validateEmail } from '../_shared/email-validator.ts'
+import { generateConfirmationToken } from '../_shared/token.ts'
+import { buildAdminOrderNotificationEmail, buildTransferInstructionsEmail } from '../_shared/email-templates.ts'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -16,13 +19,29 @@ serve(async (req) => {
       throw new Error('Missing required fields')
     }
 
+    const validation = await validateEmail(email)
+    if (!validation.valid) {
+      return new Response(
+        JSON.stringify({ error: validation.reason || 'El correo electrónico no es válido.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
+    if (typeof address !== 'string' || address.trim().length < 5 || !/\d+/.test(address)) {
+      return new Response(
+        JSON.stringify({ error: 'La dirección debe incluir calle y altura (número).' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
+    const cleanEmail = email.trim().toLowerCase()
     const supabase = getSupabaseClient()
 
     // 1. Insert or update customer
     const { data: customer, error: customerError } = await supabase
       .from('customers')
       .upsert(
-        { email, name, address, cp, allergies },
+        { email: cleanEmail, name, address, cp, allergies },
         { onConflict: 'email' }
       )
       .select()
@@ -75,7 +94,7 @@ serve(async (req) => {
     const orderPayload: any = {
       customer_id: customer.id,
       customer_name: name,
-      customer_email: email,
+      customer_email: cleanEmail,
       status: 'pending',
       plan,
       payment_method,
@@ -114,56 +133,38 @@ serve(async (req) => {
     const paymentMethodLabel = payment_method === 'transfer' ? 'Transferencia Bancaria 📲' : 'Mercado Pago 💳';
     const formattedTotal = total.toLocaleString('es-AR');
 
+    let confirmUrl = '';
+    if (payment_method === 'transfer') {
+      try {
+        const secret = Deno.env.get('ADMIN_CONFIRM_SECRET') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || 'fudi-secret';
+        const confirmToken = await generateConfirmationToken(order.id, secret);
+        const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+        confirmUrl = `${supabaseUrl}/functions/v1/confirm-payment?order_id=${order.id}&token=${confirmToken}`;
+      } catch (tokenErr) {
+        console.error('Error generando token de confirmación:', tokenErr);
+      }
+    }
+
     try {
       await sendEmail({
         to: adminEmail,
         subject: `🔔 ¡Nuevo Pedido ${friendlyId}! - ${name} ($${formattedTotal})`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>
-              body { font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111; }
-            </style>
-          </head>
-          <body style="font-family: Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #ffd84d; padding: 25px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px;">
-              <div style="text-align: center; margin-bottom: 20px;">
-                <img src="https://fudiclub.shop/imagenes/Logo-blanco-plano.png" alt="Fudi Club" style="max-width: 130px; margin-bottom: 10px; display: inline-block;" />
-                <h1 style="font-size: 22px; font-weight: 700; text-transform: uppercase; margin: 0; color: #111;">¡Nuevo Pedido Recibido! 📦✨</h1>
-                <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold; color: #222;">Se acaba de registrar una compra en la web.</p>
-              </div>
-
-              <div style="background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 6px; margin: 15px 0;">
-                <p style="margin: 6px 0; font-size: 15px;"><strong>ID Pedido:</strong> <span style="font-family: monospace; font-size: 16px; background-color: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${friendlyId}</span></p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Cliente:</strong> ${name}</p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #2563eb;">${email}</a></p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Dirección:</strong> ${address} (CP: ${cp})</p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Alergias / Restricciones:</strong> ${allergies || 'Ninguna'}</p>
-                
-                <hr style="border: 0; border-top: 2px dashed #111; margin: 15px 0;" />
-                
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Tipo de Compra:</strong> <span style="background-color: ${isQuarterly ? '#d1ff5e' : '#4ebaba'}; padding: 3px 8px; border: 1px solid #111; font-weight: bold; border-radius: 4px;">${planName}</span></p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Edición / Meses:</strong> <strong>${finalEdition}</strong></p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Cantidad:</strong> <strong>${qty}</strong> pack(s) &rarr; <strong>${totalBoxes} box(es) en total</strong> (${qty} por mes)</p>
-                <p style="margin: 6px 0; font-size: 15px;"><strong>Método de Pago:</strong> <strong>${paymentMethodLabel}</strong></p>
-                <p style="margin: 6px 0; font-size: 18px;"><strong>Total a Cobrar:</strong> <strong style="color: #059669;">$${formattedTotal}</strong></p>
-              </div>
-
-              ${payment_method === 'transfer' ? `
-              <div style="background-color: #d1ff5e; padding: 15px; border: 3px solid #111; border-radius: 6px; margin: 15px 0; text-align: center;">
-                <p style="margin: 0; font-weight: bold; font-size: 15px;">📲 Pago por Transferencia Bancaria</p>
-                <p style="margin: 5px 0 0 0; font-size: 13px;">El cliente recibió los datos de CBU/Alias y el botón directo para enviar su comprobante por WhatsApp.</p>
-              </div>
-              ` : ''}
-
-              <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #555;">
-                <p style="margin: 0;">Fudi Club &bull; Notificación Automática de Pedido</p>
-              </div>
-            </div>
-          </body>
-          </html>
-        `
+        html: buildAdminOrderNotificationEmail({
+          friendlyId,
+          name,
+          email: cleanEmail,
+          address,
+          cp,
+          allergies,
+          planName,
+          finalEdition,
+          qty,
+          totalBoxes,
+          paymentMethodLabel,
+          formattedTotal,
+          isQuarterly,
+          confirmUrl
+        })
       });
     } catch (adminEmailErr) {
       console.error('Error enviando notificación al admin:', adminEmailErr);
@@ -182,7 +183,7 @@ serve(async (req) => {
             unit_price: total
           }
         ],
-        payer: { email },
+        payer: { email: cleanEmail },
         external_reference: order.id,
         back_urls: {
           success: `${req.headers.get('origin') || 'http://localhost:5173'}?payment=success`,
@@ -217,52 +218,15 @@ serve(async (req) => {
     } else if (payment_method === 'transfer') {
       // Transfer logic: send email instructions
       await sendEmail({
-        to: email,
-        subject: 'Instrucciones de Transferencia',
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>
-              @import url('https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap');
-              body { font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111; }
-              .container { max-width: 600px; margin: 0 auto; background-color: #4ebaba; padding: 30px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px; font-family: 'Space Grotesk', Arial, sans-serif; }
-              .header { text-align: center; margin-bottom: 20px; }
-              .header h1 { font-family: 'Corben', Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; margin: 0; }
-              .box { background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 4px; margin: 20px 0; font-family: 'Space Grotesk', Arial, sans-serif; }
-              .box p { margin: 10px 0; font-size: 16px; font-family: 'Space Grotesk', Arial, sans-serif; }
-              .footer { text-align: center; font-size: 14px; font-weight: bold; margin-top: 20px; font-family: 'Space Grotesk', Arial, sans-serif; }
-            </style>
-          </head>
-          <body style="font-family: 'Space Grotesk', Arial, sans-serif; background-color: #f4f4f0; padding: 20px; color: #111;">
-            <div class="container" style="max-width: 600px; margin: 0 auto; background-color: #4ebaba; padding: 30px; border: 4px solid #111; box-shadow: 8px 8px 0px #111; border-radius: 8px; font-family: 'Space Grotesk', Arial, sans-serif;">
-              <div class="header" style="text-align: center; margin-bottom: 20px;">
-                <img src="https://fudiclub.shop/imagenes/Logo-blanco-plano.png" alt="Fudi Club" style="max-width: 150px; margin-bottom: 15px; display: inline-block;" />
-                <h1 style="font-family: 'Corben', Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; margin: 0;">¡Hola ${name}! 📦</h1>
-              </div>
-              <p style="font-size: 18px; font-weight: bold; text-align: center; font-family: 'Space Grotesk', Arial, sans-serif;">Has iniciado la reserva de tu Fudi Club Box.</p>
-              
-              <div class="box" style="background-color: #fff; padding: 20px; border: 3px solid #111; border-radius: 4px; margin: 20px 0; font-family: 'Space Grotesk', Arial, sans-serif;">
-                <p style="margin-top: 0; font-family: 'Space Grotesk', Arial, sans-serif;"><strong>Para confirmar tu pedido, realiza la transferencia con los siguientes datos y envianos tu comprobante:</strong></p>
-                <p style="font-family: 'Space Grotesk', Arial, sans-serif;">Alias: <strong>roblesingrid.bna</strong></p>
-                <p style="font-family: 'Space Grotesk', Arial, sans-serif;">CBU: <strong>0110036530003610750715</strong></p>
-                <p style="margin-bottom: 0; font-family: 'Space Grotesk', Arial, sans-serif;">Monto a transferir: <strong>$${total}</strong></p>
-              </div>
-              
-              <div style="text-align: center; margin: 30px 0; font-family: 'Space Grotesk', Arial, sans-serif;">
-                <a href="https://wa.me/5491139264426?text=Hola,%20soy%20${name},%20adjunto%20comprobante%20de%20mi%20Mystery%20Box" style="font-family: 'Space Grotesk', Arial, sans-serif; background-color: #d1ff5e; color: #111; padding: 15px 25px; text-decoration: none; font-weight: bold; border: 3px solid #111; border-radius: 6px; display: inline-block; box-shadow: 4px 4px 0px #111;">
-                  📲 Enviar Comprobante por WhatsApp
-                </a>
-                <p style="margin-top: 15px; font-size: 14px; font-weight: bold; font-family: 'Space Grotesk', Arial, sans-serif;">(O envíalo manualmente al +54 9 11 3926-4426)</p>
-              </div>
-              
-              <div class="footer" style="text-align: center; font-size: 14px; font-weight: bold; margin-top: 20px; font-family: 'Space Grotesk', Arial, sans-serif;">
-                <p>¡Gracias por sumarte al club!</p>
-              </div>
-            </div>
-          </body>
-          </html>
-        `
+        to: cleanEmail,
+        subject: '📦 ¡Tu reserva en Fudi Club! Instrucciones para transferir',
+        html: buildTransferInstructionsEmail({
+          name,
+          friendlyId,
+          total,
+          edition: finalEdition,
+          createdAt: order.created_at
+        })
       })
 
       return new Response(

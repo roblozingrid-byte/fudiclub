@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { corsHeaders } from '../_shared/cors.ts'
 import { getSupabaseClient } from '../_shared/supabase.ts'
 import { sendEmail } from '../_shared/resend.ts'
+import { validateEmail } from '../_shared/email-validator.ts'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -69,15 +70,20 @@ serve(async (req) => {
     const body = await req.json()
     const { email, note } = body
 
-    if (!email) {
-      throw new Error('Email is required')
+    const validation = await validateEmail(email)
+    if (!validation.valid) {
+      return new Response(
+        JSON.stringify({ error: validation.reason || 'El correo electrónico no es válido.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
     }
 
+    const cleanEmail = email.trim().toLowerCase()
     const supabase = getSupabaseClient()
 
     const { error } = await supabase
       .from('waitlist')
-      .insert({ email, note: note || 'Interesado (Pre-checkout)' })
+      .insert({ email: cleanEmail, note: note || 'Interesado (Pre-checkout)' })
 
     // Ignore duplicate email error for waitlist, update note if provided
     if (error && error.code === '23505') {
@@ -85,7 +91,7 @@ serve(async (req) => {
         await supabase
           .from('waitlist')
           .update({ note })
-          .eq('email', email)
+          .eq('email', cleanEmail)
       }
     } else if (error) {
       throw error

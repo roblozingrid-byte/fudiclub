@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { getSupabaseClient } from '../_shared/supabase.ts'
 import { sendEmail } from '../_shared/resend.ts'
+import { buildPaymentConfirmedEmail } from '../_shared/email-templates.ts'
 
 serve(async (req) => {
   try {
@@ -45,16 +46,21 @@ serve(async (req) => {
 
         if (order && order.customers) {
           // Send confirmation email
+          const formattedTotal = Number(order.total || 0).toLocaleString('es-AR')
           await sendEmail({
             to: order.customers.email,
-            subject: '¡Pago Confirmado! - Fudi Club',
-            html: `
-              <h1>¡Hola ${order.customers.name}!</h1>
-              <p>Hemos recibido tu pago correctamente por tu Fudi Club Box.</p>
-              <p>Tu orden número <strong>${orderId}</strong> está confirmada.</p>
-              <p>Nos pondremos en contacto pronto con los detalles del envío.</p>
-              <p>¡Gracias por ser parte del club!</p>
-            `
+            subject: '🎉 ¡Pago confirmado! Tu Mystery Box está asegurada 📦',
+            html: buildPaymentConfirmedEmail({
+              customerName: order.customers.name,
+              friendlyId: order.friendly_id || orderId,
+              edition: order.edition || 'Mystery Box',
+              formattedTotal,
+              shippingAddress: order.shipping_address || 'Tu dirección registrada',
+              plan: order.plan,
+              isQuarterly: order.plan === 'quarterly',
+              quantity: order.quantity,
+              totalBoxes: order.total_boxes
+            })
           })
         }
       }

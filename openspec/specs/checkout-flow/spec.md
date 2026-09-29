@@ -15,13 +15,21 @@ The system SHALL expose a `create-order` Edge Function that receives checkout de
 #### Scenario: Checkout with Transferencia Bancaria
 - **WHEN** a user submits the checkout form selecting `transfer`
 - **THEN** the system creates the order in the database, uses Resend API to send a neo-brutalist styled HTML email with transfer instructions (sender "Fudi Club") instructing them to send proof via WhatsApp, and returns a success response. The UI also directs them to WhatsApp.
+- **AND** the system sends a notification email to the admin with a secure 1-click HMAC payment confirmation link.
+
+### Requirement: Confirm Payment Function & Admin One-Click
+The system SHALL expose a `confirm-payment` Edge Function validating secure HMAC tokens to approve transfer payments.
+
+#### Scenario: Admin Approves Payment in One-Click
+- **WHEN** the admin clicks the confirmation link in the notification email
+- **THEN** the system verifies the HMAC signature, updates `orders.status` to `paid`, and sends the branded confirmation email to the customer.
 
 ### Requirement: Webhook for Mercado Pago
 The system SHALL expose a `webhook-mp` Edge Function to process Instant Payment Notifications from Mercado Pago.
 
 #### Scenario: Payment Approved
 - **WHEN** Mercado Pago sends a notification that a payment is `approved`
-- **THEN** the system updates the order status to `paid` and sends a confirmation email to the customer using Resend.
+- **THEN** the system updates the order status to `paid` and sends a confirmation email to the customer using Resend (adapting dynamically for Single or Quarterly plans).
 
 ### Requirement: Alphanumeric CP Parsing
 The frontend SHALL parse alphanumeric postal codes correctly to calculate shipping tiers.

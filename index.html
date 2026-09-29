@@ -273,6 +273,8 @@
           </p>
           <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico"
             autocomplete="email">
+          <div id="preEmailSuggestion" class="email-suggestion-box"></div>
+          <div id="preEmailError" class="email-error-hint"></div>
           <button class="cta-button massive cta-green" id="btn-join-club" disabled>Quiero unirme al club!</button>
         </div>
       </div>
@@ -332,10 +334,16 @@
             <h3 class="modal-subtitle">Tus Datos</h3>
             <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico"
               required autocomplete="email">
+            <div id="emailSuggestion" class="email-suggestion-box"></div>
+            <div id="emailError" class="email-error-hint"></div>
             <input type="text" class="neo-input" placeholder="Nombre completo" required>
+            <div>
+              <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Calle y altura (ej: Av. Corrientes 1500)"
+                required autocomplete="street-address">
+              <div id="addressError" class="email-error-hint"></div>
+            </div>
             <div style="display: flex; gap: 10px;">
-              <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Dirección de envío"
-                required style="flex: 2;">
+              <input type="text" name="apartment" id="apartmentInput" class="neo-input" placeholder="Piso / Depto (opcional)" style="flex: 2;">
               <input type="text" id="cpInput" class="neo-input" placeholder="CP" required maxlength="8" style="flex: 1;">
             </div>
 
@@ -416,7 +424,7 @@
         <p style="margin-top: 10px; font-size: 1.1rem;"><strong>Monto a transferir:</strong> <span id="transfer-amount">$0</span></p>
       </div>
       <p id="transfer-instructions" style="display: none; margin-top: 15px; font-size: 1rem; text-align: center;">
-        <a href="https://wa.me/5491139264426?text=Hola,%20adjunto%20comprobante%20de%20mi%20Mystery%20Box" target="_blank" class="checkout-btn" style="display: inline-block; background-color: #25D366; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border: 2px solid var(--black); border-radius: 4px;">
+        <a id="btn-whatsapp-proof" href="https://wa.me/5491139264426?text=Hola,%20adjunto%20comprobante%20de%20mi%20Mystery%20Box" target="_blank" class="checkout-btn" style="display: inline-block; background-color: #25D366; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border: 2px solid var(--black); border-radius: 4px;">
           Enviar comprobante por WhatsApp
         </a>
         <br><small style="display: block; margin-top: 10px;">(O envialo manualmente al +54 9 11 3926-4426)</small>

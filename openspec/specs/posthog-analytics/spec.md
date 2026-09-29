@@ -28,3 +28,15 @@ El sistema DEBE registrar los intentos de validación de zonas de entrega (verif
 - **GIVEN** el modal o sección de validación de entrega está abierto
 - **WHEN** el usuario ingresa un código postal y hace clic en verificar
 - **THEN** se envía un evento `zone_validation` a PostHog con la propiedad del resultado (ej. `isValid: true/false`, `zipCode`)
+
+### Requirement: Funnel de Transferencias Bancarias
+El sistema DEBE rastrear la visualización de datos bancarios y la interacción con WhatsApp para armar funnels de conversión.
+
+#### Scenario: Visualización de datos de transferencia
+- **WHEN** el usuario completa una compra con método de transferencia
+- **THEN** se emite el evento `transfer_details_viewed` con `order_id` y `total`
+- **AND** se ejecuta `posthog.identify` asociando la identidad del cliente
+
+#### Scenario: Clic para enviar comprobante por WhatsApp
+- **WHEN** el usuario hace clic en el botón de envío de comprobante en la pantalla final
+- **THEN** se emite el evento `whatsapp_receipt_clicked` con el identificador del pedido
