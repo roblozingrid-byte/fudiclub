@@ -150,7 +150,7 @@ describe('src/checkout.js', () => {
       expect(document.getElementById('summary-delivery').innerText).toBe('¡Gratis!');
       expect(document.getElementById('summary-total').innerText).toBe('$127.900');
       expect(document.getElementById('summary-subtotal-label').innerText).toContain('Trimestral = 3 Boxes');
-      expect(document.getElementById('current-edition-display').innerText).toBe('Abril, Mayo y Junio');
+      expect(document.getElementById('current-edition-display').innerText).toBe('Abr, May y Jun');
     });
 
     it('multiplies price by quantity', () => {

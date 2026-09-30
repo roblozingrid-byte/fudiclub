@@ -165,12 +165,14 @@ export function updateCheckoutTotals() {
   const currentEditionDisplay = document.getElementById('current-edition-display');
   if (currentEditionDisplay) {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const monthAbbr = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const baseEdition = calculateCurrentEdition();
     const bIndex = months.indexOf(baseEdition);
     if (isQuarterly) {
-      const m2 = months[(bIndex + 1) % 12];
-      const m3 = months[(bIndex + 2) % 12];
-      currentEditionDisplay.innerText = `${baseEdition}, ${m2} y ${m3}`;
+      const a1 = monthAbbr[bIndex];
+      const a2 = monthAbbr[(bIndex + 1) % 12];
+      const a3 = monthAbbr[(bIndex + 2) % 12];
+      currentEditionDisplay.innerText = `${a1}, ${a2} y ${a3}`;
     } else {
       currentEditionDisplay.innerText = baseEdition;
     }
