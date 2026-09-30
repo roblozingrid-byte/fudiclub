@@ -173,3 +173,35 @@ export function validateAddress(address) {
   return { valid: true };
 }
 
+/**
+ * Validates full name (requires at least first name and last name).
+ * @param {string} name 
+ * @returns {{ valid: boolean, reason?: string }}
+ */
+export function validateFullName(name) {
+  if (!name || typeof name !== 'string') {
+    return { valid: false, reason: 'Por favor ingresá tu nombre y apellido.' };
+  }
+
+  const trimmed = name.trim();
+  if (trimmed.length < 4) {
+    return { valid: false, reason: 'Por favor ingresá tu nombre y apellido completo (ej: Juan Pérez).' };
+  }
+
+  if (/\d/.test(trimmed)) {
+    return { valid: false, reason: 'El nombre no puede contener números.' };
+  }
+
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length < 2) {
+    return { valid: false, reason: 'Por favor ingresá tu nombre y apellido (ej: Juan Pérez).' };
+  }
+
+  if (parts[0].length < 2 || parts[1].length < 2) {
+    return { valid: false, reason: 'Por favor ingresá un nombre y apellido válidos.' };
+  }
+
+  return { valid: true };
+}
+
+

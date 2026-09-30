@@ -208,57 +208,6 @@
       <div class="disclaimer-label master-disclaimer">PRODUCTOS DE REFERENCIA - VARIAN CADA MES</div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="faq-section neo-border-section" id="faq">
-      <h2 class="section-title">Preguntas Frecuentes</h2>
-      <div class="faq-container">
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>¿Cuándo me llega la Mystery Box?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Los despachos se realizan los días 15 de cada mes. La demora es de hasta 2 días hábiles según tu zona de envío.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>¿Qué pasa si el producto llega dañado?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Tenés hasta 24hs desde que recibís la caja para reportarlo. Escribinos a nuestro WhatsApp de soporte con fotos del producto y lo solucionaremos.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>¿Es una suscripción que se renueva sola?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>No. Pagás por única vez por 1 box, o elegís el Plan Trimestral (3 boxes, 1 por mes) que se cobra de una vez.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>¿Puedo elegir qué trae la Box?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>No, es una Mystery Box. ¡Esa es la gracia! Es un secreto, pero siempre incluimos entre 6 y 10 productos geniales. Mezclamos snacks importados tendencia con esas golosinas de tu infancia que te desbloquean recuerdos, y sorpresas increíbles que no vas a encontrar en ningún otro lado.</p>
-          </div>
-        </div>
-        <div class="faq-item neo-border">
-          <div class="faq-question">
-            <span>¿En qué zonas hacen envíos?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Por ahora hacemos envíos gratuitos a todo CABA, GBA Norte, Sur y Oeste.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Checkout / Security Filter -->
     <section class="checkout neo-border-section" id="registro">
@@ -276,7 +225,7 @@
             </div>
 
             <div class="pricing-preview-price-box">
-              <span class="pricing-preview-label">Mystery Box mensual</span>
+              <span class="pricing-preview-label">Mystery Box</span>
               <div class="pricing-preview-amount-row">
                 <span class="pricing-preview-price">$44.900</span>
                 <span class="pricing-preview-period">/ caja</span>
@@ -305,7 +254,7 @@
               autocomplete="email">
             <div id="preEmailSuggestion" class="email-suggestion-box"></div>
             <div id="preEmailError" class="email-error-hint"></div>
-            <button class="cta-button massive cta-green" id="btn-join-club">Quiero unirme al club!</button>
+            <button class="cta-button massive cta-green" id="btn-join-club">Comprar mi Box</button>
             <p class="pre-register-trust-note">
               🔒 Paso 1 de 2 · No se realiza ningún cobro hasta confirmar los datos
             </p>
@@ -341,14 +290,14 @@
                 <div class="plan-badge-sticker">⭐ MEJOR PRECIO</div>
                 <div class="radio-neo-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
                   <span class="plan-name">Plan Trimestral</span>
-                  <span class="plan-price focal-price" style="font-size: 2.2rem;">$127.900</span>
+                  <span class="plan-price focal-price">$127.900</span>
                   <span class="plan-tag" style="background: transparent; box-shadow: none; padding: 0; margin-bottom: 3px; font-weight: bold;">(Equivale a $42.633 c/u)</span>
                   <span class="plan-tag">Ahorrás $6.800 por ciclo</span>
                 </div>
               </label>
             </div>
-            <div class="free-shipping-banner neo-border" style="margin-top: 15px; padding: 10px; background-color: var(--accent-verde); text-align: center; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
-              🚚 Envío Gratis para CABA y GBA
+            <div class="free-shipping-banner-dashed">
+              <i class="fas fa-truck-fast"></i> <span><strong>Envío Gratis</strong> para todo CABA y GBA</span>
             </div>
           </div>
 
@@ -427,17 +376,20 @@
             </div>
           </div>
 
-          <!-- 3. MÉTODO DE PAGO -->
-          <div class="form-section" style="margin-bottom: 15px; margin-top: 25px;">
+          <!-- 3. MÉTODO DE PAGO (Anuncio informativo) -->
+          <div class="form-section payment-announcement-section" style="margin-bottom: 15px; margin-top: 25px;">
             <h3 class="modal-subtitle">Método de Pago</h3>
-            <div class="purchase-options focal" style="margin-top: 10px;">
-              <label class="radio-neo plan-card focal-card selected" id="method-card-transfer">
-                <input type="radio" name="payment_method" value="transfer" checked>
-                <div class="radio-neo-content">
-                  <span class="plan-name">Transferencia Bancaria</span>
-                  <span class="plan-tag">Alias / CBU</span>
+            <div class="payment-method-announcement">
+              <input type="radio" name="payment_method" value="transfer" checked style="display: none;">
+              <div class="payment-announcement-header">
+                <div class="payment-announcement-title-wrap">
+                  <i class="fas fa-building-columns"></i>
+                  <span class="payment-announcement-title">Transferencia Bancaria</span>
                 </div>
-              </label>
+              </div>
+              <p class="payment-announcement-desc">
+                Al confirmar tu pedido te mostramos el <strong>Alias y CBU</strong> para realizar el pago desde tu app bancaria o billetera virtual.
+              </p>
             </div>
           </div>
 
@@ -446,7 +398,7 @@
               de entrega es de <strong>hasta 2 días hábiles</strong> posteriores, dependiendo de tu zona.</p>
           </div>
 
-          <button type="submit" class="cta-button massive cta-green">Ver datos para transferir</button>
+          <button type="submit" class="cta-button massive cta-green">Confirmar pedido</button>
         </form>
     </div>
 
@@ -467,10 +419,62 @@
       </p>
     </div>
   </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section neo-border-section" id="faq">
+      <h2 class="section-title">Preguntas Frecuentes</h2>
+      <div class="faq-container">
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Cuándo me llega la Mystery Box?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Los despachos se realizan los días 15 de cada mes. La demora es de hasta 2 días hábiles según tu zona de envío.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Qué pasa si el producto llega dañado?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Tenés hasta 24hs desde que recibís la caja para reportarlo. Escribinos a nuestro WhatsApp de soporte con fotos del producto y lo solucionaremos.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Es una suscripción que se renueva sola?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No. Pagás por única vez por 1 box, o elegís el Plan Trimestral (3 boxes, 1 por mes) que se cobra de una vez.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿Puedo elegir qué trae la Box?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No, es una Mystery Box. ¡Esa es la gracia! Es un secreto, pero siempre incluimos entre 6 y 10 productos geniales. Mezclamos snacks importados tendencia con esas golosinas de tu infancia que te desbloquean recuerdos, y sorpresas increíbles que no vas a encontrar en ningún otro lado.</p>
+          </div>
+        </div>
+        <div class="faq-item neo-border">
+          <div class="faq-question">
+            <span>¿En qué zonas hacen envíos?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Por ahora hacemos envíos gratuitos a todo CABA, GBA Norte, Sur y Oeste.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Floating Urgency Stock Widget -->
-  <div class="stock-widget-floating neo-border">
+  <!-- Floating Urgency Stock Widget (solo visible cuando stock <= 15) -->
+  <div class="stock-widget-floating neo-border" style="display: none;">
     <div class="stock-info">
       <span class="stock-number" id="stock-number">30</span>
       <span class="stock-text">Boxes disponibles<br><strong style="font-size: 1.3rem;">Agosto</strong></span>

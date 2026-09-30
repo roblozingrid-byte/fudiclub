@@ -3,7 +3,8 @@ import {
   validateEmailSyntax,
   isDisposableEmail,
   suggestEmailCorrection,
-  validateAddress
+  validateAddress,
+  validateFullName
 } from '../src/email-validator.js';
 
 describe('src/email-validator.js', () => {
@@ -78,6 +79,26 @@ describe('src/email-validator.js', () => {
       expect(res.reason).toContain('Falta el número o altura');
 
       expect(validateAddress('Calle San Martin').valid).toBe(false);
+    });
+  });
+
+  describe('validateFullName', () => {
+    it('accepts valid full names with first and last name', () => {
+      expect(validateFullName('Juan Perez').valid).toBe(true);
+      expect(validateFullName('María De Los Ángeles Gómez').valid).toBe(true);
+      expect(validateFullName('Ingrid Robles').valid).toBe(true);
+      expect(validateFullName("Martín O'Connor").valid).toBe(true);
+    });
+
+    it('rejects empty or single word names', () => {
+      expect(validateFullName('').valid).toBe(false);
+      expect(validateFullName('Juan').valid).toBe(false);
+      expect(validateFullName('Maria').valid).toBe(false);
+    });
+
+    it('rejects names with numbers or too short parts', () => {
+      expect(validateFullName('Juan123 Perez').valid).toBe(false);
+      expect(validateFullName('J P').valid).toBe(false);
     });
   });
 });

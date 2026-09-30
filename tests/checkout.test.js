@@ -77,7 +77,7 @@ describe('src/checkout.js', () => {
       expect(preorderMonth.innerText).toBe('Junio');
     });
 
-    it('displays available stock and current month when stock > 0', () => {
+    it('displays available stock and current month when stock is <= 15', () => {
       vi.spyOn(apiModule, 'AVAILABLE_STOCK', 'get').mockReturnValue(15);
       vi.setSystemTime(new Date(2026, 4, 2)); // Mayo 2 (day <= 5)
 
@@ -87,10 +87,21 @@ describe('src/checkout.js', () => {
       const num = document.querySelector('.stock-number');
       const text = document.querySelector('.stock-text');
 
+      expect(widget.style.display).toBe('flex');
       expect(widget.classList.contains('sold-out')).toBe(false);
       expect(num.innerText).toBe('15');
       expect(text.innerHTML).toContain('Boxes disponibles');
       expect(text.innerHTML).toContain('Mayo');
+    });
+
+    it('hides stock widget when available stock is greater than 15', () => {
+      vi.spyOn(apiModule, 'AVAILABLE_STOCK', 'get').mockReturnValue(28);
+      vi.setSystemTime(new Date(2026, 4, 2));
+
+      updateStockWidget();
+
+      const widget = document.querySelector('.stock-widget-floating');
+      expect(widget.style.display).toBe('none');
     });
   });
 
@@ -188,7 +199,8 @@ describe('src/checkout.js', () => {
             <button id="btn-qty-plus">+</button>
 
             <input id="emailInput" type="email" />
-            <input placeholder="Nombre completo" value="Juan Perez" />
+            <input id="nameInput" placeholder="Nombre completo" value="Juan Perez" />
+            <div id="nameError" class="email-error-hint"></div>
             <input id="addressInput" value="Av Santa Fe 1234" />
             <div id="addressError" class="email-error-hint"></div>
             <input id="apartmentInput" />
@@ -610,6 +622,38 @@ describe('src/checkout.js', () => {
           })
         );
       });
+    });
+
+    it('shows name error on blur when surname is missing, and clears when fixed', () => {
+      initCheckoutFlow();
+
+      const nameInput = document.getElementById('nameInput');
+      const nameError = document.getElementById('nameError');
+
+      nameInput.value = 'Juan';
+      nameInput.dispatchEvent(new Event('blur'));
+
+      expect(nameError.classList.contains('active')).toBe(true);
+      expect(nameError.textContent).toContain('nombre y apellido');
+
+      nameInput.value = 'Juan Perez';
+      nameInput.dispatchEvent(new Event('input'));
+      expect(nameError.classList.contains('active')).toBe(false);
+    });
+
+    it('blocks checkout submission and alerts user if name has no surname', () => {
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+      initCheckoutFlow();
+
+      const nameInput = document.getElementById('nameInput');
+      nameInput.value = 'Carlos';
+
+      const paymentForm = document.getElementById('paymentForm');
+      paymentForm.dispatchEvent(new Event('submit', { cancelable: true }));
+
+      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('nombre y apellido'));
+      const submitBtn = paymentForm.querySelector('button[type="submit"]');
+      expect(submitBtn.disabled).toBe(false);
     });
   });
 });

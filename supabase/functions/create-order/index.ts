@@ -34,6 +34,13 @@ serve(async (req) => {
       )
     }
 
+    if (typeof name !== 'string' || name.trim().length < 4 || /\d/.test(name) || name.trim().split(/\s+/).filter(Boolean).length < 2) {
+      return new Response(
+        JSON.stringify({ error: 'Por favor ingresá tu nombre y apellido completo.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
     const cleanEmail = email.trim().toLowerCase()
     const supabase = getSupabaseClient()
 

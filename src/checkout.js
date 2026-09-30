@@ -45,6 +45,7 @@ export function updateStockWidget() {
   if (!stockNum || !stockText || !stockWidget) return;
 
   if (AVAILABLE_STOCK <= 0) {
+    stockWidget.style.display = 'flex';
     stockWidget.classList.add('sold-out');
     stockNum.innerText = '';
     stockText.innerHTML = '¡Edición<br>Agotada!';
@@ -53,6 +54,15 @@ export function updateStockWidget() {
     return;
   }
 
+  // Si hay más de 15 boxes disponibles, ocultamos el widget para no mostrar abundancia/falta de ventas
+  if (AVAILABLE_STOCK > 15) {
+    stockWidget.style.display = 'none';
+    return;
+  }
+
+  // Si quedan 15 o menos, mostramos el widget
+  stockWidget.style.display = 'flex';
+  stockWidget.classList.remove('sold-out');
   stockNum.innerText = AVAILABLE_STOCK.toString();
   stockText.innerHTML = `Boxes disponibles<br><strong style="font-size: 1.3rem;">${months[currentSaleMonthIndex]}</strong>`;
 }
@@ -268,6 +278,7 @@ export function initCheckoutFlow() {
     setupEmailValidationUI(preEmailInput, preSuggestionEl, preErrorEl, (isValid) => {
       if (isValid) {
         btnJoin.removeAttribute('data-invalid');
+        btnJoin.disabled = false;
         localStorage.setItem('fudiclub_prereg_email', preEmailInput.value.trim());
       } else {
         btnJoin.setAttribute('data-invalid', 'true');
@@ -620,8 +631,12 @@ export function initCheckoutFlow() {
   const methodCards = document.querySelectorAll('input[name="payment_method"]');
   methodCards.forEach(radio => {
     const card = radio.closest('.plan-card');
+    if (!card) return;
     radio.addEventListener('change', () => {
-      document.querySelectorAll('input[name="payment_method"]').forEach(r => r.closest('.plan-card').classList.remove('selected'));
+      document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+        const c = r.closest('.plan-card');
+        if (c) c.classList.remove('selected');
+      });
       if (radio.checked) card.classList.add('selected');
     });
   });

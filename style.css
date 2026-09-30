@@ -481,19 +481,20 @@ h1, h2, h3 {
 }
 
 .master-disclaimer {
-  max-width: 600px;
+  width: fit-content;
+  max-width: 90%;
   margin: 0 auto;
 }
 
 .disclaimer-label {
   font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
   text-align: center;
-  background-color: var(--bg-turquesa);
+  background-color: var(--bg-amarillo);
   color: var(--black);
-  padding: 10px 20px;
+  padding: 8px 22px;
   border-radius: 4px;
-  width: 100%;
   border: 2px solid var(--black);
   box-shadow: 4px 4px 0px var(--black);
 }
@@ -532,6 +533,8 @@ h1, h2, h3 {
   margin-bottom: 10px;
   width: 100%;
   max-width: 540px;
+  position: relative;
+  z-index: 60;
 }
 
 /* Pre-register box */
@@ -552,6 +555,8 @@ h1, h2, h3 {
   padding: 24px 22px;
   width: 100%;
   text-align: center;
+  position: relative;
+  z-index: 60; /* Above stickers-layer (50) */
 }
 
 .pricing-preview-header {
@@ -620,7 +625,7 @@ h1, h2, h3 {
 
 .pricing-preview-quarterly-hint {
   display: inline-block;
-  background-color: var(--accent-verde);
+  background-color: var(--accent-rosa);
   border: 1.5px solid var(--black);
   padding: 3px 8px;
   border-radius: 4px;
@@ -717,6 +722,7 @@ h1, h2, h3 {
   padding: 40px 36px;
   animation: slideDown 0.4s ease-out forwards;
   position: relative;
+  z-index: 60; /* Above stickers-layer (50) */
 }
 
 
@@ -828,11 +834,13 @@ h1, h2, h3 {
 }
 
 .focal-price {
-  font-family: var(--font-mono);
-  font-size: 2.4rem !important;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.35rem) !important;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1;
   color: var(--black);
+  letter-spacing: -0.5px;
+  margin: 4px 0;
 }
 
 .focal-price small {
@@ -857,6 +865,81 @@ h1, h2, h3 {
   font-size: 0.75rem;
   opacity: 0.7;
   margin-top: 2px;
+}
+
+/* Free shipping banner with dashed line (matches pre-checkout style) */
+.free-shipping-banner-dashed {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: #fdfdfd;
+  border: 2px dashed #666;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.free-shipping-banner-dashed i {
+  color: #1a9e3f;
+  font-size: 1.25rem;
+}
+
+/* Payment Method Announcement (informational card with dashed border, not a button) */
+.payment-method-announcement {
+  margin-top: 10px;
+  background-color: #fdfdfd;
+  border: 2px dashed #666;
+  border-radius: 10px;
+  padding: 16px 18px;
+  text-align: left;
+}
+
+.payment-announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.payment-announcement-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--black);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "calt" 0;
+}
+
+.payment-announcement-title-wrap i {
+  font-size: 1.2rem;
+  color: var(--black);
+}
+
+.payment-announcement-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--bg-amarillo);
+  border: 1.5px solid var(--black);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.payment-announcement-desc {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #444;
+  margin: 0;
 }
 
 /* Quantity Selector */
@@ -924,23 +1007,25 @@ h1, h2, h3 {
 /* Current Edition Banner */
 .current-edition-banner {
   background-color: var(--white);
-  padding: 15px 20px;
+  padding: 14px 18px;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
 }
 
 .edition-label {
-  font-weight: bold;
+  font-weight: 700;
+  color: var(--black);
 }
 
 .edition-value {
   background-color: var(--bg-turquesa);
-  padding: 8px 16px;
-  font-size: clamp(1.3rem, 4vw, 1.5rem);
+  padding: 6px 14px;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3.5vw, 1.35rem);
   border: 2px solid var(--black);
   border-radius: 4px;
   font-weight: 700;
@@ -1035,16 +1120,30 @@ h1, h2, h3 {
 .summary-line {
   display: flex;
   justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   color: var(--black);
+  font-weight: 500;
 }
 
 .summary-line.total-line {
   margin-top: 8px;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 2px solid var(--black);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.summary-line.total-line > span:first-child {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.summary-line.total-line #summary-total {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
   font-weight: 700;
 }
 
