@@ -248,6 +248,36 @@ export function setupEmailValidationUI(inputElement, suggestionEl, errorEl, onVa
   inputElement.addEventListener('blur', updateValidation);
 }
 
+export function setupFormValidationMessages(form) {
+  if (!form) return;
+  const inputs = form.querySelectorAll('input, select, textarea');
+  inputs.forEach(input => {
+    input.addEventListener('invalid', () => {
+      if (input.validity && input.validity.valueMissing) {
+        if (input.id === 'nameInput' || input.name === 'name') {
+          input.setCustomValidity('Por favor ingresá tu nombre y apellido.');
+        } else if (input.id === 'addressInput' || input.name === 'address') {
+          input.setCustomValidity('Por favor ingresá tu dirección (calle y altura).');
+        } else if (input.id === 'cpInput' || input.name === 'cp') {
+          input.setCustomValidity('Por favor ingresá tu código postal.');
+        } else if (input.type === 'email' || input.id === 'emailInput') {
+          input.setCustomValidity('Por favor ingresá tu correo electrónico.');
+        } else {
+          input.setCustomValidity('Por favor completá este campo.');
+        }
+      } else if (input.validity && input.validity.typeMismatch && input.type === 'email') {
+        input.setCustomValidity('Por favor ingresá un correo electrónico válido.');
+      } else if (input.validity && !input.validity.valid) {
+        input.setCustomValidity('Por favor completá este campo.');
+      }
+    });
+
+    input.addEventListener('input', () => {
+      input.setCustomValidity('');
+    });
+  });
+}
+
 export function initCheckoutFlow() {
   const btnJoin = document.getElementById('btn-join-club');
   const ctaWrapper = document.getElementById('cta-join-wrapper');
@@ -256,6 +286,10 @@ export function initCheckoutFlow() {
   const headerBtn = document.querySelector('.neo-header nav a[href="#registro"]');
   const preEmailInput = document.getElementById('preEmailInput');
   const emailInput = document.getElementById('emailInput');
+
+  if (paymentForm) {
+    setupFormValidationMessages(paymentForm);
+  }
 
   const currentEditionDisplay = document.getElementById('current-edition-display');
   if (currentEditionDisplay) {

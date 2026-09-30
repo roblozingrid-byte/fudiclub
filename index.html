@@ -316,20 +316,28 @@
           <div class="form-section">
             <h3 class="modal-subtitle">Tus Datos</h3>
             <input type="email" name="email" id="emailInput" class="neo-input" placeholder="Tu correo electrónico"
-              required autocomplete="email">
+              required autocomplete="email"
+              oninvalid="this.validity.valueMissing ? this.setCustomValidity('Por favor ingresá tu correo electrónico.') : this.setCustomValidity('Por favor ingresá un correo electrónico válido.')"
+              oninput="this.setCustomValidity('')">
             <div id="emailSuggestion" class="email-suggestion-box"></div>
             <div>
-              <input type="text" name="name" id="nameInput" class="neo-input" placeholder="Nombre y apellido" required autocomplete="name">
+              <input type="text" name="name" id="nameInput" class="neo-input" placeholder="Nombre y apellido" required autocomplete="name"
+                oninvalid="this.setCustomValidity('Por favor ingresá tu nombre y apellido.')"
+                oninput="this.setCustomValidity('')">
               <div id="nameError" class="email-error-hint"></div>
             </div>
             <div>
               <input type="text" name="address" id="addressInput" class="neo-input" placeholder="Calle y altura (ej: Av. Corrientes 1500)"
-                required autocomplete="street-address">
+                required autocomplete="street-address"
+                oninvalid="this.setCustomValidity('Por favor ingresá tu dirección (calle y altura).')"
+                oninput="this.setCustomValidity('')">
               <div id="addressError" class="email-error-hint"></div>
             </div>
             <div style="display: flex; gap: 10px;">
               <input type="text" name="apartment" id="apartmentInput" class="neo-input" placeholder="Piso / Depto (opcional)" style="flex: 2;">
-              <input type="text" id="cpInput" class="neo-input" placeholder="CP" required maxlength="8" style="flex: 1;">
+              <input type="text" id="cpInput" class="neo-input" placeholder="CP" required maxlength="8" style="flex: 1;"
+                oninvalid="this.setCustomValidity('Por favor ingresá tu código postal.')"
+                oninput="this.setCustomValidity('')">
             </div>
 
 

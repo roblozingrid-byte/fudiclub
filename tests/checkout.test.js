@@ -5,7 +5,8 @@ import {
   calculateCurrentEdition,
   updateStockWidget,
   updateCheckoutTotals,
-  initCheckoutFlow
+  initCheckoutFlow,
+  setupFormValidationMessages
 } from '../src/checkout.js';
 
 describe('src/checkout.js', () => {
@@ -654,6 +655,47 @@ describe('src/checkout.js', () => {
       expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('nombre y apellido'));
       const submitBtn = paymentForm.querySelector('button[type="submit"]');
       expect(submitBtn.disabled).toBe(false);
+    });
+  });
+
+  describe('setupFormValidationMessages', () => {
+    it('sets Spanish validation messages on invalid event and clears on input', () => {
+      document.body.innerHTML = `
+        <form id="testForm">
+          <input type="text" id="nameInput" required />
+          <input type="text" id="addressInput" required />
+          <input type="text" id="cpInput" required />
+          <input type="email" id="emailInput" required />
+          <input type="text" id="genericInput" required />
+        </form>
+      `;
+      const form = document.getElementById('testForm');
+      setupFormValidationMessages(form);
+
+      const nameInput = document.getElementById('nameInput');
+      const addressInput = document.getElementById('addressInput');
+      const cpInput = document.getElementById('cpInput');
+      const emailInput = document.getElementById('emailInput');
+      const genericInput = document.getElementById('genericInput');
+
+      nameInput.dispatchEvent(new Event('invalid'));
+      expect(nameInput.validationMessage).toBe('Por favor ingresá tu nombre y apellido.');
+
+      addressInput.dispatchEvent(new Event('invalid'));
+      expect(addressInput.validationMessage).toBe('Por favor ingresá tu dirección (calle y altura).');
+
+      cpInput.dispatchEvent(new Event('invalid'));
+      expect(cpInput.validationMessage).toBe('Por favor ingresá tu código postal.');
+
+      emailInput.dispatchEvent(new Event('invalid'));
+      expect(emailInput.validationMessage).toBe('Por favor ingresá tu correo electrónico.');
+
+      genericInput.dispatchEvent(new Event('invalid'));
+      expect(genericInput.validationMessage).toBe('Por favor completá este campo.');
+
+      nameInput.value = 'Juan Perez';
+      nameInput.dispatchEvent(new Event('input'));
+      expect(nameInput.validationMessage).toBe('');
     });
   });
 });
