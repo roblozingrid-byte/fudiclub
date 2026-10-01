@@ -280,6 +280,56 @@ export function setupFormValidationMessages(form) {
   });
 }
 
+export function checkStockAndSaleWindow() {
+  const soldOutOptions = document.getElementById('sold-out-options');
+  const paymentForm = document.getElementById('paymentForm');
+  const now = new Date();
+  const day = now.getDate();
+
+  const isSaleWindowClosed = (day >= 6 && day <= 15);
+
+  if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
+    if (paymentForm) paymentForm.style.display = 'none';
+    if (soldOutOptions) {
+      const soldOutTitle = document.getElementById('sold-out-title');
+      const soldOutDesc = document.getElementById('sold-out-desc');
+      const months = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+      
+      let currentTargetIndex = now.getMonth();
+      if (day >= 16) {
+        currentTargetIndex = (currentTargetIndex + 1) % 12;
+      }
+      const exhaustedMonth = months[currentTargetIndex];
+      const upcomingMonth = months[(currentTargetIndex + 1) % 12];
+
+      if (isSaleWindowClosed) {
+        if (soldOutTitle) soldOutTitle.innerText = `¡Venta de ${exhaustedMonth} cerrada! 📦`;
+        if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran el día 5 de cada mes para hacer la curaduría, armar tu mystery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
+      } else {
+        if (soldOutTitle) soldOutTitle.innerText = `¡La edición de ${exhaustedMonth} voló! 😱`;
+        if (soldOutDesc) soldOutDesc.innerText = `Cerramos las ventas de este mes porque llegamos al límite de cupos. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
+      }
+
+      const preorderMonthSpan = document.getElementById('preorder-month');
+      if (preorderMonthSpan) {
+        preorderMonthSpan.innerText = upcomingMonth;
+      }
+
+      soldOutOptions.style.display = 'block';
+    }
+  } else {
+    if (paymentForm) {
+      paymentForm.style.display = 'block';
+    }
+    if (soldOutOptions) {
+      soldOutOptions.style.display = 'none';
+    }
+  }
+}
+
 export function initCheckoutFlow() {
   const btnJoin = document.getElementById('btn-join-club');
   const ctaWrapper = document.getElementById('cta-join-wrapper');
@@ -305,9 +355,27 @@ export function initCheckoutFlow() {
   updateStockWidget();
   updateCheckoutTotals();
 
-  if (!btnJoin || !expandedCheckout) return;
+  if (!expandedCheckout) return;
 
-  if (preEmailInput) {
+  expandedCheckout.classList.add('active');
+  checkStockAndSaleWindow();
+
+  let checkoutStartedTracked = false;
+  const trackCheckoutStarted = () => {
+    if (!checkoutStartedTracked) {
+      checkoutStartedTracked = true;
+      if (typeof posthog !== 'undefined' && posthog.capture) {
+        posthog.capture('checkout_started');
+      }
+    }
+  };
+
+  if (paymentForm) {
+    paymentForm.addEventListener('focusin', trackCheckoutStarted, { once: true });
+    paymentForm.addEventListener('change', trackCheckoutStarted, { once: true });
+  }
+
+  if (preEmailInput && btnJoin) {
     const preSuggestionEl = document.getElementById('preEmailSuggestion');
     const preErrorEl = document.getElementById('preEmailError');
 
@@ -326,7 +394,38 @@ export function initCheckoutFlow() {
     const emailSuggestionEl = document.getElementById('emailSuggestion');
     const emailErrorEl = document.getElementById('emailError');
 
+    const savedEmail = localStorage.getItem('fudiclub_prereg_email');
+    if (savedEmail && !emailInput.value) {
+      emailInput.value = savedEmail;
+    }
+
     setupEmailValidationUI(emailInput, emailSuggestionEl, emailErrorEl);
+
+    let lastCapturedEmail = '';
+    emailInput.addEventListener('blur', () => {
+      const email = emailInput.value.trim();
+      if (!email || email === lastCapturedEmail) return;
+
+      const syntax = validateEmailSyntax(email);
+      if (syntax.valid && !isDisposableEmail(email)) {
+        lastCapturedEmail = email;
+        localStorage.setItem('fudiclub_prereg_email', email);
+
+        if (typeof posthog !== 'undefined' && posthog.identify) {
+          posthog.identify(email, { email });
+        }
+
+        const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+        const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
+        fetch(`${functionsUrl}/join-waitlist`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ email: email, note: 'Interesado (Checkout directo)' })
+        }).catch(err => console.error('[Waitlist Checkout Directo] Error:', err));
+      }
+    });
   }
 
   const nameInput = document.getElementById('nameInput') || document.querySelector('input[placeholder*="Nombre"]');
@@ -393,125 +492,99 @@ export function initCheckoutFlow() {
     });
   }
 
-  btnJoin.addEventListener('click', () => {
-    const capturedEmail = preEmailInput ? preEmailInput.value.trim() : '';
-    const preErrorEl = document.getElementById('preEmailError');
+  if (btnJoin) {
+    btnJoin.addEventListener('click', () => {
+      const capturedEmail = preEmailInput ? preEmailInput.value.trim() : '';
+      const preErrorEl = document.getElementById('preEmailError');
 
-    if (!capturedEmail) {
-      if (preEmailInput) {
-        preEmailInput.focus();
-        preEmailInput.classList.add('neo-input-shake');
-        setTimeout(() => preEmailInput.classList.remove('neo-input-shake'), 600);
-      }
-      if (preErrorEl) {
-        preErrorEl.textContent = 'Por favor ingresá tu correo electrónico para continuar.';
-        preErrorEl.classList.add('active');
-      }
-      return;
-    }
-
-    const syntax = validateEmailSyntax(capturedEmail);
-    if (!syntax.valid) {
-      if (preEmailInput) preEmailInput.focus();
-      if (preErrorEl) {
-        preErrorEl.textContent = syntax.reason || 'Por favor ingresá un correo electrónico válido.';
-        preErrorEl.classList.add('active');
-      }
-      return;
-    }
-
-    posthog.capture('checkout_started');
-
-    if (capturedEmail) {
-      const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-      const headers = { 'Content-Type': 'application/json' };
-      if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
-      fetch(`${functionsUrl}/join-waitlist`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({ email: capturedEmail, note: 'Interesado (Pre-checkout)' })
-      }).catch(err => console.error('[Waitlist] Error:', err));
-    }
-
-    ctaWrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    ctaWrapper.style.opacity = '0';
-    ctaWrapper.style.transform = 'translateY(-10px)';
-
-    setTimeout(() => {
-      ctaWrapper.style.display = 'none';
-      expandedCheckout.classList.add('active');
-
-      const soldOutOptions = document.getElementById('sold-out-options');
-      const now = new Date();
-      const day = now.getDate();
-
-      const isSaleWindowClosed = (day >= 6 && day <= 15);
-
-      if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
-        if (paymentForm) paymentForm.style.display = 'none';
-        if (soldOutOptions) {
-          const soldOutTitle = document.getElementById('sold-out-title');
-          const soldOutDesc = document.getElementById('sold-out-desc');
-          const months = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-          ];
-          
-          let currentTargetIndex = now.getMonth();
-          if (day >= 16) {
-            currentTargetIndex = (currentTargetIndex + 1) % 12;
-          }
-          const exhaustedMonth = months[currentTargetIndex];
-          const upcomingMonth = months[(currentTargetIndex + 1) % 12];
-
-          if (isSaleWindowClosed) {
-            if (soldOutTitle) soldOutTitle.innerText = `¡Venta de ${exhaustedMonth} cerrada! 📦`;
-            if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran el día 5 de cada mes para hacer la curaduría, armar tu mystery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
-          } else {
-            if (soldOutTitle) soldOutTitle.innerText = `¡La edición de ${exhaustedMonth} voló! 😱`;
-            if (soldOutDesc) soldOutDesc.innerText = `Cerramos las ventas de este mes porque llegamos al límite de cupos. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
-          }
-
-          const preorderMonthSpan = document.getElementById('preorder-month');
-          if (preorderMonthSpan) {
-            preorderMonthSpan.innerText = upcomingMonth;
-          }
-
-          soldOutOptions.style.display = 'block';
+      if (!capturedEmail) {
+        if (preEmailInput) {
+          preEmailInput.focus();
+          preEmailInput.classList.add('neo-input-shake');
+          setTimeout(() => preEmailInput.classList.remove('neo-input-shake'), 600);
         }
+        if (preErrorEl) {
+          preErrorEl.textContent = 'Por favor ingresá tu correo electrónico para continuar.';
+          preErrorEl.classList.add('active');
+        }
+        return;
+      }
+
+      const syntax = validateEmailSyntax(capturedEmail);
+      if (!syntax.valid) {
+        if (preEmailInput) preEmailInput.focus();
+        if (preErrorEl) {
+          preErrorEl.textContent = syntax.reason || 'Por favor ingresá un correo electrónico válido.';
+          preErrorEl.classList.add('active');
+        }
+        return;
+      }
+
+      trackCheckoutStarted();
+
+      if (capturedEmail) {
+        const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
+        const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (anonKey) headers['Authorization'] = `Bearer ${anonKey}`;
+        fetch(`${functionsUrl}/join-waitlist`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ email: capturedEmail, note: 'Interesado (Pre-checkout)' })
+        }).catch(err => console.error('[Waitlist] Error:', err));
+      }
+
+      if (ctaWrapper) {
+        ctaWrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        ctaWrapper.style.opacity = '0';
+        ctaWrapper.style.transform = 'translateY(-10px)';
+
+        setTimeout(() => {
+          ctaWrapper.style.display = 'none';
+          expandedCheckout.classList.add('active');
+          checkStockAndSaleWindow();
+
+          if (emailInput && capturedEmail) {
+            emailInput.value = capturedEmail;
+            emailInput.style.transition = 'background-color 0.5s ease';
+            emailInput.style.backgroundColor = 'var(--accent-verde)';
+            setTimeout(() => { emailInput.style.backgroundColor = ''; }, 1200);
+          }
+
+          setTimeout(() => {
+            const now = new Date();
+            const day = now.getDate();
+            const isSaleWindowClosed = (day >= 6 && day <= 15);
+            if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
+              return;
+            }
+            const headerOffset = 130;
+            const elementPosition = expandedCheckout.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          }, 50);
+        }, 300);
       } else {
-        if (paymentForm) {
-          paymentForm.style.display = 'block';
+        expandedCheckout.classList.add('active');
+        checkStockAndSaleWindow();
+        if (emailInput && capturedEmail) {
+          emailInput.value = capturedEmail;
         }
       }
-
-      if (emailInput && capturedEmail) {
-        emailInput.value = capturedEmail;
-        emailInput.style.transition = 'background-color 0.5s ease';
-        emailInput.style.backgroundColor = 'var(--accent-verde)';
-        setTimeout(() => { emailInput.style.backgroundColor = ''; }, 1200);
-      }
-
-      setTimeout(() => {
-        if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
-          return; // Do not scroll for waitlist, user is already looking at the section
-        }
-        const headerOffset = 130;
-        const elementPosition = expandedCheckout.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-      }, 50);
-    }, 300);
-  });
+    });
+  }
 
   const planRadios = document.querySelectorAll('input[name="plan"]');
   planRadios.forEach(radio => {
     const card = radio.closest('.plan-card');
+    if (!card) return;
     if (radio.checked) card.classList.add('selected');
 
     card.addEventListener('click', () => {
-      planRadios.forEach(r => r.closest('.plan-card').classList.remove('selected'));
+      planRadios.forEach(r => {
+        const c = r.closest('.plan-card');
+        if (c) c.classList.remove('selected');
+      });
       card.classList.add('selected');
       radio.checked = true;
       updateCheckoutTotals();

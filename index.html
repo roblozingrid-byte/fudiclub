@@ -212,58 +212,10 @@
     <!-- Checkout / Security Filter -->
     <section class="checkout neo-border-section" id="registro">
       <h2 class="section-title">Unite al club</h2>
+      <p class="checkout-subtitle">Completá tus datos y recibí tu Mystery Box con envío gratis</p>
 
-      <!-- Email pre-registro + CTA -->
-      <div id="cta-join-wrapper">
-        <div class="pre-register-box">
-
-          <!-- Pricing & Value Preview Card (Opción 1) -->
-          <div class="pricing-preview-card neo-border">
-            <div class="pricing-preview-header">
-              <span class="preview-edition-badge">Edición <strong id="dynamic-intro-month">...</strong></span>
-              <span class="preview-stock-badge">🔥 Cupos muy limitados</span>
-            </div>
-
-            <div class="pricing-preview-price-box">
-              <span class="pricing-preview-label">Mystery Box</span>
-              <div class="pricing-preview-amount-row">
-                <span class="pricing-preview-price">$44.900</span>
-                <span class="pricing-preview-period">/ caja</span>
-              </div>
-              <span class="pricing-preview-quarterly-hint">o $42.633 c/u con Plan Trimestral</span>
-            </div>
-
-            <div class="pricing-preview-perks">
-              <div class="preview-perk">
-                <i class="fas fa-check-circle"></i> <span><strong>6 a 10 snacks</strong> virales, importados y retro</span>
-              </div>
-              <div class="preview-perk">
-                <i class="fas fa-truck-fast"></i> <span><strong>Envío Gratis</strong> en todo CABA y GBA</span>
-              </div>
-              <div class="preview-perk">
-                <i class="fas fa-shield-halved"></i> <span><strong>Sin suscripción forzada:</strong> pagás por transferencia</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pre-register-form-wrap">
-            <p class="pre-register-prompt">
-              Ingresá tu email para asegurar tu lugar e ir al pago:
-            </p>
-            <input type="email" id="preEmailInput" class="neo-input pre-email-input" placeholder="Tu correo electrónico"
-              autocomplete="email">
-            <div id="preEmailSuggestion" class="email-suggestion-box"></div>
-            <div id="preEmailError" class="email-error-hint"></div>
-            <button class="cta-button massive cta-green" id="btn-join-club">Comprar mi Box</button>
-            <p class="pre-register-trust-note">
-              🔒 Paso 1 de 2 · No se realiza ningún cobro hasta confirmar los datos
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expanded Checkout Card — oculto hasta que se clickea el botón -->
-      <div class="checkout-expanded-card neo-border" id="expandedCheckout">
+      <!-- Checkout Form Card -->
+      <div class="checkout-expanded-card neo-border active" id="expandedCheckout">
         <!-- Opciones cuando no hay stock -->
         <div id="sold-out-options" class="sold-out-options" style="display: none;">
           <h3 id="sold-out-title">...</h3>

@@ -712,7 +712,7 @@ h1, h2, h3 {
 
 /* Expanded Checkout Card */
 .checkout-expanded-card {
-  display: none;
+  display: block;
   width: 100%;
   max-width: 680px;
   background-color: var(--white);
@@ -720,12 +720,9 @@ h1, h2, h3 {
   box-shadow: var(--shadow-solid);
   border-radius: 12px;
   padding: 40px 36px;
-  animation: slideDown 0.4s ease-out forwards;
   position: relative;
   z-index: 60; /* Above stickers-layer (50) */
 }
-
-
 
 .checkout-expanded-card.active {
   display: block;

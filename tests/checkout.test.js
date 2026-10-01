@@ -698,5 +698,98 @@ describe('src/checkout.js', () => {
       expect(nameInput.validationMessage).toBe('');
     });
   });
+
+  describe('direct 1-page checkout without pre-registration wrapper', () => {
+    beforeEach(() => {
+      localStorage.clear();
+      document.body.innerHTML = `
+        <div id="expandedCheckout" class="checkout-expanded-card">
+          <div id="sold-out-options" style="display: none;">
+            <h3 id="sold-out-title"></h3>
+            <p id="sold-out-desc"></p>
+            <span id="preorder-month"></span>
+            <button id="btn-preorder">Preordenar</button>
+          </div>
+          <form id="paymentForm" class="payment-form">
+            <input type="radio" name="plan" value="one-time" checked />
+            <input id="emailInput" type="email" />
+            <div id="emailSuggestion" class="email-suggestion-box"></div>
+            <div id="emailError" class="email-error-hint"></div>
+            <input id="nameInput" value="Maria Gonzalez" />
+            <input id="addressInput" value="Palermo 500" />
+            <input id="cpInput" value="1425" />
+            <input type="radio" name="payment_method" value="mercado_pago" checked />
+            <button type="submit">Confirmar pedido</button>
+          </form>
+        </div>
+      `;
+      vi.setSystemTime(new Date(2026, 3, 2)); // Abril 2 (open sale window)
+      apiModule.setPreorderMode(false);
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true })
+      });
+    });
+
+    it('initializes direct checkout cleanly with active class and visible paymentForm', () => {
+      initCheckoutFlow();
+
+      const expandedCheckout = document.getElementById('expandedCheckout');
+      const paymentForm = document.getElementById('paymentForm');
+      const soldOut = document.getElementById('sold-out-options');
+
+      expect(expandedCheckout.classList.contains('active')).toBe(true);
+      expect(paymentForm.style.display).toBe('block');
+      expect(soldOut.style.display).toBe('none');
+    });
+
+    it('captures checkout_started on paymentForm focusin', () => {
+      initCheckoutFlow();
+
+      const paymentForm = document.getElementById('paymentForm');
+      paymentForm.dispatchEvent(new Event('focusin', { bubbles: true }));
+
+      expect(posthog.capture).toHaveBeenCalledWith('checkout_started');
+    });
+
+    it('auto-captures lead to waitlist and localStorage on emailInput blur', () => {
+      initCheckoutFlow();
+
+      const emailInput = document.getElementById('emailInput');
+      emailInput.value = 'prospecto@gmail.com';
+      emailInput.dispatchEvent(new Event('blur'));
+
+      expect(localStorage.getItem('fudiclub_prereg_email')).toBe('prospecto@gmail.com');
+      expect(posthog.identify).toHaveBeenCalledWith('prospecto@gmail.com', { email: 'prospecto@gmail.com' });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/join-waitlist'),
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ email: 'prospecto@gmail.com', note: 'Interesado (Checkout directo)' })
+        })
+      );
+    });
+
+    it('pre-fills emailInput from localStorage if previously stored', () => {
+      localStorage.setItem('fudiclub_prereg_email', 'guardado@gmail.com');
+
+      initCheckoutFlow();
+
+      const emailInput = document.getElementById('emailInput');
+      expect(emailInput.value).toBe('guardado@gmail.com');
+    });
+
+    it('immediately shows soldOutOptions on load if sale window is closed (day 6-15)', () => {
+      vi.setSystemTime(new Date(2026, 3, 10)); // Abril 10 -> closed window
+
+      initCheckoutFlow();
+
+      const paymentForm = document.getElementById('paymentForm');
+      const soldOut = document.getElementById('sold-out-options');
+
+      expect(paymentForm.style.display).toBe('none');
+      expect(soldOut.style.display).toBe('block');
+    });
+  });
 });
 
