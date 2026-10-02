@@ -317,6 +317,30 @@ h1, h2, h3 {
   transform: rotate(0deg) scale(1.05);
 }
 
+.hero-deadline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-rosa);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 2vw + 0.3rem, 0.88rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border: 2px solid var(--black);
+  border-radius: 50px;
+  box-shadow: 2.5px 2.5px 0px var(--black);
+  transform: rotate(-2deg);
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
+}
+
+.hero-deadline-badge:hover {
+  transform: rotate(0deg) scale(1.04);
+}
+
 .hero-title {
   font-size: clamp(2rem, 5vw + 1rem, 3rem); /* Reducido */
   color: var(--white);
@@ -731,6 +755,55 @@ h1, h2, h3 {
 .checkout-card-title {
   margin-bottom: 28px;
   font-size: clamp(1.5rem, 4vw + 0.5rem, 2rem);
+}
+
+/* Checkout Deadline Alert */
+.checkout-deadline-alert {
+  background-color: var(--bg-amarillo);
+  border: var(--border-thick);
+  border-radius: 8px;
+  box-shadow: var(--shadow-solid-sm);
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.deadline-alert-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.deadline-alert-badge {
+  background-color: var(--bg-rosa);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border: 2px solid var(--black);
+  border-radius: 4px;
+  box-shadow: 2px 2px 0px var(--black);
+  text-transform: uppercase;
+}
+
+.deadline-alert-title {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  color: var(--black);
+}
+
+.deadline-alert-desc {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--black);
+  margin: 0;
+  font-weight: 500;
 }
 
 /* Plan Focal Section */
