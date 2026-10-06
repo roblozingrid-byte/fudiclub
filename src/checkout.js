@@ -330,6 +330,72 @@ export function checkStockAndSaleWindow() {
   }
 }
 
+export function updateMonthlyUrgencyAlerts() {
+  const now = new Date();
+  const day = now.getDate();
+  const monthIndex = now.getMonth();
+  const year = now.getFullYear();
+
+  // Activo automáticamente del día 1 al 5 de cada mes.
+  // El día 6 en la madrugada (desde las 00:00 hs) desaparece automáticamente.
+  const isUrgencyActive = (day >= 1 && day <= 5);
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+  const currentMonth = months[monthIndex];
+  const nextMonth = months[(monthIndex + 1) % 12];
+  const monthNum = monthIndex + 1;
+
+  // Calculamos el día de la semana para el 5 de este mes
+  const closingDate = new Date(year, monthIndex, 5);
+  const closingDayName = dayNames[closingDate.getDay()];
+
+  // 1. Ticker superior
+  const tickerContent = document.querySelector('.ticker-content');
+  if (tickerContent) {
+    if (isUrgencyActive) {
+      const urgencyMsg = `⚡ CIERRE DE LA BOX DE ${currentMonth.toUpperCase()}: ${closingDayName.toUpperCase()} 5/${monthNum} A LAS 23:59 // ÚLTIMOS DÍAS PARA PEDIR TU MYSTERY BOX // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
+      tickerContent.innerHTML = `<span>${urgencyMsg}</span><span>${urgencyMsg}</span>`;
+    } else {
+      const defaultMsg = `SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // `;
+      tickerContent.innerHTML = `<span>${defaultMsg}</span><span>${defaultMsg}</span>`;
+    }
+  }
+
+  // 2. Badge en el Hero
+  const heroBadge = document.getElementById('hero-deadline-badge');
+  if (heroBadge) {
+    if (isUrgencyActive) {
+      heroBadge.textContent = `🔥 ÚLTIMOS DÍAS · CIERRA EL ${closingDayName.toUpperCase()} 5/${monthNum}`;
+      heroBadge.style.display = 'inline-flex';
+    } else {
+      heroBadge.style.display = 'none';
+    }
+  }
+
+  // 3. Alerta en el Checkout
+  const checkoutAlert = document.getElementById('checkout-deadline-alert');
+  if (checkoutAlert) {
+    if (isUrgencyActive) {
+      const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+      const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
+      if (titleEl) {
+        titleEl.textContent = `Box de ${currentMonth}: Cierra el ${closingDayName} 5 de ${currentMonth} (23:59 hs)`;
+      }
+      if (descEl) {
+        descEl.textContent = `Asegurá tu box hoy para recibirla este mes. Luego de la fecha, los pedidos pasan automáticamente a la edición de ${nextMonth}.`;
+      }
+      checkoutAlert.style.display = 'flex';
+    } else {
+      checkoutAlert.style.display = 'none';
+    }
+  }
+}
+
 export function initCheckoutFlow() {
   const btnJoin = document.getElementById('btn-join-club');
   const ctaWrapper = document.getElementById('cta-join-wrapper');
@@ -354,6 +420,7 @@ export function initCheckoutFlow() {
   
   updateStockWidget();
   updateCheckoutTotals();
+  updateMonthlyUrgencyAlerts();
 
   if (!expandedCheckout) return;
 

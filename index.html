@@ -127,6 +127,7 @@
         <div class="animate-fade-in-up" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 450px; margin: 0 auto;">
           <img src="/imagenes/Logo%20Turquesa%20sf.webp" alt="Fudi Club Logo" class="hero-logo-relief" style="margin: 0 auto 20px auto; display: block;" />
           <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="hero-deadline-badge" id="hero-deadline-badge" style="display: none;"></div>
             <h2 class="hero-title" style="margin: 0 auto;">Mystery Box</h2>
             <p class="subtitle" style="margin: 0 auto;">Para los que aman descubrir nuevos sabores</p>
           </div>
@@ -242,6 +243,15 @@
           </div>
         </div>
         <form class="payment-form" id="paymentForm">
+
+          <!-- Alerta Cierre de Ventas (Automática del 1 al 5 de cada mes) -->
+          <div class="checkout-deadline-alert neo-border" id="checkout-deadline-alert" style="display: none;">
+            <div class="deadline-alert-header">
+              <span class="deadline-alert-badge">⏰ CIERRE INMINENTE</span>
+              <strong class="deadline-alert-title"></strong>
+            </div>
+            <p class="deadline-alert-desc"></p>
+          </div>
 
           <!-- 1. PLANES DE COMPRA — pieza focal -->
           <div class="plan-focal-section">

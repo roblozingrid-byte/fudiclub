@@ -6,7 +6,8 @@ import {
   updateStockWidget,
   updateCheckoutTotals,
   initCheckoutFlow,
-  setupFormValidationMessages
+  setupFormValidationMessages,
+  updateMonthlyUrgencyAlerts
 } from '../src/checkout.js';
 
 describe('src/checkout.js', () => {
@@ -789,6 +790,90 @@ describe('src/checkout.js', () => {
 
       expect(paymentForm.style.display).toBe('none');
       expect(soldOut.style.display).toBe('block');
+    });
+  });
+
+  describe('updateMonthlyUrgencyAlerts', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <div class="ticker">
+          <div class="ticker-content">
+            <span>DEFAULT</span>
+            <span>DEFAULT</span>
+          </div>
+        </div>
+        <div class="hero-deadline-badge" id="hero-deadline-badge" style="display: none;"></div>
+        <div class="checkout-deadline-alert" id="checkout-deadline-alert" style="display: none;">
+          <strong class="deadline-alert-title"></strong>
+          <p class="deadline-alert-desc"></p>
+        </div>
+      `;
+    });
+
+    it('activates and shows urgency notices on days 1 to 5 with correct weekday and dates', () => {
+      // 2 de Octubre de 2026 (El 5 de octubre 2026 fue Lunes)
+      vi.setSystemTime(new Date(2026, 9, 2)); // 9 = Octubre
+
+      updateMonthlyUrgencyAlerts();
+
+      const tickerContent = document.querySelector('.ticker-content');
+      const heroBadge = document.getElementById('hero-deadline-badge');
+      const checkoutAlert = document.getElementById('checkout-deadline-alert');
+      const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+      const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
+
+      expect(tickerContent.textContent).toContain('CIERRE DE LA BOX DE OCTUBRE: LUNES 5/10 A LAS 23:59');
+      expect(heroBadge.style.display).toBe('inline-flex');
+      expect(heroBadge.textContent).toBe('🔥 ÚLTIMOS DÍAS · CIERRA EL LUNES 5/10');
+      expect(checkoutAlert.style.display).toBe('flex');
+      expect(titleEl.textContent).toBe('Box de Octubre: Cierra el Lunes 5 de Octubre (23:59 hs)');
+      expect(descEl.textContent).toContain('edición de Noviembre');
+    });
+
+    it('works on day 5 of the month (last day of sales)', () => {
+      // 5 de Noviembre de 2026 (El 5 de noviembre 2026 fue Jueves)
+      vi.setSystemTime(new Date(2026, 10, 5)); // 10 = Noviembre
+
+      updateMonthlyUrgencyAlerts();
+
+      const tickerContent = document.querySelector('.ticker-content');
+      const heroBadge = document.getElementById('hero-deadline-badge');
+      const checkoutAlert = document.getElementById('checkout-deadline-alert');
+      const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+
+      expect(tickerContent.textContent).toContain('CIERRE DE LA BOX DE NOVIEMBRE: JUEVES 5/11 A LAS 23:59');
+      expect(heroBadge.style.display).toBe('inline-flex');
+      expect(heroBadge.textContent).toBe('🔥 ÚLTIMOS DÍAS · CIERRA EL JUEVES 5/11');
+      expect(checkoutAlert.style.display).toBe('flex');
+      expect(titleEl.textContent).toBe('Box de Noviembre: Cierra el Jueves 5 de Noviembre (23:59 hs)');
+    });
+
+    it('automatically deactivates and hides all urgency notices on the 6th at midnight', () => {
+      // 6 de Octubre de 2026 a las 00:01 hs
+      vi.setSystemTime(new Date(2026, 9, 6, 0, 1));
+
+      updateMonthlyUrgencyAlerts();
+
+      const tickerContent = document.querySelector('.ticker-content');
+      const heroBadge = document.getElementById('hero-deadline-badge');
+      const checkoutAlert = document.getElementById('checkout-deadline-alert');
+
+      expect(tickerContent.textContent).toContain('SORPRESA TOTAL // SOLO 30 BOXES AL MES');
+      expect(tickerContent.textContent).not.toContain('CIERRE');
+      expect(heroBadge.style.display).toBe('none');
+      expect(checkoutAlert.style.display).toBe('none');
+    });
+
+    it('remains deactivated on mid-month days (e.g. day 20)', () => {
+      vi.setSystemTime(new Date(2026, 9, 20));
+
+      updateMonthlyUrgencyAlerts();
+
+      const heroBadge = document.getElementById('hero-deadline-badge');
+      const checkoutAlert = document.getElementById('checkout-deadline-alert');
+
+      expect(heroBadge.style.display).toBe('none');
+      expect(checkoutAlert.style.display).toBe('none');
     });
   });
 });
