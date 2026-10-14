@@ -10,16 +10,17 @@ serve(async (req: Request) => {
 
     const payload = await req.json();
 
-    // Validar tipo de operación (solo INSERT nos interesa para agregar filas)
-    if (payload.type !== "INSERT") {
-      return new Response(JSON.stringify({ message: "Ignored, not an INSERT" }), {
+    // Validar tipo de operación (INSERT para Supabase webhooks, o corporate_quote directo)
+    const isCorporateDirect = payload.type === "corporate_quote";
+    if (payload.type !== "INSERT" && !isCorporateDirect) {
+      return new Response(JSON.stringify({ message: "Ignored, not an INSERT or corporate_quote" }), {
         headers: { "Content-Type": "application/json" },
         status: 200,
       });
     }
 
-    const table = payload.table;
-    const record = payload.record;
+    const table = isCorporateDirect ? "corporate_quotes" : payload.table;
+    const record = payload.record || {};
 
     // 2. Obtener Secretos
     const serviceAccountJson = Deno.env.get("GOOGLE_SERVICE_ACCOUNT");
@@ -27,6 +28,7 @@ serve(async (req: Request) => {
     const tabCustomers = Deno.env.get("SHEETS_TAB_CUSTOMERS") || "Clientes (Backup)";
     const tabOrders = Deno.env.get("SHEETS_TAB_ORDERS") || "Pedidos (Backup)";
     const tabLeads = Deno.env.get("SHEETS_TAB_LEADS") || "Leads";
+    const tabLeadsEmpresas = Deno.env.get("SHEETS_TAB_LEADS_EMPRESAS") || "Leads Empresas";
 
     if (!serviceAccountJson || !spreadsheetId) {
       console.error("Faltan variables de entorno para Google Sheets.");
@@ -169,6 +171,31 @@ serve(async (req: Request) => {
           record.note || "Interesado (Pre-checkout)",
         ],
       ];
+    } else if (table === "corporate_quotes") {
+      range = `${tabLeadsEmpresas}!A:I`;
+      // Columnas:
+      // A: Fecha
+      // B: Empresa
+      // C: Contacto
+      // D: Email Corporativo
+      // E: Teléfono / WhatsApp
+      // F: Motivo / Ocasión
+      // G: Cantidad
+      // H: Modalidad Entrega
+      // I: Detalles / Notas
+      values = [
+        [
+          formatDate(record.created_at),
+          record.empresa || "",
+          record.nombre || "",
+          record.email || "",
+          record.telefono || "",
+          record.ocasion || "No especificado",
+          record.cantidad ? `${record.cantidad} boxes` : "",
+          record.entrega || "A coordinar",
+          record.detalles || "",
+        ],
+      ];
     } else {
       return new Response(JSON.stringify({ message: "Table ignored" }), { status: 200 });
     }
@@ -176,7 +203,7 @@ serve(async (req: Request) => {
     // 5. Enviar a Google Sheets API
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED`;
 
-    const sheetsRes = await fetch(url, {
+    let sheetsRes = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -187,7 +214,71 @@ serve(async (req: Request) => {
       }),
     });
 
-    const sheetsData = await sheetsRes.json();
+    let sheetsData = await sheetsRes.json();
+
+    // Si la pestaña no existe aún (error 400 Unable to parse range), crearla automáticamente con su fila de encabezado
+    if (!sheetsRes.ok && (sheetsData?.error?.message?.includes("Unable to parse range") || sheetsData?.error?.code === 400)) {
+      try {
+        const tabName = range.split("!")[0].replace(/'/g, "");
+        // 1. Agregar pestaña
+        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            requests: [
+              {
+                addSheet: {
+                  properties: { title: tabName },
+                },
+              },
+            ],
+          }),
+        });
+
+        // 2. Insertar encabezados según la pestaña
+        let headerRow: string[] = [];
+        if (tabName === tabLeadsEmpresas) {
+          headerRow = [
+            "Fecha",
+            "Empresa",
+            "Contacto",
+            "Email Corporativo",
+            "Teléfono / WhatsApp",
+            "Motivo / Ocasión",
+            "Cantidad",
+            "Modalidad Entrega",
+            "Detalles / Notas",
+          ];
+        }
+
+        if (headerRow.length > 0) {
+          await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(`${tabName}!A1`)}?valueInputOption=USER_ENTERED`, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ values: [headerRow] }),
+          });
+        }
+
+        // 3. Reintentar append
+        sheetsRes = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ values }),
+        });
+        sheetsData = await sheetsRes.json();
+      } catch (createErr) {
+        console.error("Error auto-creando pestaña en Google Sheets:", createErr);
+      }
+    }
 
     if (!sheetsRes.ok) {
       console.error("Google Sheets API Error:", sheetsData);

@@ -1,10 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { initEmpresasPage } from '../empresas/empresas.js';
+import { initEmpresasPage, submitCorporateQuote } from '../empresas/empresas.js';
 
 describe('empresas/empresas.js', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     window.open = vi.fn();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true }),
+    });
 
     document.body.innerHTML = `
       <a href="#cotizacion" class="quote-link">Cotizar</a>
@@ -24,11 +28,11 @@ describe('empresas/empresas.js', () => {
             <option value="Envíos individuales a casas de empleados" selected>Envíos individuales</option>
           </select>
           <textarea id="corpoDetalles">Entregar primera semana de mayo con sticker con logo</textarea>
-          <button type="submit">Solicitar Propuesta</button>
+          <button type="submit" id="corpoSubmitBtn">Solicitar Propuesta</button>
         </form>
 
         <div id="corpoSuccessCard" style="display: none;">
-          <a id="waDirectBtn" href="#">Abrir WhatsApp</a>
+          <p id="corpoSuccessMsg"></p>
         </div>
       </div>
 
@@ -43,35 +47,39 @@ describe('empresas/empresas.js', () => {
     `;
   });
 
-  it('formats corporate quote details and generates WhatsApp redirection on submit', () => {
+  it('submits corporate quote via API and shows success card without WhatsApp redirect', async () => {
     initEmpresasPage();
 
     const form = document.getElementById('corpoForm');
     const successCard = document.getElementById('corpoSuccessCard');
-    const waDirectBtn = document.getElementById('waDirectBtn');
+    const successMsg = document.getElementById('corpoSuccessMsg');
 
     form.dispatchEvent(new Event('submit', { cancelable: true }));
 
-    expect(form.style.display).toBe('none');
-    expect(successCard.style.display).toBe('block');
+    // Wait for async handler
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
-    expect(window.open).toHaveBeenCalledWith(
-      expect.stringContaining('https://wa.me/5491139264426?text='),
-      '_blank'
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/cotizacion',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
     );
 
-    const generatedUrl = window.open.mock.calls[0][0];
-    const decodedUrl = decodeURIComponent(generatedUrl);
+    const callBody = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(callBody.empresa).toBe('Tech Latam SRL');
+    expect(callBody.nombre).toBe('Martin Rodriguez');
+    expect(callBody.email).toBe('martin@techlatam.com');
+    expect(callBody.cantidad).toBe('25 a 50');
 
-    expect(decodedUrl).toContain('Tech Latam SRL');
-    expect(decodedUrl).toContain('Martin Rodriguez');
-    expect(decodedUrl).toContain('martin@techlatam.com');
-    expect(decodedUrl).toContain('Welcome Kit / Onboarding');
-    expect(decodedUrl).toContain('25 a 50 boxes');
-    expect(decodedUrl).toContain('Envíos individuales a casas de empleados');
-    expect(decodedUrl).toContain('Entregar primera semana de mayo');
+    expect(form.style.display).toBe('none');
+    expect(successCard.style.display).toBe('block');
+    expect(successMsg.innerHTML).toContain('Tech Latam SRL');
+    expect(successMsg.innerHTML).toContain('martin@techlatam.com');
 
-    expect(waDirectBtn.href).toBe(generatedUrl);
+    // No WhatsApp redirect should happen
+    expect(window.open).not.toHaveBeenCalled();
   });
 
   it('handles FAQ accordion toggling on corporate page', () => {
