@@ -1029,6 +1029,11 @@ export function initCheckoutFlow() {
         
         paymentForm.style.display = 'none';
         document.getElementById('expandedCheckout').style.display = 'none';
+
+        // Disparar evento Purchase de Meta Pixel
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Purchase');
+        }
         
         const successModal = document.getElementById('success-modal');
         const successTitle = document.getElementById('success-title');
