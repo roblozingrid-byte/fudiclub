@@ -1,11 +1,14 @@
 User-agent: *
 Allow: /
 
-# Permitir indexación a motores de IA y LLMs (ChatGPT Search, Perplexity, Claude, Gemini, Apple)
+# Permitir indexación a motores de IA y LLMs (ChatGPT Search, Perplexity, Claude, Gemini, Apple, Meta, ByteDance)
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: PerplexityBot
@@ -26,6 +29,13 @@ Allow: /
 User-agent: Cohere-ai
 Allow: /
 
-# Sitemap y archivo LLM
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Sitemap y archivos de contexto para LLMs (Estándar llms.txt)
 Sitemap: https://fudiclub.shop/sitemap.xml
 llms-txt: https://fudiclub.shop/llms.txt
+llms-full-txt: https://fudiclub.shop/llms-full.txt

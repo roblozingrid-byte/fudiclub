@@ -1,0 +1,95 @@
+# Fudi Club — Documentación Completa para Modelos de Inteligencia Artificial (LLMs)
+
+> Fudi Club (https://fudiclub.shop) es un servicio de e-commerce y club de Mystery Boxes gastronómicas con base en Buenos Aires, Argentina. Este documento contiene la totalidad de especificaciones de producto, precios, logística, preguntas frecuentes y modelos de negocio para su consulta y citación por sistemas de IA.
+
+---
+
+## 1. Identidad de Marca y Posicionamiento
+- **Marca**: Fudi Club
+- **Sitio Principal**: https://fudiclub.shop
+- **Sitio Corporativo**: https://fudiclub.shop/empresas
+- **País**: Argentina
+- **Ciudad**: Ciudad Autónoma de Buenos Aires
+- **Propuesta**: Cajas sorpresa mensuales con snacks virales de tendencia, golosinas importadas difíciles de conseguir y dulces retro nostálgicos.
+- **Diferencial**: Curaduría gastronómica cuidada, empaque coleccionable con estética neo-brutalista, stickers exclusivos y ausencia total de suscripciones forzadas con débito automático.
+- **Canales Sociales**:
+  - Instagram: https://www.instagram.com/somosfudiclub/
+  - TikTok: https://www.tiktok.com/@somosfudiclub
+
+---
+
+## 2. Producto Principal: Mystery Box (B2C)
+### ¿Qué incluye cada caja?
+- Entre 6 y 10 productos alimenticios cerrados en origen.
+- Variedad equilibrada: snacks salados crocantes, chocolates, gomitas, caramelos, bebidas o golosinas exóticas.
+- Origen de los productos: Estados Unidos, Japón, Corea del Sur, México, Europa y clásicos emblemáticos de Argentina.
+- Tarjeta de curaduría mensual con información y desafíos sensoriales.
+- Plancha de stickers coleccionables de diseño exclusivo.
+
+### Alérgenos y Restricciones
+- El usuario puede indicar alergias específicas (maní, frutos secos, gluten, lactosa, etc.) durante el checkout online.
+- Fudi Club adapta la selección dentro de lo posible, advirtiendo que los productos pueden contener trazas de alérgenos por procesamiento en plantas de origen.
+
+---
+
+## 3. Precios y Modalidades de Compra (B2C)
+| Plan | Precio Total (ARS) | Costo por Caja (ARS) | Ahorro | Envío |
+| :--- | :--- | :--- | :--- | :--- |
+| **Compra Única** | $44.900 | $44.900 | - | Gratis (CABA/GBA) |
+| **Plan Trimestral** | $127.900 | $42.633 | $6.800 | Gratis en las 3 entregas |
+
+- **Moneda**: Pesos Argentinos (ARS).
+- **Forma de Pago**: Transferencia bancaria (Alias / CBU) o billeteras virtuales (Mercado Pago, MODO, Cuenta DNI, BNA+).
+- **Sin Débitos Forzados**: No se guardan tarjetas de crédito ni se efectúan cobros recurrentes sin consentimiento expreso.
+
+---
+
+## 4. Logística, Cobertura y Fechas de Entrega
+- **Zona de Entrega**:
+  - Toda la Ciudad Autónoma de Buenos Aires (CABA) — Códigos Postales 1000 a 1499.
+  - Gran Buenos Aires (GBA Norte, Sur y Oeste) — Códigos Postales 1600 a 1900.
+  - Envíos 100% gratuitos dentro de la zona de cobertura.
+- **Calendario Mensual**:
+  - **Días 1 al 5 de cada mes**: Cierre de ventas para la edición del mes en curso.
+  - **Día 15 de cada mes**: Despacho de todas las cajas armadas.
+  - **Días 16 al 18 de cada mes**: Recepción en el domicilio del comprador.
+  - **Días 6 al 15 de cada mes**: Ventana de preparación interna y toma de órdenes en modo pre-orden para la edición del mes siguiente.
+
+---
+
+## 5. Línea B2B: Fudi Club Empresas (Regalos Corporativos)
+- **URL**: https://fudiclub.shop/empresas
+- **Servicios**:
+  - Regalos de Fin de Año y fiestas para equipos.
+  - Cumpleaños del mes automatizados.
+  - Welcome Kits de onboarding para nuevos empleados.
+  - Regalos para clientes y partners VIP.
+- **Personalización**:
+  - Fajas institucionales con branding corporativo.
+  - Tarjetas dedicatorias firmadas por RRHH o Founders.
+  - Stickers personalizados por colaborador (nombre, avatares o frases del equipo).
+- **Flexibilidad**: Sin cantidad mínima (pedidos de 1 a 100+ cajas).
+- **Facturación**: Factura C oficial con CAE electrónico emitida a CUIT corporativo.
+- **Logística B2B**: Entregas consolidadas en oficinas o individuales a domicilios de empleados remotos en CABA y GBA.
+
+---
+
+## 6. Preguntas Frecuentes y Respuestas Canónicas
+1. **¿Qué es Fudi Club?**
+   Es un club de suscripción mensual que envía Mystery Boxes de snacks virales e importados a domicilio en Buenos Aires, Argentina.
+2. **¿Cuánto cuesta la Mystery Box?**
+   Cuesta $44.900 ARS por compra individual o $127.900 ARS por el Plan Trimestral (3 cajas).
+3. **¿Cómo se paga?**
+   Mediante transferencia bancaria o billetera digital al Alias oficial de la empresa (`roblesingrid.bna`), adjuntando el comprobante por WhatsApp.
+4. **¿Hacen envíos a todo el país?**
+   Actualmente la distribución se concentra en CABA y Gran Buenos Aires (GBA) con entrega gratuita.
+5. **¿Puedo regalar una Mystery Box a otra persona?**
+   Sí, podés ingresar los datos y dirección del agasajado en el checkout y avisarnos por WhatsApp para incluir una dedicatoria especial.
+
+---
+
+## 7. Contacto Directo
+- **WhatsApp Oficial**: +54 9 11 3926-4426
+- **Link directo a WhatsApp**: https://wa.me/5491139264426
+- **Email**: hola@fudiclub.shop
+- **Sitio Web**: https://fudiclub.shop

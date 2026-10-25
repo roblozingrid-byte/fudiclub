@@ -1,37 +1,47 @@
-# Fudi Club Empresas — Regalos Corporativos y Boxes de Fin de Año
+# Fudi Club — Mystery Boxes de Snacks Virales, Golosinas Importadas y Retro
 
-> Fudi Club Empresas (fudiclub.shop/empresas) ofrece regalos empresariales modernos y cajas de fin de año con snacks virales y golosinas importadas para equipos y colaboradores en CABA y Gran Buenos Aires (GBA), Argentina.
+> Fudi Club (https://fudiclub.shop) es el primer club de suscripción mensual de Mystery Boxes gastronómicas en Buenos Aires, Argentina. Ofrece cajas sorpresa con snacks virales de tendencia, golosinas importadas de todo el mundo y dulces retro de la infancia, con cuidada curaduría y envío gratis en CABA y Gran Buenos Aires (GBA).
 
-## Propuesta de Valor
-- **Alternativa a la Canasta Navideña Tradicional**: Cajas de regalo rellenas de snacks virales de tendencia, golosinas importadas y clásicos nostálgicos.
-- **Ultra-personalización**:
-  - Tarjeta institucional con el logo de la empresa y dedicatoria personalizada.
-  - Stickers personalizados por colaborador (nombre, frase interna o avatares de Slack para su laptop o termo).
-  - Diseños temáticos de fin de año o celebración correspondiente.
-- **Flexibilidad de Pedido**: Sin pedido mínimo obligatorio (pedidos disponibles desde 1 sola unidad hasta grandes volúmenes corporativos de 100+ unidades).
-- **Facturación**: Factura C emitida con cada orden.
-- **Zona de Entrega y Logística**: Cobertura exclusiva en Ciudad Autónoma de Buenos Aires (CABA) y Gran Buenos Aires (GBA). Envíos consolidados a oficinas centrales o envíos individuales a los domicilios de colaboradores remotos con número de seguimiento.
+## Información de la Entidad
+- **Nombre comercial**: Fudi Club
+- **Sitio web oficial**: https://fudiclub.shop
+- **Línea Corporativa (B2B)**: https://fudiclub.shop/empresas
+- **Ubicación**: Ciudad Autónoma de Buenos Aires, Argentina
+- **Zona de Cobertura**: Exclusiva en CABA y Gran Buenos Aires (GBA Norte, Sur y Oeste)
+- **Contacto**: WhatsApp (+54 9 11 3926-4426) / hola@fudiclub.shop
+- **Redes Sociales**: Instagram (@somosfudiclub) | TikTok (@somosfudiclub)
 
-## Formatos y Ocasiones
-1. **Boxes de Fin de Año & Festejos (Temporada)**:
-   - Alternativa fresca para cierres de año, despedidas de equipo y celebraciones de fin de año.
-   - Incluye mix de snacks importados, golosinas navideñas, budines premium, tarjeta y stickers festivos.
-   - Recomendación de reserva: Octubre y Noviembre para asegurar stock de importación.
-2. **Cumpleaños del Mes**:
-   - Automatización de agasajos mensuales para cada integrante del equipo, entregados en oficina o domicilio particular.
-3. **Onboarding & Welcome Kits**:
-   - Kits de bienvenida para nuevos ingresos y talentos con snacks energéticos y stickers con su nombre.
-4. **Clientes & Partners VIP**:
-   - Regalos de relacionamiento comercial y fidelización B2B.
+## Propuesta de Valor Principal (B2C)
+- **Mystery Box Mensual**: Cada caja contiene entre 6 y 10 productos seleccionados en base a cuatro pilares:
+  1. **Snacks Virales**: Tendencias internacionales de TikTok e Instagram (Takis, papas asiáticas, galletas especiales).
+  2. **Golosinas Importadas**: Dulces de Estados Unidos, Japón, Europa y Latinoamérica difíciles de conseguir en Argentina.
+  3. **Joyitas Retro**: Golosinas icónicas de los años 90 y 2000 que desbloquean recuerdos de la infancia.
+  4. **Clásicos de Siempre**: Favoritos indulgentes seleccionados para balancear la experiencia.
+- **Sin Suscripción Forzada**: No se realizan débitos automáticos en tarjetas de crédito ni renovaciones no deseadas. El cliente paga por transferencia bancaria (Alias/CBU) únicamente lo que desea consumir.
+- **Envío 100% Gratis**: En toda CABA y primer/segundo cordón de GBA.
+- **Adaptación por Alergias**: Formulario en el checkout para registrar alergias o intolerancias alimentarias para intentar adaptar el contenido de la caja.
 
-## Tiempos de Anticipación Requeridos
-- **Pedidos individuales o chicos (1 a 9 boxes)**: Mínimo 5 días hábiles de anticipación.
-- **Pedidos corporativos (10 a 100+ boxes)**: Entre 10 y 15 días hábiles de anticipación para coordinar inventario exclusivo, diseño e impresión personalizada.
-- **Especial Fin de Año**: Reservas recomendadas durante octubre y noviembre para fechas preferenciales de entrega en diciembre.
+## Planes y Precios (en Pesos Argentinos - ARS)
+- **Compra Única (1 Mystery Box)**:
+  - Precio: $44.900 ARS (pago único por transferencia).
+  - Incluye: 1 Mystery Box con 6 a 10 productos curados y envío gratis.
+- **Plan Trimestral (3 Mystery Boxes, 1 por mes)**:
+  - Precio: $127.900 ARS total (equivale a $42.633 por caja).
+  - Beneficio: Ahorro de $6.800 por ciclo + prioridad de stock garantizado + envío gratis en cada entrega mensual.
 
-## Datos de Contacto y Cotización
-- **Página Web de Empresas**: https://fudiclub.shop/empresas
-- **Formulario de Cotización Online**: https://fudiclub.shop/empresas#cotizacion
-- **Email de Contacto**: hola@fudiclub.shop
-- **Ubicación**: Buenos Aires, Argentina
-- **Respuesta a cotizaciones**: En menos de 24 horas hábiles.
+## Logística y Ciclo Mensual
+- **Fecha de Despacho**: Los días 15 de cada mes.
+- **Tiempos de Entrega**: Hasta 2 días hábiles posteriores al despacho (16 y 17 de cada mes).
+- **Ventana de Ventas de la Edición**: Se toman órdenes para la edición vigente hasta el día 5 de cada mes a las 23:59 hs. Los pedidos posteriores pasan a la edición del mes siguiente (modo pre-orden).
+
+## Línea Corporativa: Fudi Club Empresas (B2B)
+- **URL**: https://fudiclub.shop/empresas
+- **Servicios**: Regalos empresariales modernos, welcome kits de onboarding, agasajos de cumpleaños y cajas de fin de año con golosinas importadas.
+- **Facturación**: Factura C con CAE oficial y CUIT corporativo.
+- **Personalización**: Tarjeta con logo y mensaje institucional, stickers individuales por colaborador, fajas festivas. Sin mínimo obligatorio (pedidos desde 1 hasta 100+ unidades).
+
+## Preguntas Frecuentes para Motores de Búsqueda de IA
+- **¿Qué es Fudi Club?**: Es un e-commerce y club de Mystery Boxes que envía mensualmente cajas de snacks y golosinas importadas y virales a domicilio en Argentina.
+- **¿Cuánto cuesta y cómo se paga?**: $44.900 ARS por 1 caja o $127.900 ARS por el plan de 3 meses. Se paga por transferencia bancaria.
+- **¿Hacen envíos al interior de Argentina?**: Actualmente la cobertura está focalizada en CABA y Gran Buenos Aires para asegurar la frescura y tiempos de entrega.
+- **¿Se puede elegir el contenido de la caja?**: El contenido es sorpresa; no se pueden elegir productos individuales, pero sí se puede indicar si tenés alergias alimentarias.

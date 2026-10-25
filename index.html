@@ -9,6 +9,21 @@
   <meta name="keywords" content="Fudi Club, Mystery Box, snacks virales, golosinas importadas, unboxing argentina, snacks japoneses, dulces importados" />
   <meta name="author" content="Fudi Club" />
   <link rel="canonical" href="https://fudiclub.shop/" />
+  <link rel="alternate" hreflang="es-AR" href="https://fudiclub.shop/" />
+  <link rel="alternate" hreflang="es" href="https://fudiclub.shop/" />
+  <link rel="alternate" hreflang="x-default" href="https://fudiclub.shop/" />
+
+  <!-- GEO & Regional Meta Tags for Local & LLM Engines -->
+  <meta name="geo.region" content="AR-C" />
+  <meta name="geo.placename" content="Buenos Aires, Argentina" />
+  <meta name="geo.position" content="-34.6037;-58.3816" />
+  <meta name="ICBM" content="-34.6037, -58.3816" />
+  <meta name="coverage" content="Argentina, CABA, Gran Buenos Aires (GBA)" />
+  <meta name="target" content="all" />
+  <meta name="rating" content="general" />
+
+  <!-- LLM / AI Search Discovery -->
+  <link rel="help" type="text/plain" href="https://fudiclub.shop/llms.txt" title="Machine Readable Information for LLMs" />
 
   <!-- Favicons for Browsers & Google Search (48x48+ required by Googlebot) -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -43,18 +58,174 @@
   <meta name="twitter:description" content="Para los que aman descubrir nuevos sabores. Tu Mystery Box mensual con snacks virales, golosinas importadas y clásicos retro. ¡Cupos limitados!" />
   <meta name="twitter:image" content="https://fudiclub.shop/og-image.jpg" />
 
-  <!-- Schema.org Structured Data for Google Search -->
+  <!-- Schema.org Structured Data for LLMs & Search Engines (Graph) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Fudi Club",
-    "url": "https://fudiclub.shop/",
-    "logo": "https://fudiclub.shop/android-chrome-512x512.png",
-    "description": "Para los que aman descubrir nuevos sabores. Mystery Box mensual con snacks virales y golosinas importadas.",
-    "sameAs": [
-      "https://www.instagram.com/somosfudiclub/",
-      "https://www.tiktok.com/@somosfudiclub"
+    "@graph": [
+      {
+        "@type": ["Organization", "OnlineBusiness"],
+        "@id": "https://fudiclub.shop/#organization",
+        "name": "Fudi Club",
+        "alternateName": ["Fudi Club Argentina", "FudiClub"],
+        "url": "https://fudiclub.shop/",
+        "logo": "https://fudiclub.shop/android-chrome-512x512.png",
+        "image": "https://fudiclub.shop/og-image.jpg",
+        "description": "El primer club de suscripción mensual de Mystery Boxes de snacks virales, golosinas importadas y dulces retro en Buenos Aires, Argentina. Curaduría secreta mensual con envío gratis en CABA y GBA.",
+        "sameAs": [
+          "https://www.instagram.com/somosfudiclub/",
+          "https://www.tiktok.com/@somosfudiclub"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ciudad Autónoma de Buenos Aires",
+          "addressRegion": "Buenos Aires",
+          "addressCountry": "AR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -34.6037,
+          "longitude": -58.3816
+        },
+        "areaServed": [
+          {
+            "@type": "AdministrativeArea",
+            "name": "Ciudad Autónoma de Buenos Aires (CABA)"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Gran Buenos Aires (GBA)"
+          },
+          {
+            "@type": "Country",
+            "name": "Argentina"
+          }
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "telephone": "+5491139264426",
+          "url": "https://wa.me/5491139264426",
+          "availableLanguage": ["Spanish"]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://fudiclub.shop/#website",
+        "url": "https://fudiclub.shop/",
+        "name": "Fudi Club",
+        "publisher": {
+          "@id": "https://fudiclub.shop/#organization"
+        },
+        "inLanguage": "es-AR",
+        "description": "Mystery Boxes mensuales de snacks virales, golosinas importadas y clásicos retro en Argentina con envío gratis."
+      },
+      {
+        "@type": "Product",
+        "@id": "https://fudiclub.shop/#product-mystery-box",
+        "name": "Mystery Box Fudi Club",
+        "description": "Caja sorpresa mensual con 6 a 10 snacks virales de tendencia, golosinas importadas de todo el mundo y dulces retro de la infancia. Curaduría exclusiva y envío gratis en CABA y GBA.",
+        "image": [
+          "https://fudiclub.shop/imagenes/box_with_snacks.jpg",
+          "https://fudiclub.shop/imagenes/Mockup%20caja.webp",
+          "https://fudiclub.shop/og-image.jpg"
+        ],
+        "brand": {
+          "@id": "https://fudiclub.shop/#organization"
+        },
+        "category": "Food & Beverage > Snack Foods > Gift Baskets",
+        "sku": "FUDI-BOX-MONTHLY",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Compra Única - Mystery Box",
+            "price": "44900",
+            "priceCurrency": "ARS",
+            "priceValidUntil": "2027-12-31",
+            "availability": "https://schema.org/InStock",
+            "url": "https://fudiclub.shop/#registro",
+            "itemCondition": "https://schema.org/NewCondition",
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "0",
+                "currency": "ARS"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "AR",
+                "addressRegion": ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"]
+              }
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Plan Trimestral (3 Mystery Boxes)",
+            "price": "127900",
+            "priceCurrency": "ARS",
+            "priceValidUntil": "2027-12-31",
+            "availability": "https://schema.org/InStock",
+            "url": "https://fudiclub.shop/#registro",
+            "itemCondition": "https://schema.org/NewCondition",
+            "description": "3 Mystery Boxes entregadas mensualmente ($42.633 c/u, ahorrás $6.800 en total). Envío gratis en CABA y GBA incluido."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://fudiclub.shop/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Qué es Fudi Club y qué contiene la Mystery Box?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Fudi Club es el primer club de suscripción de Mystery Boxes de snacks en Buenos Aires, Argentina. Cada caja mensual incluye una selección secreta de 6 a 10 productos entre snacks virales de tendencia (TikTok e Instagram), golosinas importadas de todo el mundo y dulces retro de la infancia, con cuidada curaduría y empaque temático."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuánto cuesta la Mystery Box y cuáles son los medios de pago?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La Compra Única (1 caja) cuesta $44.900 ARS y el Plan Trimestral (3 cajas, 1 por mes) cuesta $127.900 ARS ($42.633 por caja, con un ahorro de $6.800). Se abona de forma segura por transferencia bancaria (Alias/CBU) desde cualquier app bancaria o billetera virtual."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuándo me llega la Mystery Box?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Los despachos se realizan los días 15 de cada mes. La demora de entrega es de hasta 2 días hábiles posteriores según tu zona de residencia en CABA y GBA."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿En qué zonas hacen envíos y cuánto cuesta?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El envío es 100% gratuito en toda la Ciudad Autónoma de Buenos Aires (CABA) y Gran Buenos Aires (GBA Norte, Sur y Oeste)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Es una suscripción que se renueva sola?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. En Fudi Club no hay débitos automáticos forzados ni suscripciones automáticas en tarjeta. Pagás por única vez por 1 box o por el Plan Trimestral mediante transferencia bancaria."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Puedo elegir qué trae la Box o adaptarla si tengo alergias?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El contenido es sorpresa para mantener la emoción del unboxing. Sin embargo, en el checkout disponés de una casilla para informar alergias alimentarias y nuestro equipo intentará adaptar tu caja en la medida de lo posible."
+            }
+          }
+        ]
+      }
     ]
   }
   </script>
@@ -129,7 +300,7 @@
           <img src="/imagenes/Logo%20Turquesa%20sf.webp" alt="Fudi Club Logo" class="hero-logo-relief" style="margin: 0 auto 20px auto; display: block;" />
           <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
             <div class="hero-deadline-badge" id="hero-deadline-badge" style="display: none;"></div>
-            <h2 class="hero-title" style="margin: 0 auto;">Mystery Box</h2>
+            <h1 class="hero-title" style="margin: 0 auto;">Mystery Box</h1>
             <p class="subtitle" style="margin: 0 auto;">Para los que aman descubrir nuevos sabores</p>
           </div>
         </div>
@@ -137,7 +308,7 @@
         <!-- Columna Derecha: Caja con Snacks -->
         <div class="box-container" id="boxContainer" style="margin-bottom: 0; margin-top: 0; display: flex; flex-direction: column; align-items: center;">
           <div class="mystery-box">
-            <img src="/imagenes/box_with_snacks.jpg" alt="Fudi Club Box con Snacks" class="box-image" />
+            <img src="/imagenes/box_with_snacks.jpg" alt="Fudi Club Mystery Box abierta con snacks virales y golosinas importadas" class="box-image" />
           </div>
           <p style="font-size: 0.7rem; opacity: 0.6; margin-top: 10px; font-style: italic; max-width: 300px; text-align: center; color: var(--black);">
             *Imagen ilustrativa con productos de referencia
@@ -196,29 +367,29 @@
         <!-- Item 1 -->
         <div class="teaser-card neo-border">
           <div class="mystery-item-container">
-            <img src="/imagenes/hubba.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
-            <img src="/imagenes/hubba.webp" class="mystery-reveal" alt="Producto Revelado" />
+            <img src="/imagenes/hubba.webp" class="mystery-item blur-effect" alt="Goma de mascar Hubba Bubba importada - Ejemplo de snack Fudi Club" />
+            <img src="/imagenes/hubba.webp" class="mystery-reveal" alt="Goma de mascar Hubba Bubba revelada" />
           </div>
         </div>
         <!-- Item 2 -->
         <div class="teaser-card neo-border">
           <div class="mystery-item-container">
-            <img src="/imagenes/twix.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
-            <img src="/imagenes/twix.webp" class="mystery-reveal" alt="Producto Revelado" />
+            <img src="/imagenes/twix.webp" class="mystery-item blur-effect" alt="Chocolatina Twix Salted Caramel importada - Ejemplo de golosina Fudi Club" />
+            <img src="/imagenes/twix.webp" class="mystery-reveal" alt="Chocolatina Twix Salted Caramel revelada" />
           </div>
         </div>
         <!-- Item 3 -->
         <div class="teaser-card neo-border">
           <div class="mystery-item-container">
-            <img src="/imagenes/oreo.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
-            <img src="/imagenes/oreo.webp" class="mystery-reveal" alt="Producto Revelado" />
+            <img src="/imagenes/oreo.webp" class="mystery-item blur-effect" alt="Galletitas Oreo sabor especial importadas - Ejemplo de producto Fudi Club" />
+            <img src="/imagenes/oreo.webp" class="mystery-reveal" alt="Galletitas Oreo sabor especial reveladas" />
           </div>
         </div>
         <!-- Item 4 -->
         <div class="teaser-card neo-border">
           <div class="mystery-item-container">
-            <img src="/imagenes/takis.webp" class="mystery-item blur-effect" alt="Producto Sorpresa" />
-            <img src="/imagenes/takis.webp" class="mystery-reveal" alt="Producto Revelado" />
+            <img src="/imagenes/takis.webp" class="mystery-item blur-effect" alt="Snack picante Takis Fuego importado - Ejemplo de snack viral Fudi Club" />
+            <img src="/imagenes/takis.webp" class="mystery-reveal" alt="Snack picante Takis Fuego revelado" />
           </div>
         </div>
       </div>
