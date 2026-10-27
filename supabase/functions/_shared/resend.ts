@@ -45,3 +45,52 @@ export const sendEmail = async ({
     return false
   }
 }
+
+export const createContact = async ({
+  email,
+  firstName,
+  lastName,
+  audienceId,
+}: {
+  email: string
+  firstName?: string
+  lastName?: string
+  audienceId?: string
+}) => {
+  const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
+  if (!RESEND_API_KEY) {
+    console.error('Missing RESEND_API_KEY')
+    return false
+  }
+
+  const targetAudience = audienceId || Deno.env.get('RESEND_AUDIENCE_ID') || '5465a8ed-8a31-4f0e-b936-95a55d40fe60'
+
+  try {
+    const res = await fetch(`https://api.resend.com/audiences/${targetAudience}/contacts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        first_name: firstName,
+        last_name: lastName,
+        unsubscribed: false,
+      }),
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      console.warn('Resend createContact API Error:', errorData)
+      return false
+    }
+
+    const data = await res.json()
+    console.log('Contact created in Resend:', data)
+    return true
+  } catch (error) {
+    console.warn('Error creating contact in Resend:', error)
+    return false
+  }
+}

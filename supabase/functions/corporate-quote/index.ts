@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { corsHeaders } from '../_shared/cors.ts'
-import { sendEmail } from '../_shared/resend.ts'
+import { sendEmail, createContact } from '../_shared/resend.ts'
 import { getSupabaseClient } from '../_shared/supabase.ts'
 
 serve(async (req) => {
@@ -99,6 +99,21 @@ serve(async (req) => {
         })
     } catch (dbErr) {
       console.warn('Error guardando en waitlist:', dbErr)
+    }
+
+    // Sincronizar contacto en Resend (Segmento: Empresas)
+    try {
+      const nameParts = nombre.trim().split(' ')
+      const firstName = nameParts[0] || nombre
+      const lastName = nameParts.slice(1).join(' ') || empresa
+      await createContact({
+        email,
+        firstName,
+        lastName,
+        audienceId: '5465a8ed-8a31-4f0e-b936-95a55d40fe60', // Segmento Empresas en Resend
+      })
+    } catch (resendContactErr) {
+      console.warn('Error sincronizando contacto en Resend:', resendContactErr)
     }
 
     // Sincronizar en Google Sheets (pestaña "Leads Empresas")

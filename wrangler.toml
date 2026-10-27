@@ -9,6 +9,11 @@ directory = "./dist"
 html_handling = "auto-trailing-slash"
 not_found_handling = "single-page-application"
 
+[vars]
+ADMIN_NOTIFICATION_EMAIL = "robloz.ingrid@gmail.com,ingrid.robles@hotmail.com"
+RESEND_FROM_EMAIL = "Fudi Club <hola@fudiclub.shop>"
+SUPABASE_URL = "https://oxoodwpkbprkyenxiqsf.supabase.co"
+
 # Rutas del dominio personalizado
 [[routes]]
 pattern = "fudiclub.shop/*"

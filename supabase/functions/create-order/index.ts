@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { corsHeaders } from '../_shared/cors.ts'
 import { getSupabaseClient } from '../_shared/supabase.ts'
-import { sendEmail } from '../_shared/resend.ts'
+import { sendEmail, createContact } from '../_shared/resend.ts'
 import { validateEmail } from '../_shared/email-validator.ts'
 import { generateConfirmationToken } from '../_shared/token.ts'
 import { buildAdminOrderNotificationEmail, buildTransferInstructionsEmail } from '../_shared/email-templates.ts'
@@ -55,6 +55,21 @@ serve(async (req) => {
       .single()
 
     if (customerError) throw customerError
+
+    // Sincronizar comprador en Resend (Segmento: General / Mystery Box)
+    try {
+      const nameParts = name.trim().split(/\s+/)
+      const firstName = nameParts[0] || name
+      const lastName = nameParts.slice(1).join(' ') || ''
+      await createContact({
+        email: cleanEmail,
+        firstName,
+        lastName,
+        audienceId: 'c71b8017-d546-4a9b-9631-ddeff8175243', // Segmento General
+      })
+    } catch (resendContactErr) {
+      console.warn('Error sincronizando cliente en Resend:', resendContactErr)
+    }
 
     // 2. Calculate Total
     const qty = quantity ? parseInt(quantity, 10) : 1

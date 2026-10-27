@@ -11,7 +11,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "send-hype": "node scripts/enviar-hype.mjs",
-    "send-lanzamiento": "node scripts/enviar-lanzamiento.mjs"
+    "send-lanzamiento": "node scripts/enviar-lanzamiento.mjs",
+    "send-b2b-test": "node scripts/enviar-campana-b2b.mjs --test --v1",
+    "send-b2b-test-v1": "node scripts/enviar-campana-b2b.mjs --test --v1",
+    "send-b2b-test-v2": "node scripts/enviar-campana-b2b.mjs --test --v2",
+    "send-b2b-dry": "node scripts/enviar-campana-b2b.mjs --dry-run",
+    "send-b2b": "node scripts/enviar-campana-b2b.mjs --send"
   },
   "devDependencies": {
     "happy-dom": "^20.14.5",
