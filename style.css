@@ -331,7 +331,7 @@ h1, h2, h3 {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background-color: #ffd84d;
+  background-color: var(--bg-amarillo);
   color: var(--black);
   font-family: var(--font-mono);
   font-size: clamp(0.88rem, 2.2vw + 0.3rem, 1.05rem);
