@@ -265,28 +265,31 @@
   <!-- Overlay/Grain Effect -->
   <div class="grain-overlay"></div>
 
-  <!-- Ticker / Marquee -->
-  <div class="ticker">
-    <div class="ticker-content">
-      <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
-      <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header class="neo-header">
-    <a href="/" class="logo-container">
-      <img src="/imagenes/Logo-blanco-plano.png" alt="Fudi Club Logo" class="header-logo" />
-    </a>
-    <nav class="header-nav">
-      <div class="social-links">
-        <a href="https://www.instagram.com/somosfudiclub/" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.tiktok.com/@somosfudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+  <!-- Sticky Header & Ticker Container -->
+  <div class="sticky-header-container">
+    <!-- Ticker / Marquee -->
+    <div class="ticker">
+      <div class="ticker-content">
+        <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
+        <span>SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // </span>
       </div>
-      <a href="/empresas/" class="header-empresas-btn" title="Fudi Club para Empresas"><i class="fas fa-briefcase"></i> Empresas</a>
-      <a href="#registro" class="cta-button cta-green inline-header-btn">Pedir Box</a>
-    </nav>
-  </header>
+    </div>
+
+    <!-- Header -->
+    <header class="neo-header">
+      <a href="/" class="logo-container">
+        <img src="/imagenes/Logo-blanco-plano.png" alt="Fudi Club Logo" class="header-logo" />
+      </a>
+      <nav class="header-nav">
+        <div class="social-links">
+          <a href="https://www.instagram.com/somosfudiclub/" class="social-icon ig" title="Instagram" aria-label="Follow us on Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.tiktok.com/@somosfudiclub" class="social-icon tt" title="TikTok" aria-label="Follow us on TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+        <a href="/empresas/" class="header-empresas-btn" title="Fudi Club para Empresas"><i class="fas fa-briefcase"></i> Empresas</a>
+        <a href="#registro" class="cta-button cta-green inline-header-btn">Pedir Box</a>
+      </nav>
+    </header>
+  </div>
 
   <!-- Main Content -->
   <main>
@@ -295,25 +298,20 @@
       <div class="hero-content">
         
         <!-- Columna Izquierda: Logo y Texto -->
-        <div class="animate-fade-in-up" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 480px; margin: 0 auto;">
+        <div class="animate-fade-in-up" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 480px; width: 100%; margin: 0 auto; padding: 0 10px; box-sizing: border-box;">
           <img src="/imagenes/Logo%20Turquesa%20sf.webp" alt="Fudi Club Logo" class="hero-logo-relief" style="margin: 0 auto 16px auto; display: block;" />
           <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div class="hero-deadline-badge" id="hero-deadline-badge" style="display: none;"></div>
             <h1 class="hero-title" style="margin: 0 auto;">Mystery Box</h1>
             <p class="subtitle" style="margin: 0 auto 10px;">Para los que aman descubrir nuevos sabores</p>
             <p class="hero-description">Tu caja sorpresa mensual con 6 a 10 snacks virales, golosinas del mundo y dulces retro de la infancia directo a tu casa con envío gratis.</p>
             
             <div class="hero-badges">
               <span class="hero-badge-pill"><i class="fas fa-truck-fast"></i> Envío gratis CABA y GBA</span>
-              <span class="hero-badge-pill"><i class="fas fa-gift"></i> 6 a 10 snacks sorpresa</span>
               <span class="hero-badge-pill"><i class="fas fa-ban"></i> Sin suscripción forzada</span>
             </div>
 
             <div class="hero-cta-wrap">
-              <a href="#registro" class="cta-button cta-green hero-cta-button">
-                <span>Quiero mi Mystery Box</span>
-                <span class="hero-cta-price"><s style="opacity: 0.6; font-size: 0.85em; margin-right: 4px;">$44.900</s>$40.410</span>
-              </a>
+              <a href="#registro" class="cta-button cta-green hero-cta-button">Quiero mi Mystery Box</a>
               <span class="hero-guarantee-note"><i class="fas fa-check-circle"></i> Envío gratis incluido · Cupos limitados del mes</span>
             </div>
           </div>
@@ -321,6 +319,7 @@
 
         <!-- Columna Derecha: Caja con Snacks -->
         <div class="box-container" id="boxContainer" style="margin-bottom: 0; margin-top: 0; display: flex; flex-direction: column; align-items: center;">
+          <div class="hero-deadline-badge" id="hero-deadline-badge" style="display: none;"></div>
           <div class="mystery-box">
             <img src="/imagenes/box_with_snacks.jpg" alt="Fudi Club Mystery Box abierta con snacks virales y golosinas importadas" class="box-image" />
           </div>
