@@ -330,25 +330,27 @@ h1, h2, h3 {
 .hero-deadline-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background-color: var(--bg-rosa);
+  gap: 10px;
+  background-color: #ffd84d;
   color: var(--black);
   font-family: var(--font-mono);
-  font-size: clamp(0.82rem, 2vw + 0.3rem, 0.95rem);
-  font-weight: 800;
+  font-size: clamp(0.88rem, 2.2vw + 0.3rem, 1.05rem);
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 8px 16px;
-  border: 2px solid var(--black);
+  padding: 11px 22px;
+  border: 2.5px solid var(--black);
   border-radius: 50px;
-  box-shadow: 3px 3px 0px var(--black);
+  box-shadow: 4px 4px 0px var(--black);
   transform: rotate(-1.5deg);
-  margin-bottom: 14px;
-  transition: transform 0.2s ease;
+  margin-top: 6px;
+  margin-bottom: 26px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hero-deadline-badge:hover {
   transform: rotate(0deg) scale(1.04);
+  box-shadow: 5px 5px 0px var(--black);
 }
 
 .hero-title {
