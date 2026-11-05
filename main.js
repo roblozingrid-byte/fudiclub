@@ -148,12 +148,14 @@ export function initMobileStickyCTA() {
   const stickyCta = document.getElementById('mobileStickyCta');
   const heroSection = document.querySelector('.hero');
   const checkoutSection = document.querySelector('#registro');
+  const waBtn = document.querySelector('.whatsapp-support');
   if (!stickyCta || !heroSection || !checkoutSection) return;
 
   let ticking = false;
   const updateStickyVisibility = () => {
     if (window.innerWidth > 768) {
       stickyCta.classList.remove('visible');
+      if (waBtn) waBtn.classList.remove('shifted-above-sticky');
       return;
     }
 
@@ -168,8 +170,10 @@ export function initMobileStickyCTA() {
 
     if (isPastHero && !isAtCheckout) {
       stickyCta.classList.add('visible');
+      if (waBtn) waBtn.classList.add('shifted-above-sticky');
     } else {
       stickyCta.classList.remove('visible');
+      if (waBtn) waBtn.classList.remove('shifted-above-sticky');
     }
   };
 

@@ -62,6 +62,14 @@ h1, h2, h3 {
   font-weight: 700;
 }
 
+/* Sticky Header & Ticker Wrapper */
+.sticky-header-container {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  width: 100%;
+}
+
 /* Marquee / Ticker */
 .ticker {
   background-color: var(--black);
@@ -73,9 +81,9 @@ h1, h2, h3 {
   overflow: hidden;
   white-space: nowrap;
   border-bottom: var(--border-thick);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: relative;
+  top: auto;
+  z-index: 2;
   display: flex;
 }
 
@@ -108,9 +116,9 @@ h1, h2, h3 {
   padding: 0 40px;
   background-color: var(--bg-amarillo);
   border-bottom: var(--border-thick);
-  position: sticky;
-  top: 38px;
-  z-index: 90;
+  position: relative;
+  top: auto;
+  z-index: 1;
 }
 
 .logo-container {
@@ -262,8 +270,10 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   overflow: visible;
-  padding: 25px 15px; /* Padding reducido */
-  margin-top: 25px; /* Achica el espacio con el header */
+  padding: 25px 16px;
+  margin-top: 25px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .hero-content {
@@ -353,12 +363,14 @@ h1, h2, h3 {
 
 .subtitle {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 2.5vw + 0.5rem, 1.15rem); /* Reducido */
+  font-size: clamp(0.95rem, 2.5vw + 0.4rem, 1.15rem);
   font-weight: 600;
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
   max-width: 380px;
   width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 .box-container {
@@ -387,18 +399,12 @@ h1, h2, h3 {
   height: auto;
 }
 
-.mystery-box:hover {
-  /* Vibrating effect */
-  animation: vibrate 0.2s cubic-bezier(.36,.07,.19,.97) infinite;
-  filter: drop-shadow(0 0 15px var(--accent-rosa)) drop-shadow(0 0 30px var(--accent-verde));
-}
-
-@keyframes vibrate {
-  0% { transform: translate(0) rotate(0deg); }
-  25% { transform: translate(2px, -2px) rotate(1deg); }
-  50% { transform: translate(-2px, 2px) rotate(-1deg); }
-  75% { transform: translate(-2px, -2px) rotate(0deg); }
-  100% { transform: translate(2px, 2px) rotate(1deg); }
+.mystery-box,
+.mystery-box:hover,
+.box-image,
+.box-image:hover {
+  animation: none !important;
+  transform: none !important;
 }
 
 /* Teaser Section */
@@ -1559,7 +1565,7 @@ textarea.neo-input {
   .stock-number { font-size: 2rem; }
   .stock-text { font-size: 0.8rem; }
   .footer-logo img { height: 60px; }
-  .hero-content { gap: 20px; padding: 10px 5px; }
+  .hero-content { gap: 20px; padding: 10px 16px; box-sizing: border-box; width: 100%; }
   .teaser-instruction { display: none; }
   .blur-effect { filter: none !important; }
   .mystery-reveal { display: none !important; }
@@ -1811,7 +1817,7 @@ textarea.neo-input {
   .neo-header {
     height: 58px;
     padding: 0 16px;
-    top: calc(35px + env(safe-area-inset-top, 0px));
+    top: auto;
   }
   
   .header-logo {
@@ -1964,7 +1970,9 @@ textarea.neo-input {
 @media (max-width: 480px) {
   .hero-content {
     gap: 15px;
-    padding: 5px 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .hero-logo-relief {
@@ -1979,6 +1987,29 @@ textarea.neo-input {
   
   .subtitle {
     font-size: 0.95rem;
+    padding: 0 8px;
+  }
+
+  .hero-description {
+    font-size: 0.92rem;
+    padding: 0 10px;
+    line-height: 1.45;
+  }
+
+  .hero-badges {
+    gap: 6px;
+    padding: 0 6px;
+  }
+
+  .hero-badge-pill {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+  }
+
+  .hero-cta-button {
+    font-size: 0.88rem !important;
+    padding: 9px 18px !important;
+    max-width: 250px !important;
   }
   
   .section-title {
@@ -2182,10 +2213,14 @@ textarea.neo-input {
   border: 2px solid var(--black);
   box-shadow: 4px 4px 0px var(--black);
   z-index: 9999;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.whatsapp-support.shifted-above-sticky {
+  bottom: calc(75px + env(safe-area-inset-bottom, 10px)) !important;
 }
 
 .whatsapp-support:hover {
@@ -2301,10 +2336,13 @@ textarea.neo-input {
 
 /* Hero Upgrades */
 .hero-description {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   line-height: 1.5;
   color: var(--black);
   max-width: 420px;
+  width: 100%;
+  padding: 0 14px;
+  box-sizing: border-box;
   margin: 12px auto 16px;
   text-align: center;
 }
@@ -2315,6 +2353,10 @@ textarea.neo-input {
   justify-content: center;
   gap: 8px;
   margin-bottom: 18px;
+  width: 100%;
+  max-width: 440px;
+  padding: 0 8px;
+  box-sizing: border-box;
 }
 
 .hero-badge-pill {
@@ -2349,12 +2391,13 @@ textarea.neo-input {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   font-weight: 800;
-  padding: 12px 28px;
+  padding: 10px 22px;
   border-radius: 8px;
   box-shadow: 3px 3px 0px var(--black);
   width: auto;
+  max-width: 290px;
   margin: 0 auto;
 }
 
@@ -2712,6 +2755,12 @@ textarea.neo-input {
     white-space: nowrap;
     border-radius: 6px;
     box-shadow: 3px 3px 0px var(--black) !important;
+  }
+
+  .hero-cta-button {
+    font-size: 0.92rem !important;
+    padding: 10px 20px !important;
+    max-width: 270px !important;
   }
 
   .header-empresas-btn {
