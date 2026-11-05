@@ -354,10 +354,12 @@ h1, h2, h3 {
   box-shadow: 5px 5px 0px var(--black);
 }
 
+.hero-deadline-badge.hero-badge-mobile,
 .hero-badge-mobile {
   display: none !important;
 }
 
+.hero-deadline-badge.hero-badge-desktop,
 .hero-badge-desktop {
   margin-bottom: 22px;
 }
@@ -2832,16 +2834,18 @@ textarea.neo-input {
     width: auto !important;
   }
 
-  .hero-badge-desktop {
+  .hero-deadline-badge.hero-badge-desktop,
+  .hero-badge-desktop,
+  .box-container .hero-deadline-badge {
     display: none !important;
   }
 
+  .hero-deadline-badge.hero-badge-mobile,
   .hero-badge-mobile {
     display: inline-flex !important;
   }
 
   .hero-deadline-badge {
-    display: inline-flex !important;
     font-size: 0.8rem !important;
     padding: 7px 14px !important;
     margin-top: 0 !important;
@@ -2920,16 +2924,18 @@ textarea.neo-input {
     width: auto !important;
   }
 
-  .hero-badge-desktop {
+  .hero-deadline-badge.hero-badge-desktop,
+  .hero-badge-desktop,
+  .box-container .hero-deadline-badge {
     display: none !important;
   }
 
+  .hero-deadline-badge.hero-badge-mobile,
   .hero-badge-mobile {
     display: inline-flex !important;
   }
 
   .hero-deadline-badge {
-    display: inline-flex !important;
     font-size: 0.76rem !important;
     padding: 6px 12px !important;
     margin-top: 0 !important;
