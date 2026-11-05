@@ -470,10 +470,16 @@ export function updatePlanCardsPricingUI() {
     }
 
     if (planCardQuarterly) {
-      const sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
-      if (sticker) {
-        sticker.textContent = '⭐ MEJOR OPCIÓN · 10% OFF';
+      let sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+      if (!sticker) {
+        sticker = document.createElement('div');
+        sticker.className = 'plan-badge-sticker';
+        planCardQuarterly.prepend(sticker);
       }
+      sticker.style.background = 'var(--festive-red, #ff5e7e)';
+      sticker.style.color = 'white';
+      sticker.textContent = '⚡ 10% OFF CYBER';
+
       const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
       if (priceWrap) {
         let priceContainer = priceWrap.querySelector('.plan-pricing-container');
@@ -512,10 +518,16 @@ export function updatePlanCardsPricingUI() {
     }
 
     if (planCardQuarterly) {
-      const sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
-      if (sticker) {
-        sticker.textContent = '⭐ MEJOR PRECIO';
+      let sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+      if (!sticker) {
+        sticker = document.createElement('div');
+        sticker.className = 'plan-badge-sticker';
+        planCardQuarterly.prepend(sticker);
       }
+      sticker.style.background = '';
+      sticker.style.color = '';
+      sticker.textContent = '⭐ 5% OFF · MEJOR PRECIO';
+
       const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
       if (priceWrap) {
         const priceContainer = priceWrap.querySelector('.plan-pricing-container');
@@ -524,7 +536,7 @@ export function updatePlanCardsPricingUI() {
         }
         const tags = priceWrap.querySelectorAll('.plan-tag');
         if (tags[0]) tags[0].textContent = '(Equivale a $42.633 c/u)';
-        if (tags[1]) tags[1].textContent = 'Ahorrás $6.800 por ciclo';
+        if (tags[1]) tags[1].textContent = '5% OFF · Ahorrás $6.800 por ciclo';
       }
     }
 

@@ -1004,7 +1004,7 @@ describe('src/checkout.js', () => {
 
       const planCardQuarterly = document.getElementById('plan-card-quarterly');
       expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$121.230');
-      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ MEJOR OPCIÓN · 10% OFF');
+      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⚡ 10% OFF CYBER');
     });
 
     it('automatically restores standard pricing and tags starting Nov 11', () => {
@@ -1020,10 +1020,10 @@ describe('src/checkout.js', () => {
 
       const planCardQuarterly = document.getElementById('plan-card-quarterly');
       expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$127.900');
-      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ MEJOR PRECIO');
+      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ 5% OFF · MEJOR PRECIO');
       const tags = planCardQuarterly.querySelectorAll('.plan-tag');
       expect(tags[0].textContent).toBe('(Equivale a $42.633 c/u)');
-      expect(tags[1].textContent).toBe('Ahorrás $6.800 por ciclo');
+      expect(tags[1].textContent).toBe('5% OFF · Ahorrás $6.800 por ciclo');
 
       const stickyPrice = document.querySelector('.sticky-box-price');
       expect(stickyPrice.innerHTML).toBe('$44.900 <small>· Envío gratis</small>');
