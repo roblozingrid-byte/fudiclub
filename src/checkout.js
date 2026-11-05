@@ -894,7 +894,11 @@ export function initCheckoutFlow() {
       const bIndex = monthsList.indexOf(baseEdition);
       const m2 = monthsList[(bIndex + 1) % 12];
       const m3 = monthsList[(bIndex + 2) % 12];
-      const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}` : `Edición ${baseEdition}`;
+      
+      const now = new Date();
+      const isCyberWeek = (now.getMonth() === 10 && now.getDate() <= 10);
+      const cyberWeekTag = isCyberWeek ? ' [Cyber Week]' : '';
+      const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}${cyberWeekTag}` : `Edición ${baseEdition}${cyberWeekTag}`;
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
       const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'transfer';
       const emailInputElem = document.getElementById('emailInput');
@@ -986,7 +990,8 @@ export function initCheckoutFlow() {
         payment_method: paymentMethod,
         edition: editionAssigned,
         is_preorder: isPreorderMode,
-        quantity: orderQuantity
+        quantity: orderQuantity,
+        tag: isCyberWeek ? 'Cyber Week' : undefined
       };
 
       const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
@@ -1099,14 +1104,17 @@ export function initCheckoutFlow() {
           const btnWhatsapp = document.getElementById('btn-whatsapp-proof');
           if (btnWhatsapp) {
             const friendlyOrderId = data.orderId || '';
-            const msg = `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId})`;
+            const msg = isCyberWeek
+              ? `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId}) [Cyber Week]`
+              : `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId})`;
             btnWhatsapp.href = `https://wa.me/5491139264426?text=${encodeURIComponent(msg)}`;
             btnWhatsapp.onclick = () => {
               posthog.capture('whatsapp_receipt_clicked', {
                 order_id: friendlyOrderId,
                 email: email,
                 plan: planValue,
-                total: payload.total
+                total: payload.total,
+                tag: isCyberWeek ? 'Cyber Week' : undefined
               });
             };
           }

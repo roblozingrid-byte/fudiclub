@@ -98,10 +98,13 @@ serve(async (req: Request) => {
       // K: Cantidad de Boxes
       // L: Dirección de Envío
 
+      const isCyberWeek = record.tag === "Cyber Week" || record.edition?.includes("Cyber Week");
       const isQuarterly = record.plan === "quarterly";
-      const planLabel = isQuarterly ? "Plan Trimestral" : "Compra Única";
+      const planLabel = isQuarterly 
+        ? (isCyberWeek ? "Plan Trimestral (Cyber Week)" : "Plan Trimestral") 
+        : (isCyberWeek ? "Compra Única (Cyber Week)" : "Compra Única");
       const totalAmount = record.total ?? record.total_amount ?? 0;
-      const unitPrice = isQuarterly ? 127900 : 44900;
+      const unitPrice = isQuarterly ? (isCyberWeek ? 121230 : 127900) : (isCyberWeek ? 40410 : 44900);
       const qty = record.quantity || (totalAmount > 0 ? Math.round(totalAmount / unitPrice) : 1);
       const totalBoxes = record.total_boxes || (qty * (isQuarterly ? 3 : 1));
 
@@ -144,6 +147,10 @@ serve(async (req: Request) => {
         const m2 = monthsList[(bIdx + 1) % 12];
         const m3 = monthsList[(bIdx + 2) % 12];
         editionDisplay = `${m1} - ${m2} - ${m3}`;
+      }
+
+      if (isCyberWeek && !editionDisplay.includes("Cyber Week")) {
+        editionDisplay = `${editionDisplay} [Cyber Week]`;
       }
 
       values = [

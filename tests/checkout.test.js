@@ -655,6 +655,31 @@ describe('src/checkout.js', () => {
       });
     });
 
+    it('attaches Cyber Week tag and edition marker when submitting during Cyber Week', async () => {
+      vi.setSystemTime(new Date(2026, 10, 5)); // 5 de Noviembre
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, orderId: 'FUDI-11-CYBER' })
+      });
+
+      initCheckoutFlow();
+
+      const emailInput = document.getElementById('emailInput');
+      emailInput.value = 'cyber@fudiclub.com';
+
+      const paymentForm = document.getElementById('paymentForm');
+      paymentForm.dispatchEvent(new Event('submit', { cancelable: true }));
+
+      await vi.waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('/create-order'),
+          expect.objectContaining({
+            body: expect.stringMatching(/"tag":"Cyber Week"/)
+          })
+        );
+      });
+    });
+
     it('shows name error on blur when surname is missing, and clears when fixed', () => {
       initCheckoutFlow();
 

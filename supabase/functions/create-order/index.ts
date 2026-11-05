@@ -125,6 +125,10 @@ serve(async (req) => {
       finalEdition = `${baseMonth} - ${m2} - ${m3}`;
     }
 
+    if (isDiscountActive && !finalEdition.includes('Cyber Week')) {
+      finalEdition = `${finalEdition} [Cyber Week]`;
+    }
+
     const orderPayload: any = {
       customer_id: customer.id,
       customer_name: name,
@@ -138,6 +142,7 @@ serve(async (req) => {
       friendly_id: friendlyId,
       quantity: qty,
       total_boxes: totalBoxes,
+      tag: isDiscountActive ? 'Cyber Week' : null
     }
 
     let { data: order, error: orderError } = await supabase
@@ -146,10 +151,11 @@ serve(async (req) => {
       .select()
       .single()
 
-    // Fallback if quantity or total_boxes columns do not exist yet in schema
-    if (orderError && (orderError.message?.includes('quantity') || orderError.message?.includes('total_boxes'))) {
+    // Fallback if tag, quantity or total_boxes columns do not exist yet in schema
+    if (orderError && (orderError.message?.includes('quantity') || orderError.message?.includes('total_boxes') || orderError.message?.includes('tag'))) {
       delete orderPayload.quantity;
       delete orderPayload.total_boxes;
+      delete orderPayload.tag;
       const retry = await supabase
         .from('orders')
         .insert(orderPayload)
@@ -163,7 +169,9 @@ serve(async (req) => {
 
     // 4. Send Admin Notification Email
     const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'robloz.ingrid@gmail.com';
-    const planName = isQuarterly ? 'Plan Trimestral' : 'Compra Única';
+    const planName = isQuarterly 
+      ? (isDiscountActive ? 'Plan Trimestral (Cyber Week ⚡)' : 'Plan Trimestral') 
+      : (isDiscountActive ? 'Compra Única (Cyber Week ⚡)' : 'Compra Única');
     const paymentMethodLabel = payment_method === 'transfer' ? 'Transferencia Bancaria 📲' : 'Mercado Pago 💳';
     const formattedTotal = total.toLocaleString('es-AR');
 
@@ -180,9 +188,10 @@ serve(async (req) => {
     }
 
     try {
+      const cyberBadge = isDiscountActive ? ' [Cyber Week ⚡]' : '';
       await sendEmail({
         to: adminEmail,
-        subject: `🔔 ¡Nuevo Pedido ${friendlyId}! - ${name} ($${formattedTotal})`,
+        subject: `🔔 ¡Nuevo Pedido ${friendlyId}!${cyberBadge} - ${name} ($${formattedTotal})`,
         html: buildAdminOrderNotificationEmail({
           friendlyId,
           name,
@@ -197,7 +206,8 @@ serve(async (req) => {
           paymentMethodLabel,
           formattedTotal,
           isQuarterly,
-          confirmUrl
+          confirmUrl,
+          promoTag: isDiscountActive ? 'Cyber Week (10% OFF)' : undefined
         })
       });
     } catch (adminEmailErr) {

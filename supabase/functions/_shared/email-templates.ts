@@ -174,7 +174,8 @@ export function buildAdminOrderNotificationEmail({
   paymentMethodLabel,
   formattedTotal,
   isQuarterly,
-  confirmUrl
+  confirmUrl,
+  promoTag
 }: {
   friendlyId: string;
   name: string;
@@ -190,6 +191,7 @@ export function buildAdminOrderNotificationEmail({
   formattedTotal: string;
   isQuarterly: boolean;
   confirmUrl?: string;
+  promoTag?: string;
 }) {
   return `
 <!DOCTYPE html>
@@ -236,6 +238,14 @@ export function buildAdminOrderNotificationEmail({
                 
                 <hr style="border: 0; border-top: 2px dashed #000000; margin: 15px 0;" />
                 
+                ${promoTag ? `
+                <p style="margin: 6px 0; font-size: 15px;">
+                  <strong>Campaña / Etiqueta:</strong> 
+                  <span style="background-color: #ff5e7e; color: #ffffff; padding: 4px 10px; border: 2px solid #000000; font-weight: 900; border-radius: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 2px 2px 0px #000000; display: inline-block;">
+                    ⚡ ${promoTag}
+                  </span>
+                </p>
+                ` : ''}
                 <p style="margin: 6px 0; font-size: 15px;"><strong>Tipo de Compra:</strong> <span style="background-color: ${isQuarterly ? '#d1ff5e' : '#ffb7d5'}; padding: 3px 8px; border: 1px solid #000000; font-weight: bold; border-radius: 4px;">${planName}</span></p>
                 <p style="margin: 6px 0; font-size: 15px;"><strong>Edición / Meses:</strong> <strong>${finalEdition}</strong></p>
                 <p style="margin: 6px 0; font-size: 15px;"><strong>Cantidad:</strong> <strong>${qty}</strong> pack(s) &rarr; <strong>${totalBoxes} box(es) en total</strong> (${qty} por mes)</p>
