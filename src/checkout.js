@@ -389,9 +389,9 @@ export function updateMonthlyUrgencyAlerts() {
     }
   }
 
-  // 2. Badge en el Hero
-  const heroBadge = document.getElementById('hero-deadline-badge');
-  if (heroBadge) {
+  // 2. Badge en el Hero (soporta versión desktop sobre la caja y mobile antes del logo)
+  const heroBadges = document.querySelectorAll('.hero-deadline-badge');
+  heroBadges.forEach(heroBadge => {
     if (isUrgencyActive) {
       if (isNovemberCyberWeek) {
         heroBadge.textContent = `🔥 CYBER WEEK 10% OFF · EXTENDIDO HASTA EL ${closingDayName.toUpperCase()} 10/${monthNum}`;
@@ -402,7 +402,7 @@ export function updateMonthlyUrgencyAlerts() {
     } else {
       heroBadge.style.display = 'none';
     }
-  }
+  });
 
   // 3. Alerta en el Checkout
   const checkoutAlert = document.getElementById('checkout-deadline-alert');

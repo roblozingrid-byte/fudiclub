@@ -354,6 +354,14 @@ h1, h2, h3 {
   box-shadow: 5px 5px 0px var(--black);
 }
 
+.hero-badge-mobile {
+  display: none !important;
+}
+
+.hero-badge-desktop {
+  margin-bottom: 22px;
+}
+
 .hero-title {
   font-size: clamp(2rem, 5vw + 1rem, 3rem); /* Reducido */
   color: var(--white);
@@ -2824,8 +2832,15 @@ textarea.neo-input {
     width: auto !important;
   }
 
+  .hero-badge-desktop {
+    display: none !important;
+  }
+
+  .hero-badge-mobile {
+    display: inline-flex !important;
+  }
+
   .hero-deadline-badge {
-    order: -1 !important;
     display: inline-flex !important;
     font-size: 0.8rem !important;
     padding: 7px 14px !important;
@@ -2905,8 +2920,15 @@ textarea.neo-input {
     width: auto !important;
   }
 
+  .hero-badge-desktop {
+    display: none !important;
+  }
+
+  .hero-badge-mobile {
+    display: inline-flex !important;
+  }
+
   .hero-deadline-badge {
-    order: -1 !important;
     display: inline-flex !important;
     font-size: 0.76rem !important;
     padding: 6px 12px !important;
