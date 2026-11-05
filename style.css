@@ -270,9 +270,8 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   overflow: visible;
-  padding: 25px 20px;
-  margin-top: 25px;
-  box-sizing: border-box;
+  padding: 25px 15px; /* Padding desktop */
+  margin-top: 25px; /* Espacio desktop */
 }
 
 .hero-content {
@@ -334,17 +333,17 @@ h1, h2, h3 {
   background-color: var(--bg-amarillo);
   color: var(--black);
   font-family: var(--font-mono);
-  font-size: clamp(0.92rem, 2.2vw + 0.3rem, 1.1rem);
-  font-weight: 900;
+  font-size: clamp(0.85rem, 2vw + 0.3rem, 1rem);
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 10px 22px;
-  border: 2.5px solid var(--black);
+  padding: 8px 18px;
+  border: 2px solid var(--black);
   border-radius: 50px;
-  box-shadow: 4px 4px 0px var(--black);
+  box-shadow: 3px 3px 0px var(--black);
   transform: rotate(-1.5deg);
   margin-top: 0;
-  margin-bottom: 26px;
+  margin-bottom: 14px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   max-width: 98%;
   text-align: center;
@@ -2826,6 +2825,7 @@ textarea.neo-input {
   }
 
   .hero-deadline-badge {
+    order: -1 !important;
     display: inline-flex !important;
     font-size: 0.8rem !important;
     padding: 7px 14px !important;
@@ -2906,6 +2906,7 @@ textarea.neo-input {
   }
 
   .hero-deadline-badge {
+    order: -1 !important;
     display: inline-flex !important;
     font-size: 0.76rem !important;
     padding: 6px 12px !important;
