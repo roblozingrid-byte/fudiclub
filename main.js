@@ -143,3 +143,46 @@ export function initMysteryReveal() {
     });
   });
 }
+
+export function initMobileStickyCTA() {
+  const stickyCta = document.getElementById('mobileStickyCta');
+  const heroSection = document.querySelector('.hero');
+  const checkoutSection = document.querySelector('#registro');
+  if (!stickyCta || !heroSection || !checkoutSection) return;
+
+  let ticking = false;
+  const updateStickyVisibility = () => {
+    if (window.innerWidth > 768) {
+      stickyCta.classList.remove('visible');
+      return;
+    }
+
+    const heroBottom = heroSection.getBoundingClientRect().bottom;
+    const checkoutRect = checkoutSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // Show after scrolling past hero
+    const isPastHero = heroBottom < 80;
+    // Hide when checkout form is visible on screen
+    const isAtCheckout = (checkoutRect.top < windowHeight * 0.75 && checkoutRect.bottom > 80);
+
+    if (isPastHero && !isAtCheckout) {
+      stickyCta.classList.add('visible');
+    } else {
+      stickyCta.classList.remove('visible');
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateStickyVisibility();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updateStickyVisibility, { passive: true });
+  updateStickyVisibility();
+}

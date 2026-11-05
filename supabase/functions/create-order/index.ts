@@ -71,10 +71,22 @@ serve(async (req) => {
       console.warn('Error sincronizando cliente en Resend:', resendContactErr)
     }
 
-    // 2. Calculate Total
+    // 2. Calculate Total (Con 10% de descuento Cyber Week activo hasta el 10 de Noviembre)
     const qty = quantity ? parseInt(quantity, 10) : 1
     const isQuarterly = plan === 'quarterly'
-    const subtotal = isQuarterly ? (127900 * qty) : (44900 * qty)
+
+    const argDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+    const currentMonthIdx = argDate.getMonth();
+    const currentDay = argDate.getDate();
+
+    // 10% OFF promocional para la edición de Noviembre (hasta el 10 de noviembre inclusive)
+    // Trimestral: 10% OFF sobre el total de 3 cajas a precio normal ($134.700 -> $121.230)
+    // Compra única: 10% OFF sobre 1 caja ($44.900 -> $40.410)
+    const isDiscountActive = (currentMonthIdx === 10 && currentDay <= 10);
+    const UNIT_PRICE_QUARTERLY = isDiscountActive ? 121230 : 127900;
+    const UNIT_PRICE_ONE_TIME = isDiscountActive ? 40410 : 44900;
+
+    const subtotal = isQuarterly ? (UNIT_PRICE_QUARTERLY * qty) : (UNIT_PRICE_ONE_TIME * qty)
     
     let deliveryFee = 0 // Shipping is 100% free
     
@@ -102,9 +114,9 @@ serve(async (req) => {
         }
       }
       if (!baseMonth) {
-        const argDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
-        let mIdx = argDate.getMonth();
-        if (argDate.getDate() > 5) mIdx = (mIdx + 1) % 12;
+        let mIdx = currentMonthIdx;
+        const cutoffDay = (mIdx === 10) ? 10 : 5;
+        if (currentDay > cutoffDay) mIdx = (mIdx + 1) % 12;
         baseMonth = monthsList[mIdx];
       }
       const bIdx = monthsList.indexOf(baseMonth);

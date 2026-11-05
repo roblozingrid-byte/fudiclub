@@ -7,7 +7,10 @@ export function calculateCurrentEdition() {
   let monthIndex = now.getMonth();
   const day = now.getDate();
 
-  if (day > 5 || isPreorderMode || AVAILABLE_STOCK <= 0) {
+  // En noviembre, la venta se extiende de forma especial hasta el día 10 por Cyber Week
+  const cutoffDay = (monthIndex === 10) ? 10 : 5;
+
+  if (day > cutoffDay || isPreorderMode || AVAILABLE_STOCK <= 0) {
     monthIndex = (monthIndex + 1) % 12;
   }
 
@@ -28,7 +31,9 @@ export function updateStockWidget() {
   let currentSaleMonthIndex = now.getMonth();
   const day = now.getDate();
 
-  if (day > 5 || AVAILABLE_STOCK <= 0) {
+  const cutoffDay = (currentSaleMonthIndex === 10) ? 10 : 5;
+
+  if (day > cutoffDay || AVAILABLE_STOCK <= 0) {
     currentSaleMonthIndex = (currentSaleMonthIndex + 1) % 12;
   }
 
@@ -85,15 +90,23 @@ export function updateCheckoutTotals() {
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
   
+  const now = new Date();
+  const day = now.getDate();
+  const monthIndex = now.getMonth();
+  // 10% OFF promocional para la edición de Noviembre (Cyber Week activa hasta el día 10 inclusive)
+  const isDiscountActive = (monthIndex === 10 && day <= 10);
+  
   let subtotal = 0;
   let boxesCount = 1;
   
   if (isQuarterly) {
     boxesCount = 3;
-    subtotal = 127900;
+    // 10% OFF sobre el total normal de 3 cajas ($134.700 - 10% = $121.230)
+    subtotal = isDiscountActive ? 121230 : 127900;
   } else {
     boxesCount = 1;
-    subtotal = 44900;
+    // 10% OFF sobre 1 caja ($44.900 - 10% = $40.410)
+    subtotal = isDiscountActive ? 40410 : 44900;
   }
   
   const qtyDisplay = document.getElementById('qty-display');
@@ -285,8 +298,10 @@ export function checkStockAndSaleWindow() {
   const paymentForm = document.getElementById('paymentForm');
   const now = new Date();
   const day = now.getDate();
+  const monthIndex = now.getMonth();
 
-  const isSaleWindowClosed = (day >= 6 && day <= 15);
+  // En noviembre, la ventana de cierre operativo se corre del día 11 al 15 (del 1 al 10 venta abierta)
+  const isSaleWindowClosed = (monthIndex === 10) ? (day >= 11 && day <= 15) : (day >= 6 && day <= 15);
 
   if (AVAILABLE_STOCK <= 0 || isSaleWindowClosed) {
     if (paymentForm) paymentForm.style.display = 'none';
@@ -305,9 +320,10 @@ export function checkStockAndSaleWindow() {
       const exhaustedMonth = months[currentTargetIndex];
       const upcomingMonth = months[(currentTargetIndex + 1) % 12];
 
+      const closingDayText = (monthIndex === 10) ? 'el día 10' : 'el día 5';
       if (isSaleWindowClosed) {
         if (soldOutTitle) soldOutTitle.innerText = `¡Venta de ${exhaustedMonth} cerrada! 📦`;
-        if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran el día 5 de cada mes para hacer la curaduría, armar tu mystery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
+        if (soldOutDesc) soldOutDesc.innerText = `Las ventas se cierran ${closingDayText} de cada mes para hacer la curaduría, armar tu mystery box y despacharla con la calidad que merecés. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
       } else {
         if (soldOutTitle) soldOutTitle.innerText = `¡La edición de ${exhaustedMonth} voló! 😱`;
         if (soldOutDesc) soldOutDesc.innerText = `Cerramos las ventas de este mes porque llegamos al límite de cupos. Pero podés asegurar hoy mismo tu box para la edición de ${upcomingMonth}.`;
@@ -336,9 +352,11 @@ export function updateMonthlyUrgencyAlerts() {
   const monthIndex = now.getMonth();
   const year = now.getFullYear();
 
-  // Activo automáticamente del día 1 al 5 de cada mes.
-  // El día 6 en la madrugada (desde las 00:00 hs) desaparece automáticamente.
-  const isUrgencyActive = (day >= 1 && day <= 5);
+  // En noviembre, la venta se extiende de forma especial hasta el 10/11 por Cyber Week (con 10% OFF).
+  // En los demás meses, activo del día 1 al 5 de cada mes.
+  const isNovemberCyberWeek = (monthIndex === 10);
+  const closingDay = isNovemberCyberWeek ? 10 : 5;
+  const isUrgencyActive = (day >= 1 && day <= closingDay);
 
   const months = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -350,15 +368,20 @@ export function updateMonthlyUrgencyAlerts() {
   const nextMonth = months[(monthIndex + 1) % 12];
   const monthNum = monthIndex + 1;
 
-  // Calculamos el día de la semana para el 5 de este mes
-  const closingDate = new Date(year, monthIndex, 5);
+  // Calculamos el día de la semana para el cierre de este mes
+  const closingDate = new Date(year, monthIndex, closingDay);
   const closingDayName = dayNames[closingDate.getDay()];
 
   // 1. Ticker superior
   const tickerContent = document.querySelector('.ticker-content');
   if (tickerContent) {
     if (isUrgencyActive) {
-      const urgencyMsg = `⚡ CIERRE DE LA BOX DE ${currentMonth.toUpperCase()}: ${closingDayName.toUpperCase()} 5/${monthNum} A LAS 23:59 // ÚLTIMOS DÍAS PARA PEDIR TU MYSTERY BOX // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
+      let urgencyMsg;
+      if (isNovemberCyberWeek) {
+        urgencyMsg = `⚡ CYBER WEEK: 10% OFF EN LA BOX DE NOVIEMBRE // EXTENDIDA HASTA EL ${closingDayName.toUpperCase()} 10/${monthNum} A LAS 23:59 // ÚLTIMOS CUPOS // SEGUINOS EN @somosfudiclub // `;
+      } else {
+        urgencyMsg = `⚡ CIERRE DE LA BOX DE ${currentMonth.toUpperCase()}: ${closingDayName.toUpperCase()} 5/${monthNum} A LAS 23:59 // ÚLTIMOS DÍAS PARA PEDIR TU MYSTERY BOX // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
+      }
       tickerContent.innerHTML = `<span>${urgencyMsg}</span><span>${urgencyMsg}</span>`;
     } else {
       const defaultMsg = `SORPRESA TOTAL // SOLO 30 BOXES AL MES // SEGUINOS EN REDES Y COMPARTÍ TU UNBOXING @somosfudiclub // `;
@@ -370,7 +393,11 @@ export function updateMonthlyUrgencyAlerts() {
   const heroBadge = document.getElementById('hero-deadline-badge');
   if (heroBadge) {
     if (isUrgencyActive) {
-      heroBadge.textContent = `🔥 ÚLTIMOS DÍAS · CIERRA EL ${closingDayName.toUpperCase()} 5/${monthNum}`;
+      if (isNovemberCyberWeek) {
+        heroBadge.textContent = `🔥 CYBER WEEK 10% OFF · EXTENDIDO HASTA EL ${closingDayName.toUpperCase()} 10/${monthNum}`;
+      } else {
+        heroBadge.textContent = `🔥 ÚLTIMOS DÍAS · CIERRA EL ${closingDayName.toUpperCase()} 5/${monthNum}`;
+      }
       heroBadge.style.display = 'inline-flex';
     } else {
       heroBadge.style.display = 'none';
@@ -384,10 +411,18 @@ export function updateMonthlyUrgencyAlerts() {
       const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
       const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
       if (titleEl) {
-        titleEl.textContent = `Box de ${currentMonth}: Cierra el ${closingDayName} 5 de ${currentMonth} (23:59 hs)`;
+        if (isNovemberCyberWeek) {
+          titleEl.textContent = `Box de Noviembre: ¡Extendida por Cyber Week con 10% OFF hasta el ${closingDayName} 10 de Noviembre (23:59 hs)!`;
+        } else {
+          titleEl.textContent = `Box de ${currentMonth}: Cierra el ${closingDayName} 5 de ${currentMonth} (23:59 hs)`;
+        }
       }
       if (descEl) {
-        descEl.textContent = `Asegurá tu box hoy para recibirla este mes. Luego de la fecha, los pedidos pasan automáticamente a la edición de ${nextMonth}.`;
+        if (isNovemberCyberWeek) {
+          descEl.textContent = `Asegurá tu box hoy con 10% de descuento. Luego del 10/11, los pedidos pasan automáticamente a la edición de ${nextMonth}.`;
+        } else {
+          descEl.textContent = `Asegurá tu box hoy para recibirla este mes. Luego de la fecha, los pedidos pasan automáticamente a la edición de ${nextMonth}.`;
+        }
       }
       checkoutAlert.style.display = 'flex';
     } else {
@@ -431,6 +466,13 @@ export function initCheckoutFlow() {
   const trackCheckoutStarted = () => {
     if (!checkoutStartedTracked) {
       checkoutStartedTracked = true;
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'InitiateCheckout', {
+          currency: 'ARS',
+          value: 44900,
+          content_name: 'Mystery Box'
+        });
+      }
       if (typeof posthog !== 'undefined' && posthog.capture) {
         posthog.capture('checkout_started');
       }
@@ -854,7 +896,7 @@ export function initCheckoutFlow() {
       const m3 = monthsList[(bIndex + 2) % 12];
       const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}` : `Edición ${baseEdition}`;
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
-      const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'mercado_pago';
+      const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'transfer';
       const emailInputElem = document.getElementById('emailInput');
       const email = emailInputElem ? emailInputElem.value.trim() : '';
 
@@ -1114,16 +1156,31 @@ export function initCheckoutFlow() {
     });
   }
 
-  if (headerBtn) {
-    headerBtn.addEventListener('click', (e) => {
+  const allRegistroBtns = document.querySelectorAll('a[href="#registro"]');
+  allRegistroBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
       const targetElement = document.querySelector('#registro');
       if (targetElement) {
-        const headerOffset = 130;
+        const headerOffset = window.innerWidth <= 768 ? 70 : 120;
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'InitiateCheckout', {
+            currency: 'ARS',
+            value: 44900,
+            content_name: 'Mystery Box'
+          });
+        }
+        if (typeof posthog !== 'undefined' && posthog.capture) {
+          posthog.capture('checkout_cta_clicked', {
+            button_text: btn.innerText.trim(),
+            source: btn.className
+          });
+        }
       }
     });
-  }
+  });
 }

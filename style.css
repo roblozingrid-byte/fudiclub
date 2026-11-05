@@ -2294,3 +2294,429 @@ textarea.neo-input {
     display: none !important;
   }
 }
+
+/* ==========================================================
+   CONVERSION & MOBILE-FIRST UPGRADES FOR META ADS TRAFFIC
+   ========================================================== */
+
+/* Hero Upgrades */
+.hero-description {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--black);
+  max-width: 420px;
+  margin: 12px auto 16px;
+  text-align: center;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--white);
+  color: var(--black);
+  border: 2px solid var(--black);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.hero-badge-pill i {
+  color: #00A88F;
+}
+
+.hero-cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.hero-cta-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 1.15rem;
+  padding: 14px 28px;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0px var(--black);
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.hero-cta-price {
+  background-color: var(--black);
+  color: var(--white);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.hero-guarantee-note {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-guarantee-note i {
+  color: #1a8a3a;
+}
+
+/* About Section Snack Grid */
+.about-snack-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin: 25px 0;
+  text-align: left;
+}
+
+@media (min-width: 600px) {
+  .about-snack-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.about-snack-card {
+  background-color: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 3px 3px 0px var(--black);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.about-snack-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.about-snack-text h4 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.about-snack-text p {
+  margin: 0;
+  font-size: 0.88rem !important;
+  line-height: 1.4 !important;
+  color: #444;
+}
+
+/* Teaser Product Details */
+.teaser-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teaser-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: var(--bg-amarillo);
+  border: 2px solid var(--black);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 2px 2px 0px var(--black);
+  z-index: 5;
+}
+
+.teaser-info {
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.teaser-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 2px;
+}
+
+.teaser-sub {
+  font-size: 0.78rem;
+  color: #555;
+  font-weight: 600;
+}
+
+/* Reviews & Social Proof Section */
+.reviews-section {
+  background-color: var(--accent-rosa) !important;
+  text-align: center;
+}
+
+.reviews-rating-badge {
+  display: inline-block;
+  background-color: var(--white);
+  color: var(--black);
+  border: 2px solid var(--black);
+  box-shadow: 3px 3px 0px var(--black);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+@media (min-width: 768px) {
+  .reviews-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.review-card {
+  background-color: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-solid);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.review-stars {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: #222;
+  margin-bottom: 16px;
+  font-style: italic;
+  flex-grow: 1;
+}
+
+.review-author {
+  border-top: 1.5px dashed #bbb;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-author strong {
+  font-size: 0.95rem;
+  color: var(--black);
+}
+
+.review-author span {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.trust-guarantees-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.trust-pill {
+  background-color: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0px var(--black);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trust-pill i {
+  color: #00A88F;
+}
+
+/* Payment Wallets Badges in Checkout */
+.payment-wallets-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+
+.wallet-badge {
+  background-color: var(--white);
+  border: 1.5px solid var(--black);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  box-shadow: 1.5px 1.5px 0px var(--black);
+  color: var(--black);
+}
+
+.payment-steps-mini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(0,0,0,0.2);
+}
+
+.mini-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.mini-step span {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--accent-verde);
+  border: 1.5px solid var(--black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.72rem;
+}
+
+.checkout-trust-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.checkout-whatsapp-help {
+  color: #0d7337;
+  font-weight: 700;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* Floating Mobile Sticky CTA Bar */
+.mobile-sticky-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-sticky-cta {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-amarillo);
+    border-top: 3px solid var(--black);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+    padding: 10px 16px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    z-index: 998;
+    transform: translateY(120%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-sticky-cta.visible {
+    transform: translateY(0);
+  }
+
+  .sticky-cta-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 12px;
+  }
+
+  .sticky-cta-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .sticky-box-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .sticky-box-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1.2;
+  }
+
+  .sticky-box-price small {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #444;
+  }
+
+  .sticky-cta-btn {
+    font-size: 0.95rem !important;
+    padding: 9px 20px !important;
+    margin: 0 !important;
+    white-space: nowrap;
+    border-radius: 6px;
+    box-shadow: 3px 3px 0px var(--black) !important;
+  }
+
+  .header-empresas-btn {
+    display: none !important;
+  }
+}
+

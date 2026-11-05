@@ -48,6 +48,16 @@ describe('src/checkout.js', () => {
       vi.setSystemTime(new Date(2026, 11, 10)); // 11 = December
       expect(calculateCurrentEdition()).toBe('Enero');
     });
+
+    it('extends sales cutoff to day 10 in November for Cyber Week', () => {
+      // November 10th
+      vi.setSystemTime(new Date(2026, 10, 10)); // 10 = Noviembre
+      expect(calculateCurrentEdition()).toBe('Noviembre');
+
+      // November 11th passes to Diciembre
+      vi.setSystemTime(new Date(2026, 10, 11));
+      expect(calculateCurrentEdition()).toBe('Diciembre');
+    });
   });
 
   describe('updateStockWidget', () => {
@@ -177,6 +187,25 @@ describe('src/checkout.js', () => {
       expect(deliveryEl.style.color).toBe('red');
       expect(submitBtn.disabled).toBe(true);
       expect(submitBtn.style.opacity).toBe('0.5');
+    });
+
+    it('applies 10% discount during November Cyber Week (up to Nov 10)', () => {
+      // 5 de Noviembre de 2026
+      vi.setSystemTime(new Date(2026, 10, 5));
+      updateCheckoutTotals();
+
+      // Compra única con 10% OFF = $40.410
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$40.410');
+      expect(document.getElementById('summary-total').innerText).toBe('$40.410');
+
+      // Trimestral con 10% OFF sobre 3 cajas normales ($134.700 -> $121.230)
+      const quarterlyRadio = document.querySelector('input[value="quarterly"]');
+      quarterlyRadio.checked = true;
+      document.querySelector('input[value="monthly"]').checked = false;
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$121.230');
+      expect(document.getElementById('summary-total').innerText).toBe('$121.230');
     });
   });
 
@@ -830,9 +859,9 @@ describe('src/checkout.js', () => {
       expect(descEl.textContent).toContain('edición de Noviembre');
     });
 
-    it('works on day 5 of the month (last day of sales)', () => {
-      // 5 de Noviembre de 2026 (El 5 de noviembre 2026 fue Jueves)
-      vi.setSystemTime(new Date(2026, 10, 5)); // 10 = Noviembre
+    it('works on day 5 of the month (last day of sales in standard months)', () => {
+      // 5 de Mayo de 2026 (El 5 de mayo 2026 fue Martes)
+      vi.setSystemTime(new Date(2026, 4, 5)); // 4 = Mayo
 
       updateMonthlyUrgencyAlerts();
 
@@ -841,11 +870,39 @@ describe('src/checkout.js', () => {
       const checkoutAlert = document.getElementById('checkout-deadline-alert');
       const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
 
-      expect(tickerContent.textContent).toContain('CIERRE DE LA BOX DE NOVIEMBRE: JUEVES 5/11 A LAS 23:59');
+      expect(tickerContent.textContent).toContain('CIERRE DE LA BOX DE MAYO: MARTES 5/5 A LAS 23:59');
       expect(heroBadge.style.display).toBe('inline-flex');
-      expect(heroBadge.textContent).toBe('🔥 ÚLTIMOS DÍAS · CIERRA EL JUEVES 5/11');
+      expect(heroBadge.textContent).toBe('🔥 ÚLTIMOS DÍAS · CIERRA EL MARTES 5/5');
       expect(checkoutAlert.style.display).toBe('flex');
-      expect(titleEl.textContent).toBe('Box de Noviembre: Cierra el Jueves 5 de Noviembre (23:59 hs)');
+      expect(titleEl.textContent).toBe('Box de Mayo: Cierra el Martes 5 de Mayo (23:59 hs)');
+    });
+
+    it('shows special Cyber Week urgency and 10% OFF alerts up to Nov 10', () => {
+      // 5 de Noviembre de 2026
+      vi.setSystemTime(new Date(2026, 10, 5)); // 10 = Noviembre
+
+      updateMonthlyUrgencyAlerts();
+
+      let tickerContent = document.querySelector('.ticker-content');
+      let heroBadge = document.getElementById('hero-deadline-badge');
+      let checkoutAlert = document.getElementById('checkout-deadline-alert');
+      let titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+
+      expect(tickerContent.textContent).toContain('CYBER WEEK: 10% OFF EN LA BOX DE NOVIEMBRE // EXTENDIDA HASTA EL MARTES 10/11');
+      expect(heroBadge.style.display).toBe('inline-flex');
+      expect(heroBadge.textContent).toBe('🔥 CYBER WEEK 10% OFF · EXTENDIDO HASTA EL MARTES 10/11');
+      expect(checkoutAlert.style.display).toBe('flex');
+      expect(titleEl.textContent).toContain('Box de Noviembre: ¡Extendida por Cyber Week con 10% OFF');
+
+      // 10 de Noviembre de 2026 (último día)
+      vi.setSystemTime(new Date(2026, 10, 10, 23, 50));
+      updateMonthlyUrgencyAlerts();
+      expect(heroBadge.style.display).toBe('inline-flex');
+
+      // 11 de Noviembre de 2026 (después del corte)
+      vi.setSystemTime(new Date(2026, 10, 11, 0, 1));
+      updateMonthlyUrgencyAlerts();
+      expect(heroBadge.style.display).toBe('none');
     });
 
     it('automatically deactivates and hides all urgency notices on the 6th at midnight', () => {
