@@ -270,10 +270,9 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   overflow: visible;
-  padding: 25px 16px;
+  padding: 25px 20px;
   margin-top: 25px;
   box-sizing: border-box;
-  width: 100%;
 }
 
 .hero-content {
@@ -330,22 +329,25 @@ h1, h2, h3 {
 .hero-deadline-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
   background-color: var(--bg-amarillo);
   color: var(--black);
   font-family: var(--font-mono);
-  font-size: clamp(0.88rem, 2.2vw + 0.3rem, 1.05rem);
+  font-size: clamp(0.8rem, 2vw + 0.3rem, 0.95rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 11px 22px;
-  border: 2.5px solid var(--black);
+  padding: 8px 18px;
+  border: 2px solid var(--black);
   border-radius: 50px;
-  box-shadow: 4px 4px 0px var(--black);
+  box-shadow: 3px 3px 0px var(--black);
   transform: rotate(-1.5deg);
-  margin-top: 6px;
-  margin-bottom: 26px;
+  margin-top: 0;
+  margin-bottom: 14px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: 98%;
+  text-align: center;
 }
 
 .hero-deadline-badge:hover {
@@ -1560,14 +1562,24 @@ textarea.neo-input {
 
 @media (max-width: 768px) {
   .logo { font-size: 2rem; }
-  .neo-border-section { padding: 20px; margin: 30px 15px; }
+  .neo-border-section {
+    padding: 20px 14px;
+    margin: 20px 14px 20px 10px;
+    width: auto;
+    box-sizing: border-box;
+  }
+  .hero.neo-border-section {
+    margin-top: 14px;
+    margin-bottom: 20px;
+    padding: 16px 10px 22px;
+  }
   .teaser-grid { grid-template-columns: 1fr 1fr; }
   .ticker-content span { font-size: 1rem; }
   .stock-widget-floating { bottom: 70px; right: 10px; padding: 10px 15px; }
   .stock-number { font-size: 2rem; }
   .stock-text { font-size: 0.8rem; }
   .footer-logo img { height: 60px; }
-  .hero-content { gap: 20px; padding: 10px 16px; box-sizing: border-box; width: 100%; }
+  .hero-content { gap: 16px; padding: 0; box-sizing: border-box; width: 100%; }
   .teaser-instruction { display: none; }
   .blur-effect { filter: none !important; }
   .mystery-reveal { display: none !important; }
@@ -1970,41 +1982,68 @@ textarea.neo-input {
 
 /* Extra Small Screens (Phones in Portrait) */
 @media (max-width: 480px) {
+  .neo-border-section {
+    padding: 16px 12px !important;
+    margin: 14px 12px 16px 8px !important;
+    width: auto !important;
+    box-shadow: 3.5px 3.5px 0px var(--black) !important;
+  }
+
+  .hero.neo-border-section {
+    margin-top: 10px !important;
+    margin-bottom: 16px !important;
+    margin-left: 8px !important;
+    margin-right: 12px !important;
+    padding: 14px 8px 18px !important;
+    width: auto !important;
+  }
+
+  .hero-deadline-badge {
+    font-size: 0.76rem !important;
+    padding: 6px 12px !important;
+    margin-bottom: 10px !important;
+    box-shadow: 2.5px 2.5px 0px var(--black) !important;
+  }
+
   .hero-content {
-    gap: 15px;
-    padding: 8px 14px;
+    gap: 12px;
+    padding: 0 !important;
     box-sizing: border-box;
     width: 100%;
   }
 
   .hero-logo-relief {
-    max-width: 180px;
-    margin: 0 auto 12px auto !important;
+    max-width: 160px !important;
+    margin: 0 auto 10px auto !important;
   }
   
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     -webkit-text-stroke: 1.2px var(--black);
+    margin-bottom: 4px;
   }
   
   .subtitle {
-    font-size: 0.95rem;
-    padding: 0 8px;
+    font-size: 0.92rem;
+    padding: 0 4px;
+    margin-bottom: 6px;
   }
 
   .hero-description {
-    font-size: 0.92rem;
-    padding: 0 10px;
-    line-height: 1.45;
+    font-size: 0.9rem;
+    padding: 0 4px;
+    line-height: 1.4;
+    margin: 6px auto 12px;
   }
 
   .hero-badges {
     gap: 6px;
-    padding: 0 6px;
+    padding: 0;
+    margin-bottom: 12px;
   }
 
   .hero-badge-pill {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     padding: 4px 10px;
   }
 
@@ -2759,14 +2798,177 @@ textarea.neo-input {
     box-shadow: 3px 3px 0px var(--black) !important;
   }
 
-  .hero-cta-button {
-    font-size: 0.92rem !important;
-    padding: 10px 20px !important;
-    max-width: 270px !important;
-  }
-
   .header-empresas-btn {
     display: none !important;
+  }
+}
+
+/* ==========================================================
+   FINAL MOBILE RESPONSIVE OVERRIDES (ENSURES TOP PRIORITY)
+   ========================================================== */
+
+@media (max-width: 768px) {
+  .neo-border-section {
+    padding: 20px 14px !important;
+    margin: 18px 14px 18px 10px !important;
+    width: auto !important;
+    box-shadow: 4px 4px 0px var(--black) !important;
+    border-width: 2.5px !important;
+  }
+
+  .hero.neo-border-section {
+    margin-top: 12px !important;
+    margin-bottom: 18px !important;
+    margin-left: 10px !important;
+    margin-right: 14px !important;
+    padding: 16px 10px 22px !important;
+    width: auto !important;
+  }
+
+  .hero-deadline-badge {
+    font-size: 0.8rem !important;
+    padding: 7px 14px !important;
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    box-shadow: 2.5px 2.5px 0px var(--black) !important;
+  }
+
+  .hero-content {
+    gap: 14px !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .hero-logo-relief {
+    max-width: 175px !important;
+    margin: 0 auto 10px auto !important;
+  }
+
+  .hero-title {
+    font-size: 1.85rem !important;
+    margin: 0 auto 4px !important;
+  }
+
+  .subtitle {
+    font-size: 0.95rem !important;
+    margin: 0 auto 8px !important;
+    padding: 0 4px !important;
+  }
+
+  .hero-description {
+    font-size: 0.94rem !important;
+    line-height: 1.45 !important;
+    margin: 8px auto 14px !important;
+    padding: 0 4px !important;
+    max-width: 350px !important;
+  }
+
+  .hero-badges {
+    gap: 6px !important;
+    padding: 0 !important;
+    margin-bottom: 14px !important;
+  }
+
+  .hero-badge-pill {
+    font-size: 0.78rem !important;
+    padding: 4px 10px !important;
+  }
+
+  .hero-cta-wrap {
+    margin-top: 8px !important;
+    gap: 6px !important;
+  }
+
+  .hero-cta-button {
+    font-size: 0.92rem !important;
+    padding: 10px 22px !important;
+    max-width: 270px !important;
+    width: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .neo-border-section {
+    padding: 16px 10px !important;
+    margin: 14px 12px 14px 8px !important;
+    width: auto !important;
+    box-shadow: 3.5px 3.5px 0px var(--black) !important;
+  }
+
+  .hero.neo-border-section {
+    margin-top: 10px !important;
+    margin-bottom: 14px !important;
+    margin-left: 8px !important;
+    margin-right: 12px !important;
+    padding: 14px 8px 18px !important;
+    width: auto !important;
+  }
+
+  .hero-deadline-badge {
+    font-size: 0.76rem !important;
+    padding: 6px 12px !important;
+    margin-top: 0 !important;
+    margin-bottom: 10px !important;
+    box-shadow: 2px 2px 0px var(--black) !important;
+    border-width: 2px !important;
+  }
+
+  .hero-content {
+    gap: 10px !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .hero-logo-relief {
+    max-width: 150px !important;
+    margin: 0 auto 8px auto !important;
+  }
+
+  .hero-title {
+    font-size: 1.7rem !important;
+    margin: 0 auto 3px !important;
+  }
+
+  .subtitle {
+    font-size: 0.9rem !important;
+    margin: 0 auto 6px !important;
+    padding: 0 2px !important;
+  }
+
+  .hero-description {
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+    margin: 6px auto 12px !important;
+    padding: 0 2px !important;
+    max-width: 320px !important;
+  }
+
+  .hero-badges {
+    gap: 5px !important;
+    padding: 0 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .hero-badge-pill {
+    font-size: 0.74rem !important;
+    padding: 3px 8px !important;
+  }
+
+  .hero-cta-wrap {
+    margin-top: 6px !important;
+    gap: 5px !important;
+  }
+
+  .hero-cta-button {
+    font-size: 0.88rem !important;
+    padding: 9px 18px !important;
+    max-width: 245px !important;
+    width: auto !important;
+  }
+
+  .hero-guarantee-note {
+    font-size: 0.74rem !important;
+    margin-top: 4px !important;
   }
 }
 
