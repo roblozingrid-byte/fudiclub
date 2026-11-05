@@ -492,8 +492,11 @@ export function updatePlanCardsPricingUI() {
         }
         priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$134.700</span><span class="plan-price focal-price">$121.230</span>`;
         const tags = priceWrap.querySelectorAll('.plan-tag');
-        if (tags[0]) tags[0].textContent = '(Equivale a $40.410 c/u)';
-        if (tags[1]) tags[1].textContent = '10% OFF · Ahorrás $13.470 en total';
+        if (tags.length > 1) {
+          tags[0].remove();
+        }
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = '¡Ahorrás $13.470 en total!';
       }
     }
 
@@ -535,8 +538,11 @@ export function updatePlanCardsPricingUI() {
           priceContainer.outerHTML = `<span class="plan-price focal-price">$127.900</span>`;
         }
         const tags = priceWrap.querySelectorAll('.plan-tag');
-        if (tags[0]) tags[0].textContent = '(Equivale a $42.633 c/u)';
-        if (tags[1]) tags[1].textContent = '5% OFF · Ahorrás $6.800 por ciclo';
+        if (tags.length > 1) {
+          tags[0].remove();
+        }
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = '¡Ahorrás $6.800 por ciclo!';
       }
     }
 
