@@ -431,6 +431,109 @@ export function updateMonthlyUrgencyAlerts() {
   }
 }
 
+export function updatePlanCardsPricingUI() {
+  const now = new Date();
+  const day = now.getDate();
+  const monthIndex = now.getMonth();
+  const isDiscountActive = (monthIndex === 10 && day <= 10);
+
+  const planCardOne = document.getElementById('plan-card-one');
+  const planCardQuarterly = document.getElementById('plan-card-quarterly');
+  const stickyPrice = document.querySelector('.sticky-box-price');
+
+  if (isDiscountActive) {
+    if (planCardOne) {
+      let sticker = planCardOne.querySelector('.plan-badge-sticker');
+      if (!sticker) {
+        sticker = document.createElement('div');
+        sticker.className = 'plan-badge-sticker';
+        planCardOne.prepend(sticker);
+      }
+      sticker.style.background = 'var(--festive-red, #ff5e7e)';
+      sticker.style.color = 'white';
+      sticker.textContent = '⚡ 10% OFF CYBER';
+
+      const priceWrap = planCardOne.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        let priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (!priceContainer) {
+          priceContainer = document.createElement('div');
+          priceContainer.className = 'plan-pricing-container';
+          priceContainer.style.cssText = 'display: flex; align-items: baseline; gap: 8px; justify-content: center;';
+          const oldPrice = priceWrap.querySelector('.plan-price');
+          if (oldPrice) oldPrice.replaceWith(priceContainer);
+        }
+        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$44.900</span><span class="plan-price focal-price">$40.410</span>`;
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = 'Probá 1 Box · ¡Ahorrás $4.490!';
+      }
+    }
+
+    if (planCardQuarterly) {
+      const sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+      if (sticker) {
+        sticker.textContent = '⭐ MEJOR OPCIÓN · 10% OFF';
+      }
+      const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        let priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (!priceContainer) {
+          priceContainer = document.createElement('div');
+          priceContainer.className = 'plan-pricing-container';
+          priceContainer.style.cssText = 'display: flex; align-items: baseline; gap: 8px; justify-content: center;';
+          const oldPrice = priceWrap.querySelector('.plan-price');
+          if (oldPrice) oldPrice.replaceWith(priceContainer);
+        }
+        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$134.700</span><span class="plan-price focal-price">$121.230</span>`;
+        const tags = priceWrap.querySelectorAll('.plan-tag');
+        if (tags[0]) tags[0].textContent = '(Equivale a $40.410 c/u)';
+        if (tags[1]) tags[1].textContent = '10% OFF · Ahorrás $13.470 en total';
+      }
+    }
+
+    if (stickyPrice) {
+      stickyPrice.innerHTML = `<s style="opacity: 0.6; font-size: 0.8em; margin-right: 3px;">$44.900</s>$40.410 <small>· 10% OFF</small>`;
+    }
+  } else {
+    // Restaurar automáticamente la configuración común sin descuentos después del 10
+    if (planCardOne) {
+      const sticker = planCardOne.querySelector('.plan-badge-sticker');
+      if (sticker) sticker.remove();
+
+      const priceWrap = planCardOne.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        const priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (priceContainer) {
+          priceContainer.outerHTML = `<span class="plan-price focal-price">$44.900</span>`;
+        }
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = 'Probá 1 Box · Sin renovación automática';
+      }
+    }
+
+    if (planCardQuarterly) {
+      const sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+      if (sticker) {
+        sticker.textContent = '⭐ MEJOR PRECIO';
+      }
+      const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        const priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (priceContainer) {
+          priceContainer.outerHTML = `<span class="plan-price focal-price">$127.900</span>`;
+        }
+        const tags = priceWrap.querySelectorAll('.plan-tag');
+        if (tags[0]) tags[0].textContent = '(Equivale a $42.633 c/u)';
+        if (tags[1]) tags[1].textContent = 'Ahorrás $6.800 por ciclo';
+      }
+    }
+
+    if (stickyPrice) {
+      stickyPrice.innerHTML = `$44.900 <small>· Envío gratis</small>`;
+    }
+  }
+}
+
 export function initCheckoutFlow() {
   const btnJoin = document.getElementById('btn-join-club');
   const ctaWrapper = document.getElementById('cta-join-wrapper');
@@ -456,6 +559,7 @@ export function initCheckoutFlow() {
   updateStockWidget();
   updateCheckoutTotals();
   updateMonthlyUrgencyAlerts();
+  updatePlanCardsPricingUI();
 
   if (!expandedCheckout) return;
 

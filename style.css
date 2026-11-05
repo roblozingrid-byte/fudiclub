@@ -334,17 +334,17 @@ h1, h2, h3 {
   background-color: var(--bg-amarillo);
   color: var(--black);
   font-family: var(--font-mono);
-  font-size: clamp(0.8rem, 2vw + 0.3rem, 0.95rem);
+  font-size: clamp(0.92rem, 2.2vw + 0.3rem, 1.1rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 8px 18px;
-  border: 2px solid var(--black);
+  padding: 10px 22px;
+  border: 2.5px solid var(--black);
   border-radius: 50px;
-  box-shadow: 3px 3px 0px var(--black);
+  box-shadow: 4px 4px 0px var(--black);
   transform: rotate(-1.5deg);
   margin-top: 0;
-  margin-bottom: 14px;
+  margin-bottom: 26px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   max-width: 98%;
   text-align: center;
@@ -1999,10 +1999,10 @@ textarea.neo-input {
   }
 
   .hero-deadline-badge {
-    font-size: 0.76rem !important;
-    padding: 6px 12px !important;
-    margin-bottom: 10px !important;
-    box-shadow: 2.5px 2.5px 0px var(--black) !important;
+    font-size: 0.82rem !important;
+    padding: 8px 14px !important;
+    margin-bottom: 18px !important;
+    box-shadow: 3px 3px 0px var(--black) !important;
   }
 
   .hero-content {

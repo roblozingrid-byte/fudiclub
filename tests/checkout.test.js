@@ -7,7 +7,8 @@ import {
   updateCheckoutTotals,
   initCheckoutFlow,
   setupFormValidationMessages,
-  updateMonthlyUrgencyAlerts
+  updateMonthlyUrgencyAlerts,
+  updatePlanCardsPricingUI
 } from '../src/checkout.js';
 
 describe('src/checkout.js', () => {
@@ -956,6 +957,76 @@ describe('src/checkout.js', () => {
 
       expect(heroBadge.style.display).toBe('none');
       expect(checkoutAlert.style.display).toBe('none');
+    });
+  });
+
+  describe('updatePlanCardsPricingUI', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <div id="plan-card-one" class="radio-neo">
+          <div class="radio-neo-content">
+            <span class="plan-title">Compra Única</span>
+            <div class="plan-pricing-container" style="display: flex; align-items: baseline; gap: 8px; justify-content: center;">
+              <span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$44.900</span>
+              <span class="plan-price focal-price">$40.410</span>
+            </div>
+            <span class="plan-tag">Probá 1 Box · ¡Ahorrás $4.490!</span>
+          </div>
+        </div>
+        <div id="plan-card-quarterly" class="radio-neo">
+          <div class="plan-badge-sticker">⭐ MEJOR OPCIÓN · 10% OFF</div>
+          <div class="radio-neo-content">
+            <span class="plan-title">Plan Trimestral</span>
+            <div class="plan-pricing-container" style="display: flex; align-items: baseline; gap: 8px; justify-content: center;">
+              <span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$134.700</span>
+              <span class="plan-price focal-price">$121.230</span>
+            </div>
+            <span class="plan-tag">(Equivale a $40.410 c/u)</span>
+            <span class="plan-tag">10% OFF · Ahorrás $13.470 en total</span>
+          </div>
+        </div>
+        <div class="sticky-box-price">
+          <s style="opacity: 0.6; font-size: 0.8em; margin-right: 3px;">$44.900</s>$40.410 <small>· 10% OFF</small>
+        </div>
+      `;
+    });
+
+    it('keeps cyber week pricing active on or before Nov 10', () => {
+      vi.setSystemTime(new Date(2026, 10, 10)); // Nov 10
+
+      updatePlanCardsPricingUI();
+
+      const planCardOne = document.getElementById('plan-card-one');
+      const stickerOne = planCardOne.querySelector('.plan-badge-sticker');
+      expect(stickerOne).not.toBeNull();
+      expect(stickerOne.textContent).toBe('⚡ 10% OFF CYBER');
+      expect(planCardOne.querySelector('.plan-price').textContent).toBe('$40.410');
+
+      const planCardQuarterly = document.getElementById('plan-card-quarterly');
+      expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$121.230');
+      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ MEJOR OPCIÓN · 10% OFF');
+    });
+
+    it('automatically restores standard pricing and tags starting Nov 11', () => {
+      vi.setSystemTime(new Date(2026, 10, 11, 0, 1)); // Nov 11, 00:01
+
+      updatePlanCardsPricingUI();
+
+      const planCardOne = document.getElementById('plan-card-one');
+      const stickerOne = planCardOne.querySelector('.plan-badge-sticker');
+      expect(stickerOne).toBeNull();
+      expect(planCardOne.querySelector('.plan-price').textContent).toBe('$44.900');
+      expect(planCardOne.querySelector('.plan-tag').textContent).toBe('Probá 1 Box · Sin renovación automática');
+
+      const planCardQuarterly = document.getElementById('plan-card-quarterly');
+      expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$127.900');
+      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ MEJOR PRECIO');
+      const tags = planCardQuarterly.querySelectorAll('.plan-tag');
+      expect(tags[0].textContent).toBe('(Equivale a $42.633 c/u)');
+      expect(tags[1].textContent).toBe('Ahorrás $6.800 por ciclo');
+
+      const stickyPrice = document.querySelector('.sticky-box-price');
+      expect(stickyPrice.innerHTML).toBe('$44.900 <small>· Envío gratis</small>');
     });
   });
 });
