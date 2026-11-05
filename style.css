@@ -2826,6 +2826,7 @@ textarea.neo-input {
   }
 
   .hero-deadline-badge {
+    display: inline-flex !important;
     font-size: 0.8rem !important;
     padding: 7px 14px !important;
     margin-top: 0 !important;
@@ -2905,6 +2906,7 @@ textarea.neo-input {
   }
 
   .hero-deadline-badge {
+    display: inline-flex !important;
     font-size: 0.76rem !important;
     padding: 6px 12px !important;
     margin-top: 0 !important;
