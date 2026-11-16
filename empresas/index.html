@@ -75,8 +75,11 @@
         "offers": {
           "@type": "AggregateOffer",
           "priceCurrency": "ARS",
-          "offerCount": "100+",
+          "lowPrice": "38100",
+          "highPrice": "44900",
+          "offerCount": 4,
           "availability": "https://schema.org/InStock",
+          "url": "https://fudiclub.shop/empresas/#precios",
           "areaServed": [
             {
               "@type": "AdministrativeArea",
@@ -174,9 +177,6 @@
       <a href="/" class="nav-back-link">
         <i class="fas fa-arrow-left"></i> Volver a Fudi Club
       </a>
-      <a href="#precios" class="nav-back-link" style="margin-right: 8px;">
-        <i class="fas fa-tags"></i> Precios
-      </a>
       <a href="#cotizacion" class="cta-button cta-green inline-header-btn">Pedir Cotización</a>
     </nav>
   </header>
@@ -196,11 +196,8 @@
       </p>
 
       <div class="corpo-hero-actions">
-        <a href="#precios" class="cta-button" style="background-color: var(--accent-rosa); color: var(--black);">
-          <i class="fas fa-tags" style="margin-right: 6px;"></i> Ver Precios por Volumen
-        </a>
         <a href="#cotizacion" class="cta-button cta-green">
-          <i class="fas fa-paper-plane" style="margin-right: 6px;"></i> Pedir Cotización
+          Pedir Cotización
         </a>
       </div>
 
@@ -342,7 +339,7 @@
       </div>
     </section>
 
-    <!-- Precios Transparentes por Volumen -->
+    <!-- [SECCIÓN PRECIOS - OCULTADA TEMPORALMENTE A PEDIDO]
     <section class="corpo-pricing-section neo-border-section" id="precios">
       <div class="pricing-header">
         <div class="corpo-badge pricing-badge">
@@ -355,7 +352,6 @@
       </div>
 
       <div class="pricing-grid">
-        <!-- Tier 1: 1 a 9 boxes -->
         <div class="pricing-card">
           <div class="tier-badge">MUESTRAS / EQUIPOS CHICOS</div>
           <h3 class="tier-title">1 a 9 boxes</h3>
@@ -373,7 +369,6 @@
           <a href="#cotizacion" class="cta-button tier-btn">Pedir Muestra o Boxes</a>
         </div>
 
-        <!-- Tier 2: 10 a 24 boxes -->
         <div class="pricing-card">
           <div class="tier-badge tier-discount">8% OFF CORPORATIVO</div>
           <h3 class="tier-title">10 a 24 boxes</h3>
@@ -391,7 +386,6 @@
           <a href="#cotizacion" class="cta-button tier-btn">Reservar Lote</a>
         </div>
 
-        <!-- Tier 3: 25 a 49 boxes (Featured / Most Popular) -->
         <div class="pricing-card popular-card">
           <div class="popular-ribbon">🔥 MÁS ELEGIDO · 12% OFF</div>
           <div class="tier-badge" style="background: var(--accent-verde);">EQUIPOS MEDIANOS</div>
@@ -411,7 +405,6 @@
           <a href="#cotizacion" class="cta-button cta-green tier-btn">Elegir Este Plan</a>
         </div>
 
-        <!-- Tier 4: 50+ boxes -->
         <div class="pricing-card">
           <div class="tier-badge tier-discount-high">15% OFF · MÁXIMO BENEFICIO</div>
           <h3 class="tier-title">50+ boxes</h3>
@@ -431,7 +424,6 @@
         </div>
       </div>
 
-      <!-- Pricing Logistics Banner -->
       <div class="pricing-logistics-banner neo-border">
         <div class="logistics-col">
           <div class="logistics-icon">🚚</div>
@@ -458,6 +450,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <!-- Formulario de Cotización -->
     <section class="corpo-quote-section neo-border-section" id="cotizacion">
@@ -505,11 +498,12 @@
             <div>
               <label class="corpo-label" for="corpoCantidad">Cantidad estimada de cajas</label>
               <select id="corpoCantidad" class="corpo-select">
-                <option value="1 a 9 boxes ($44.900 c/u)">1 a 9 boxes ($44.900 c/u · Muestra o equipo chico)</option>
-                <option value="10 a 24 boxes ($41.300 c/u - 8% OFF)" selected>10 a 24 boxes ($41.300 c/u · 8% OFF + Envío bonificado)</option>
-                <option value="25 a 49 boxes ($39.500 c/u - 12% OFF)">25 a 49 boxes ($39.500 c/u · 12% OFF + Envío bonificado)</option>
-                <option value="50+ boxes ($38.100 c/u - 15% OFF)">50+ boxes ($38.100 c/u · 15% OFF + Envío bonificado)</option>
-                <option value="Más de 100 boxes">Más de 100 boxes (Gran volumen corporativo)</option>
+                <option value="1 a 4">1 a 4 boxes (muestra o regalo individual)</option>
+                <option value="5 a 9">5 a 9 boxes (equipo chico · anticipación 5 días)</option>
+                <option value="10 a 25" selected>10 a 25 boxes (corporativo · anticipación 10 a 15 días)</option>
+                <option value="25 a 50">25 a 50 boxes (corporativo · anticipación 10 a 15 días)</option>
+                <option value="50 a 100">50 a 100 boxes (gran volumen)</option>
+                <option value="Más de 100">Más de 100 boxes (gran volumen)</option>
               </select>
             </div>
           </div>
