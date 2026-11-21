@@ -1038,7 +1038,7 @@ describe('src/checkout.js', () => {
       const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
       const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
 
-      expect(tickerContent.textContent).toContain('THANKSGIVING & BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900');
+      expect(tickerContent.textContent).toContain('BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900');
       expect(heroBadge.style.display).toBe('inline-flex');
       expect(heroBadge.textContent).toBe('🔥 BLACK FRIDAY · PREVENTA DICIEMBRE $39.900 · HASTA EL LUNES 30/11');
       expect(checkoutAlert.style.display).toBe('flex');
@@ -1195,14 +1195,26 @@ describe('src/checkout.js', () => {
       expect(document.getElementById('transfer-amount').innerText).toBe('$40.410');
       expect(document.getElementById('couponFeedback').classList.contains('is-valid')).toBe(true);
 
-      // Switch to Plan Bimestral ($85.310 - 10% = $76.779)
+      // Switch to Plan Bimestral: 10% sobre el precio normal de 2 cajas ($89.800 - $8.980 = $80.820), sin sumar el 5% OFF
       document.querySelector('input[value="one-time"]').checked = false;
       document.querySelector('input[value="bimonthly"]').checked = true;
       updateCheckoutTotals();
 
-      expect(document.getElementById('summary-subtotal').innerText).toBe('$85.310');
-      expect(document.getElementById('summary-discount').innerText).toBe('-$8.531');
-      expect(document.getElementById('summary-total').innerText).toBe('$76.779');
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$89.800');
+      expect(document.getElementById('summary-discount').innerText).toBe('-$8.980');
+      expect(document.getElementById('summary-total').innerText).toBe('$80.820');
+    });
+
+    it('does not stack LUCHO10 with Black Friday pricing', () => {
+      vi.setSystemTime(new Date(2026, 10, 27)); // Nov 27 (Black Friday)
+
+      const res = applyCouponCode('LUCHO10');
+      expect(res).toEqual({ valid: false, code: null });
+      expect(getAppliedCouponCode()).toBeNull();
+      expect(document.getElementById('summary-discount-row').style.display).toBe('none');
+      expect(document.getElementById('summary-total').innerText).toBe('$39.900');
+      expect(document.getElementById('couponFeedback').classList.contains('is-invalid')).toBe(true);
+      expect(document.getElementById('couponFeedback').textContent).toContain('no es acumulable');
     });
 
     it('rejects invalid coupon codes and preserves standard total', () => {

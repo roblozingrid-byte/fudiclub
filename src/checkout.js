@@ -23,6 +23,18 @@ export function clearCouponCode() {
   updateCheckoutTotals();
 }
 
+function getSitewidePromoState(now = new Date()) {
+  const day = now.getDate();
+  const monthIndex = now.getMonth();
+  const isCyberWeekActive = (monthIndex === 10 && day <= 10);
+  const isBlackFridayActive = (monthIndex === 10 && day >= 26 && day <= 30);
+  return {
+    isCyberWeekActive,
+    isBlackFridayActive,
+    isDiscountActive: isCyberWeekActive || isBlackFridayActive
+  };
+}
+
 export function applyCouponCode(rawCode) {
   const code = typeof rawCode === 'string' ? rawCode.trim().toUpperCase() : '';
   const feedbackEl = document.getElementById('couponFeedback');
@@ -45,9 +57,22 @@ export function applyCouponCode(rawCode) {
     return { valid: false, code: null };
   }
 
+  const { isDiscountActive } = getSitewidePromoState();
+  if (isDiscountActive) {
+    appliedCouponCode = null;
+    if (feedbackEl) {
+      feedbackEl.textContent = `El cupón ${code} no es acumulable con la promoción activa en el sitio.`;
+      feedbackEl.classList.remove('is-valid');
+      feedbackEl.classList.add('is-invalid');
+      feedbackEl.style.display = 'block';
+    }
+    updateCheckoutTotals();
+    return { valid: false, code: null };
+  }
+
   appliedCouponCode = code;
   if (feedbackEl) {
-    feedbackEl.textContent = `✓ Cupón ${code} aplicado (${Math.round(coupon.discountRate * 100)}% OFF).`;
+    feedbackEl.textContent = `✓ Cupón ${code} aplicado (${Math.round(coupon.discountRate * 100)}% OFF sobre precio normal).`;
     feedbackEl.classList.remove('is-invalid');
     feedbackEl.classList.add('is-valid');
     feedbackEl.style.display = 'block';
@@ -145,33 +170,25 @@ export function updateCheckoutTotals() {
   const isBimonthly = selectedPlan && selectedPlan.value === 'bimonthly';
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
   
-  const now = new Date();
-  const day = now.getDate();
-  const monthIndex = now.getMonth();
-  // 10% OFF promocional para la edición de Noviembre (Cyber Week activa hasta el día 10 inclusive)
-  const isCyberWeekActive = (monthIndex === 10 && day <= 10);
-  // Preventa Thanksgiving & Black Friday (del jueves 26 al lunes 30 de Noviembre inclusive)
-  const isBlackFridayActive = (monthIndex === 10 && day >= 26 && day <= 30);
-  const isDiscountActive = isCyberWeekActive || isBlackFridayActive;
+  const { isCyberWeekActive, isBlackFridayActive, isDiscountActive } = getSitewidePromoState();
+  const activeCoupon = (!isDiscountActive && appliedCouponCode) ? COUPONS[appliedCouponCode] : null;
   
   let subtotal = 0;
   let boxesCount = 1;
   
   if (isBimonthly) {
     boxesCount = 2;
-    // Black Friday: $39.900 x 2 = $79.800 ($10.000 de ahorro sobre $89.800)
-    // Cyber Week: $80.820
-    // Regular 5% OFF bimestral: $85.310
-    subtotal = isBlackFridayActive ? 79800 : (isCyberWeekActive ? 80820 : 85310);
+    // Con cupón se calcula sobre el precio normal de 2 cajas ($89.800) sin sumar el 5% OFF bimestral
+    subtotal = activeCoupon ? 89800 : (isBlackFridayActive ? 79800 : (isCyberWeekActive ? 80820 : 85310));
   } else if (isQuarterly) {
     boxesCount = 3;
-    // Black Friday: $39.900 x 3 = $119.700
-    subtotal = isBlackFridayActive ? 119700 : (isCyberWeekActive ? 121230 : 127900);
+    // Con cupón se calcula sobre el precio normal de 3 cajas ($134.700) sin sumar el 5% OFF trimestral
+    subtotal = activeCoupon ? 134700 : (isBlackFridayActive ? 119700 : (isCyberWeekActive ? 121230 : 127900));
   } else {
     boxesCount = 1;
     // Black Friday: $39.900 ($5.000 de ahorro sobre $44.900)
     // Cyber Week: $40.410
-    // Regular: $44.900
+    // Regular / Cupón: $44.900
     subtotal = isBlackFridayActive ? 39900 : (isCyberWeekActive ? 40410 : 44900);
   }
   
@@ -181,7 +198,6 @@ export function updateCheckoutTotals() {
   subtotal = subtotal * userQty;
   const totalBoxes = boxesCount * userQty;
 
-  const activeCoupon = (!isDiscountActive && appliedCouponCode) ? COUPONS[appliedCouponCode] : null;
   const discountAmount = activeCoupon ? Math.round(subtotal * activeCoupon.discountRate) : 0;
   const finalSubtotal = subtotal - discountAmount;
 
@@ -479,7 +495,7 @@ export function updateMonthlyUrgencyAlerts() {
   const tickerContent = document.querySelector('.ticker-content');
   if (tickerContent) {
     if (isBlackFridayActive) {
-      const urgencyMsg = `⚡ THANKSGIVING & BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900 // VÁLIDO HASTA EL LUNES 30/11 // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
+      const urgencyMsg = `⚡ BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900 // VÁLIDO HASTA EL LUNES 30/11 // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
       tickerContent.innerHTML = `<span>${urgencyMsg}</span><span>${urgencyMsg}</span>`;
     } else if (isUrgencyActive) {
       let urgencyMsg;

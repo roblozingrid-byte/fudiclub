@@ -103,11 +103,12 @@ serve(async (req) => {
     }
     const activeCoupon = (!isDiscountActive && !isBlackFridayActive && normalizedCoupon) ? COUPONS[normalizedCoupon] : null;
 
-    const baseSubtotal = isQuarterly
-      ? (UNIT_PRICE_QUARTERLY * qty)
-      : isBimonthly
-        ? (UNIT_PRICE_BIMONTHLY * qty)
-        : (UNIT_PRICE_ONE_TIME * qty);
+    // El cupón se aplica sobre el precio normal de las cajas ($44.900 c/u) sin sumarse al descuento de suscripción ni Black Friday/Cyber Week
+    const unitPriceForOrder = activeCoupon
+      ? (isQuarterly ? 134700 : isBimonthly ? 89800 : 44900)
+      : (isQuarterly ? UNIT_PRICE_QUARTERLY : isBimonthly ? UNIT_PRICE_BIMONTHLY : UNIT_PRICE_ONE_TIME);
+
+    const baseSubtotal = unitPriceForOrder * qty;
     const discountAmount = activeCoupon ? Math.round(baseSubtotal * activeCoupon.discountRate) : 0;
     const subtotal = baseSubtotal - discountAmount;
     
