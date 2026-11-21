@@ -1237,6 +1237,46 @@ h1, h2, h3 {
   font-weight: 700;
 }
 
+/* Coupon Section */
+.coupon-section {
+  margin-top: 15px;
+  margin-bottom: 12px;
+}
+
+.coupon-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.coupon-input-row .neo-input {
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.coupon-apply-btn {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  background: var(--bg-amarillo);
+  color: var(--black);
+}
+
+.coupon-feedback {
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.coupon-feedback.is-valid {
+  color: #008a75;
+}
+
+.coupon-feedback.is-invalid {
+  color: #dc2626;
+}
+
 /* Address Map Container */
 #address-map-container {
   width: 100%;

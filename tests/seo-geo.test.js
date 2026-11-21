@@ -46,7 +46,7 @@ describe('GEO and LLM SEO validation', () => {
     expect(product).toBeDefined();
     expect(product.offers.length).toBe(2);
     expect(product.offers[0].price).toBe('44900');
-    expect(product.offers[1].price).toBe('127900');
+    expect(product.offers[1].price).toBe('85310');
 
     // Check FAQPage
     const faq = schemaData['@graph'].find(item => item['@type'] === 'FAQPage');

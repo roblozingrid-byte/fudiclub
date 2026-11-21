@@ -309,44 +309,56 @@ export function buildPaymentConfirmedEmail({
   shippingAddress: string;
   plan?: string;
   isQuarterly?: boolean;
+  isBimonthly?: boolean;
   quantity?: number;
   qty?: number;
   totalBoxes?: number;
 }) {
   const firstName = (customerName || 'Fudi Lover').trim().split(' ')[0];
+  const isPlanBimonthly = Boolean(
+    isBimonthly ||
+    plan === 'bimonthly' ||
+    (plan && plan.toLowerCase().includes('bimestral')) ||
+    (edition && edition.includes('-') && edition.split('-').length === 2)
+  );
   const isPlanQuarterly = Boolean(
-    isQuarterly ||
-    plan === 'quarterly' ||
-    (edition && edition.includes('-')) ||
-    (plan && plan.toLowerCase().includes('trimestral'))
+    !isPlanBimonthly && (
+      isQuarterly ||
+      plan === 'quarterly' ||
+      (edition && edition.includes('-') && edition.split('-').length >= 3) ||
+      (plan && plan.toLowerCase().includes('trimestral'))
+    )
   );
 
+  const boxesPerPlan = isPlanQuarterly ? 3 : (isPlanBimonthly ? 2 : 1);
   const parsedQty = Number(quantity || qty || 0);
   const parsedBoxes = Number(totalBoxes || 0);
   const numPlans = parsedQty > 0
     ? parsedQty
-    : (parsedBoxes > 0 ? Math.round(parsedBoxes / 3) : 1);
+    : (parsedBoxes > 0 ? Math.round(parsedBoxes / boxesPerPlan) : 1);
   const numBoxes = parsedBoxes > 0
     ? parsedBoxes
-    : (numPlans * 3);
+    : (numPlans * boxesPerPlan);
 
-  const badgeText = isPlanQuarterly
-    ? '⭐ PLAN TRIMESTRAL CONFIRMADO'
-    : '🎉 PAGO CONFIRMADO';
+  const badgeText = isPlanBimonthly
+    ? '⭐ PLAN BIMESTRAL CONFIRMADO'
+    : (isPlanQuarterly ? '⭐ PLAN TRIMESTRAL CONFIRMADO' : '🎉 PAGO CONFIRMADO');
 
-  const introText = isPlanQuarterly
-    ? `¡Felicitaciones! Tenés asegurado tu cupo para los próximos 3 meses de sorpresas Fudi con ${numPlans > 1 ? `tus <strong>${numPlans} Planes Trimestrales</strong> (${numBoxes} Mystery Boxes en total)` : `tu <strong>Plan Trimestral</strong> (${numBoxes} Mystery Boxes en total)`}. Ya estamos preparando la primera entrega para que vivas una experiencia increíble.`
-    : `Tu lugar para la <strong>${edition || 'Mystery Box'}</strong> está oficialmente asegurado. Ya estamos preparando todo para que vivas una experiencia increíble.`;
+  const introText = isPlanBimonthly
+    ? `¡Felicitaciones! Tenés asegurado tu cupo para los próximos 2 meses de sorpresas Fudi con ${numPlans > 1 ? `tus <strong>${numPlans} Planes Bimestrales</strong> (${numBoxes} Mystery Boxes en total)` : `tu <strong>Plan Bimestral</strong> (${numBoxes} Mystery Boxes en total)`}. Ya estamos preparando la primera entrega para que vivas una experiencia increíble.`
+    : (isPlanQuarterly
+      ? `¡Felicitaciones! Tenés asegurado tu cupo para los próximos 3 meses de sorpresas Fudi con ${numPlans > 1 ? `tus <strong>${numPlans} Planes Trimestrales</strong> (${numBoxes} Mystery Boxes en total)` : `tu <strong>Plan Trimestral</strong> (${numBoxes} Mystery Boxes en total)`}. Ya estamos preparando la primera entrega para que vivas una experiencia increíble.`
+      : `Tu lugar para la <strong>${edition || 'Mystery Box'}</strong> está oficialmente asegurado. Ya estamos preparando todo para que vivas una experiencia increíble.`);
 
-  const planPillText = numPlans > 1
-    ? `${numPlans}x Trimestral (${numBoxes} Mystery Boxes)`
-    : `Trimestral (${numBoxes} Mystery Boxes)`;
+  const planPillText = isPlanBimonthly
+    ? (numPlans > 1 ? `${numPlans}x Bimestral (${numBoxes} Mystery Boxes)` : `Bimestral (${numBoxes} Mystery Boxes)`)
+    : (numPlans > 1 ? `${numPlans}x Trimestral (${numBoxes} Mystery Boxes)` : `Trimestral (${numBoxes} Mystery Boxes)`);
 
   let scheduleHtml = '';
-  if (isPlanQuarterly) {
+  if (isPlanBimonthly || isPlanQuarterly) {
     const months = edition && edition.includes('-')
       ? edition.split('-').map(m => m.trim())
-      : ['Mes 1', 'Mes 2', 'Mes 3'];
+      : (isPlanBimonthly ? ['Diciembre', 'Enero'] : ['Mes 1', 'Mes 2', 'Mes 3']);
 
     scheduleHtml = `
       <div style="background-color: #fff4bd; border: 2px solid #000000; border-radius: 8px; padding: 14px 16px; margin: 15px 0 10px 0;">
@@ -359,12 +371,14 @@ export function buildPaymentConfirmedEmail({
         <p style="margin: 4px 0; font-size: 13px; color: #111111;">
           📦 <strong>2ª Box (${months[1] || 'Mes 2'}):</strong> Despacho aprox. 15 de ${months[1] || 'el próximo mes'}${numPlans > 1 ? ` (${numPlans} boxes)` : ''}
         </p>
+        ${isPlanQuarterly ? `
         <p style="margin: 4px 0; font-size: 13px; color: #111111;">
           📦 <strong>3ª Box (${months[2] || 'Mes 3'}):</strong> Despacho aprox. 15 de ${months[2] || 'el tercer mes'}${numPlans > 1 ? ` (${numPlans} boxes)` : ''}
         </p>
+        ` : ''}
       </div>
       <p style="margin: 10px 0 0 0; font-size: 13px; line-height: 1.5; color: #333333;">
-        ✨ <em>Importante:</em> Antes de cada despacho te contactaremos para avisarte que tu box va en camino. Además, ¡tu precio y cupo quedan congelados durante todo el trimestre!
+        ✨ <em>Importante:</em> Antes de cada despacho te contactaremos para avisarte que tu box va en camino. Además, ¡tu precio y cupo quedan congelados durante todo tu plan!
       </p>
     `;
   } else {

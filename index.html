@@ -161,14 +161,14 @@
           },
           {
             "@type": "Offer",
-            "name": "Plan Trimestral (3 Mystery Boxes)",
-            "price": "127900",
+            "name": "Plan Bimestral (2 Mystery Boxes: Diciembre y Enero)",
+            "price": "85310",
             "priceCurrency": "ARS",
             "priceValidUntil": "2027-12-31",
             "availability": "https://schema.org/InStock",
             "url": "https://fudiclub.shop/#registro",
             "itemCondition": "https://schema.org/NewCondition",
-            "description": "3 Mystery Boxes entregadas mensualmente ($42.633 c/u, ahorrás $6.800 en total). Envío gratis en CABA y GBA incluido."
+            "description": "2 Mystery Boxes entregadas mensualmente para Diciembre y Enero ($42.655 c/u, ahorrás $4.490 en total). Envío gratis en CABA y GBA incluido."
           }
         ]
       },
@@ -189,7 +189,7 @@
             "name": "¿Cuánto cuesta la Mystery Box y cuáles son los medios de pago?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "La Compra Única (1 caja) cuesta $44.900 ARS y el Plan Trimestral (3 cajas, 1 por mes) cuesta $127.900 ARS ($42.633 por caja, con un ahorro de $6.800). Se abona únicamente por transferencia bancaria directa (Alias/CBU). No se aceptan tarjetas ni Mercado Pago."
+              "text": "La Compra Única (1 caja) cuesta $44.900 ARS y el Plan Bimestral (2 cajas: Diciembre y Enero, 1 por mes) cuesta $85.310 ARS ($42.655 por caja, con un ahorro de $4.490). Se abona únicamente por transferencia bancaria directa (Alias/CBU). No se aceptan tarjetas ni Mercado Pago."
             }
           },
           {
@@ -213,7 +213,7 @@
             "name": "¿Es una suscripción que se renueva sola?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. En Fudi Club no hay débitos automáticos forzados ni renovaciones sorpresa. Pagás por única vez por 1 box o por el Plan Trimestral mediante transferencia bancaria directa."
+              "text": "No. En Fudi Club no hay débitos automáticos forzados ni renovaciones sorpresa. Pagás por única vez por 1 box o por el Plan Bimestral mediante transferencia bancaria directa."
             }
           },
           {
@@ -383,7 +383,7 @@
         <div class="step-card">
           <div class="step-number">1</div>
           <h3 class="step-title">Elegís tu plan</h3>
-          <p class="step-desc">Asegurá tu lugar con una compra única o ahorrá con el Plan Trimestral.</p>
+          <p class="step-desc">Asegurá tu lugar con una compra única o ahorrá con el Plan Bimestral.</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
@@ -529,26 +529,24 @@
             <div class="purchase-options focal">
               <label class="radio-neo plan-card focal-card" id="plan-card-one">
                 <input type="radio" name="plan" value="one-time" checked>
-                <div class="plan-badge-sticker" style="background: var(--festive-red, #ff5e7e); color: white;">⚡ 10% OFF CYBER</div>
                 <div class="radio-neo-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
                   <span class="plan-name">Compra Única</span>
                   <div class="plan-pricing-container" style="display: flex; align-items: baseline; gap: 8px; justify-content: center;">
-                    <span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$44.900</span>
-                    <span class="plan-price focal-price">$40.410</span>
+                    <span class="plan-price focal-price">$44.900</span>
                   </div>
-                  <span class="plan-tag">Probá 1 Box · ¡Ahorrás $4.490!</span>
+                  <span class="plan-tag">Probá 1 Box · Sin renovación automática</span>
                 </div>
               </label>
-              <label class="radio-neo plan-card focal-card" id="plan-card-quarterly">
-                <input type="radio" name="plan" value="quarterly">
-                <div class="plan-badge-sticker" style="background: var(--festive-red, #ff5e7e); color: white;">⚡ 10% OFF CYBER</div>
+              <label class="radio-neo plan-card focal-card" id="plan-card-bimonthly">
+                <input type="radio" name="plan" value="bimonthly">
+                <div class="plan-badge-sticker">⭐ 5% OFF · MEJOR PRECIO</div>
                 <div class="radio-neo-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                  <span class="plan-name">Plan Trimestral</span>
+                  <span class="plan-name">Plan Bimestral</span>
                   <div class="plan-pricing-container" style="display: flex; align-items: baseline; gap: 8px; justify-content: center;">
-                    <span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$134.700</span>
-                    <span class="plan-price focal-price">$121.230</span>
+                    <span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$89.800</span>
+                    <span class="plan-price focal-price">$85.310</span>
                   </div>
-                  <span class="plan-tag">¡Ahorrás $13.470 en total!</span>
+                  <span class="plan-tag">Diciembre + Enero · ¡Ahorrás $4.490!</span>
                 </div>
               </label>
             </div>
@@ -624,11 +622,24 @@
             <span class="edition-value" id="current-edition-display">Calculando...</span>
           </div>
 
+          <!-- Cupón de descuento -->
+          <div class="coupon-section" id="coupon-section">
+            <div class="coupon-input-row">
+              <input type="text" id="couponInput" class="neo-input" placeholder="¿Tenés un código de descuento? (ej: LUCHO10)" autocomplete="off" style="margin-bottom: 0;">
+              <button type="button" id="btnApplyCoupon" class="cta-button coupon-apply-btn">Aplicar</button>
+            </div>
+            <div id="couponFeedback" class="coupon-feedback" style="display: none;"></div>
+          </div>
+
           <!-- Order Summary / Totals -->
           <div class="checkout-summary neo-border">
             <div class="summary-line">
               <span id="summary-subtotal-label">Subtotal (1 Mystery Box):</span>
               <span id="summary-subtotal">$0</span>
+            </div>
+            <div class="summary-line" id="summary-discount-row" style="display: none;">
+              <span id="summary-discount-label">Descuento:</span>
+              <span id="summary-discount" style="color: #00A88F; font-weight: 700;">-$0</span>
             </div>
             <div class="summary-line">
               <span id="summary-delivery-label">Envío:</span>
@@ -726,7 +737,7 @@
           <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">
-          <p>No, ¡cero débitos sorpresa! En Fudi Club pagás por única vez por 1 box para probarla, o si elegís el Plan Trimestral pagás las 3 cajas por adelantado con descuento.</p>
+          <p>No, ¡cero débitos sorpresa! En Fudi Club pagás por única vez por 1 box para probarla, o si elegís el Plan Bimestral pagás las 2 cajas (Diciembre y Enero) por adelantado con descuento.</p>
         </div>
       </div>
       <div class="faq-item neo-border">

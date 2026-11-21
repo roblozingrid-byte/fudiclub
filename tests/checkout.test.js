@@ -8,7 +8,10 @@ import {
   initCheckoutFlow,
   setupFormValidationMessages,
   updateMonthlyUrgencyAlerts,
-  updatePlanCardsPricingUI
+  updatePlanCardsPricingUI,
+  applyCouponCode,
+  clearCouponCode,
+  getAppliedCouponCode
 } from '../src/checkout.js';
 
 describe('src/checkout.js', () => {
@@ -123,6 +126,7 @@ describe('src/checkout.js', () => {
       document.body.innerHTML = `
         <form id="paymentForm">
           <input type="radio" name="plan" value="monthly" checked />
+          <input type="radio" name="plan" value="bimonthly" />
           <input type="radio" name="plan" value="quarterly" />
           <span id="qty-display">1</span>
           <input id="cpInput" value="1425" />
@@ -149,6 +153,20 @@ describe('src/checkout.js', () => {
       expect(document.getElementById('summary-subtotal-label').innerText).toContain('1 Mystery Box');
       expect(document.getElementById('current-edition-display').innerText).toBe('Abril');
       expect(document.querySelector('#paymentForm button[type="submit"]').disabled).toBe(false);
+    });
+
+    it('calculates totals for bimonthly plan and updates edition display for 2 months', () => {
+      const bimonthlyRadio = document.querySelector('input[value="bimonthly"]');
+      bimonthlyRadio.checked = true;
+      document.querySelector('input[value="monthly"]').checked = false;
+
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$85.310');
+      expect(document.getElementById('summary-delivery').innerText).toBe('¡Gratis!');
+      expect(document.getElementById('summary-total').innerText).toBe('$85.310');
+      expect(document.getElementById('summary-subtotal-label').innerText).toContain('Bimestral = 2 Boxes');
+      expect(document.getElementById('current-edition-display').innerText).toBe('Abr y May');
     });
 
     it('calculates totals for quarterly plan and updates edition display for 3 months', () => {
@@ -1001,10 +1019,10 @@ describe('src/checkout.js', () => {
       expect(stickerOne.textContent).toBe('⚡ 10% OFF CYBER');
       expect(planCardOne.querySelector('.plan-price').textContent).toBe('$40.410');
 
-      const planCardQuarterly = document.getElementById('plan-card-quarterly');
-      expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$121.230');
-      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⚡ 10% OFF CYBER');
-      expect(planCardQuarterly.querySelector('.plan-tag').textContent).toBe('¡Ahorrás $13.470 en total!');
+      const planCardBimonthly = document.getElementById('plan-card-bimonthly') || document.getElementById('plan-card-quarterly');
+      expect(planCardBimonthly.querySelector('.plan-price').textContent).toBe('$80.820');
+      expect(planCardBimonthly.querySelector('.plan-badge-sticker').textContent).toBe('⚡ 10% OFF CYBER');
+      expect(planCardBimonthly.querySelector('.plan-tag').textContent).toBe('¡Ahorrás $8.980 en total!');
     });
 
     it('automatically restores standard pricing and tags starting Nov 11', () => {
@@ -1018,13 +1036,84 @@ describe('src/checkout.js', () => {
       expect(planCardOne.querySelector('.plan-price').textContent).toBe('$44.900');
       expect(planCardOne.querySelector('.plan-tag').textContent).toBe('Probá 1 Box · Sin renovación automática');
 
-      const planCardQuarterly = document.getElementById('plan-card-quarterly');
-      expect(planCardQuarterly.querySelector('.plan-price').textContent).toBe('$127.900');
-      expect(planCardQuarterly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ 5% OFF · MEJOR PRECIO');
-      expect(planCardQuarterly.querySelector('.plan-tag').textContent).toBe('¡Ahorrás $6.800 por ciclo!');
+      const planCardBimonthly = document.getElementById('plan-card-bimonthly') || document.getElementById('plan-card-quarterly');
+      expect(planCardBimonthly.querySelector('.plan-price').textContent).toBe('$85.310');
+      expect(planCardBimonthly.querySelector('.plan-badge-sticker').textContent).toBe('⭐ 5% OFF · MEJOR PRECIO');
+      expect(planCardBimonthly.querySelector('.plan-tag').textContent).toBe('Diciembre + Enero · ¡Ahorrás $4.490!');
 
       const stickyPrice = document.querySelector('.sticky-box-price');
       expect(stickyPrice.innerHTML).toBe('$44.900 <small>· Envío gratis</small>');
+    });
+  });
+
+  describe('coupon codes (LUCHO10)', () => {
+    beforeEach(() => {
+      vi.setSystemTime(new Date(2026, 10, 21)); // Nov 21 (outside Cyber Week)
+      clearCouponCode();
+      document.body.innerHTML = `
+        <input type="radio" name="plan" value="one-time" checked />
+        <input type="radio" name="plan" value="bimonthly" />
+        <span id="qty-display">1</span>
+        <input id="cpInput" value="1414" />
+        <input id="couponInput" value="" />
+        <button id="btnApplyCoupon" type="button">Aplicar</button>
+        <div id="couponFeedback" style="display: none;"></div>
+        <span id="summary-subtotal-label"></span>
+        <span id="summary-subtotal"></span>
+        <div id="summary-discount-row" style="display: none;">
+          <span id="summary-discount-label"></span>
+          <span id="summary-discount"></span>
+        </div>
+        <span id="summary-delivery-label"></span>
+        <span id="summary-delivery"></span>
+        <span id="summary-total"></span>
+        <span id="transfer-amount"></span>
+        <span id="current-edition-display"></span>
+      `;
+    });
+
+    afterEach(() => {
+      clearCouponCode();
+    });
+
+    it('applies 10% discount with LUCHO10 (case-insensitive) on Compra Única and Plan Bimestral', () => {
+      const res = applyCouponCode(' lucho10 ');
+      expect(res).toEqual({ valid: true, code: 'LUCHO10' });
+      expect(getAppliedCouponCode()).toBe('LUCHO10');
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$44.900');
+      expect(document.getElementById('summary-discount-row').style.display).toBe('flex');
+      expect(document.getElementById('summary-discount').innerText).toBe('-$4.490');
+      expect(document.getElementById('summary-total').innerText).toBe('$40.410');
+      expect(document.getElementById('transfer-amount').innerText).toBe('$40.410');
+      expect(document.getElementById('couponFeedback').classList.contains('is-valid')).toBe(true);
+
+      // Switch to Plan Bimestral ($85.310 - 10% = $76.779)
+      document.querySelector('input[value="one-time"]').checked = false;
+      document.querySelector('input[value="bimonthly"]').checked = true;
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$85.310');
+      expect(document.getElementById('summary-discount').innerText).toBe('-$8.531');
+      expect(document.getElementById('summary-total').innerText).toBe('$76.779');
+    });
+
+    it('rejects invalid coupon codes and preserves standard total', () => {
+      const res = applyCouponCode('INVALIDO');
+      expect(res).toEqual({ valid: false, code: null });
+      expect(getAppliedCouponCode()).toBeNull();
+      expect(document.getElementById('summary-discount-row').style.display).toBe('none');
+      expect(document.getElementById('summary-total').innerText).toBe('$44.900');
+      expect(document.getElementById('couponFeedback').classList.contains('is-invalid')).toBe(true);
+    });
+
+    it('removes discount when cleared', () => {
+      applyCouponCode('LUCHO10');
+      expect(document.getElementById('summary-total').innerText).toBe('$40.410');
+
+      clearCouponCode();
+      expect(getAppliedCouponCode()).toBeNull();
+      expect(document.getElementById('summary-discount-row').style.display).toBe('none');
+      expect(document.getElementById('summary-total').innerText).toBe('$44.900');
     });
   });
 });

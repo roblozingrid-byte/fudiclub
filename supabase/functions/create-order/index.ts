@@ -13,7 +13,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { email, name, address, cp, allergies, plan, payment_method, edition, quantity } = body
+    const { email, name, address, cp, allergies, plan, payment_method, edition, quantity, coupon_code } = body
 
     if (!email || !name || !address || !cp || !plan || !payment_method) {
       throw new Error('Missing required fields')
@@ -71,8 +71,9 @@ serve(async (req) => {
       console.warn('Error sincronizando cliente en Resend:', resendContactErr)
     }
 
-    // 2. Calculate Total (Con 10% de descuento Cyber Week activo hasta el 10 de Noviembre)
+    // 2. Calculate Total (Con 10% de descuento Cyber Week activo hasta el 10 de Noviembre, o cupón)
     const qty = quantity ? parseInt(quantity, 10) : 1
+    const isBimonthly = plan === 'bimonthly'
     const isQuarterly = plan === 'quarterly'
 
     const argDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
@@ -81,16 +82,37 @@ serve(async (req) => {
 
     // 10% OFF promocional para la edición de Noviembre (hasta el 10 de noviembre inclusive)
     // Trimestral: 10% OFF sobre el total de 3 cajas a precio normal ($134.700 -> $121.230)
+    // Bimestral: 5% OFF sobre 2 cajas ($89.800 -> $85.310), o $80.820 en Cyber Week
     // Compra única: 10% OFF sobre 1 caja ($44.900 -> $40.410)
     const isDiscountActive = (currentMonthIdx === 10 && currentDay <= 10);
     const UNIT_PRICE_QUARTERLY = isDiscountActive ? 121230 : 127900;
+    const UNIT_PRICE_BIMONTHLY = isDiscountActive ? 80820 : 85310;
     const UNIT_PRICE_ONE_TIME = isDiscountActive ? 40410 : 44900;
 
-    const subtotal = isQuarterly ? (UNIT_PRICE_QUARTERLY * qty) : (UNIT_PRICE_ONE_TIME * qty)
+    const COUPONS: Record<string, { discountRate: number; tag: string }> = {
+      LUCHO10: { discountRate: 0.10, tag: 'LUCHO10' }
+    };
+    const normalizedCoupon = typeof coupon_code === 'string' ? coupon_code.trim().toUpperCase() : '';
+    if (normalizedCoupon && !COUPONS[normalizedCoupon]) {
+      return new Response(
+        JSON.stringify({ error: `El código de descuento "${normalizedCoupon}" no es válido.` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+    const activeCoupon = (!isDiscountActive && normalizedCoupon) ? COUPONS[normalizedCoupon] : null;
+
+    const baseSubtotal = isQuarterly
+      ? (UNIT_PRICE_QUARTERLY * qty)
+      : isBimonthly
+        ? (UNIT_PRICE_BIMONTHLY * qty)
+        : (UNIT_PRICE_ONE_TIME * qty);
+    const discountAmount = activeCoupon ? Math.round(baseSubtotal * activeCoupon.discountRate) : 0;
+    const subtotal = baseSubtotal - discountAmount;
     
     let deliveryFee = 0 // Shipping is 100% free
     
-    const totalBoxes = qty * (isQuarterly ? 3 : 1)
+    const boxesPerPlan = isQuarterly ? 3 : isBimonthly ? 2 : 1
+    const totalBoxes = qty * boxesPerPlan
     const totalDeliveryFee = deliveryFee * totalBoxes
     const total = subtotal + totalDeliveryFee
 
@@ -105,7 +127,24 @@ serve(async (req) => {
       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
     let finalEdition = edition;
-    if (isQuarterly) {
+    if (isBimonthly) {
+      let baseMonth = '';
+      for (const m of monthsList) {
+        if (edition?.includes(m)) {
+          baseMonth = m;
+          break;
+        }
+      }
+      if (!baseMonth) {
+        let mIdx = currentMonthIdx;
+        const cutoffDay = (mIdx === 10) ? 10 : 5;
+        if (currentDay > cutoffDay) mIdx = (mIdx + 1) % 12;
+        baseMonth = monthsList[mIdx];
+      }
+      const bIdx = monthsList.indexOf(baseMonth);
+      const m2 = monthsList[(bIdx + 1) % 12];
+      finalEdition = `${baseMonth} - ${m2}`;
+    } else if (isQuarterly) {
       let baseMonth = '';
       for (const m of monthsList) {
         if (edition?.includes(m)) {
@@ -125,8 +164,10 @@ serve(async (req) => {
       finalEdition = `${baseMonth} - ${m2} - ${m3}`;
     }
 
-    if (isDiscountActive && !finalEdition.includes('Cyber Week')) {
-      finalEdition = `${finalEdition} [Cyber Week]`;
+    const activeTag = activeCoupon ? activeCoupon.tag : (isDiscountActive ? 'Cyber Week' : null);
+
+    if (activeTag && !finalEdition?.includes(activeTag)) {
+      finalEdition = `${finalEdition} [${activeTag}]`;
     }
 
     const orderPayload: any = {
@@ -142,7 +183,7 @@ serve(async (req) => {
       friendly_id: friendlyId,
       quantity: qty,
       total_boxes: totalBoxes,
-      tag: isDiscountActive ? 'Cyber Week' : null
+      tag: activeTag
     }
 
     let { data: order, error: orderError } = await supabase
@@ -169,9 +210,8 @@ serve(async (req) => {
 
     // 4. Send Admin Notification Email
     const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'robloz.ingrid@gmail.com';
-    const planName = isQuarterly 
-      ? (isDiscountActive ? 'Plan Trimestral (Cyber Week ⚡)' : 'Plan Trimestral') 
-      : (isDiscountActive ? 'Compra Única (Cyber Week ⚡)' : 'Compra Única');
+    const planBaseName = isQuarterly ? 'Plan Trimestral' : isBimonthly ? 'Plan Bimestral' : 'Compra Única';
+    const planName = activeTag ? `${planBaseName} (${activeTag})` : planBaseName;
     const paymentMethodLabel = payment_method === 'transfer' ? 'Transferencia Bancaria 📲' : 'Mercado Pago 💳';
     const formattedTotal = total.toLocaleString('es-AR');
 
@@ -188,10 +228,15 @@ serve(async (req) => {
     }
 
     try {
-      const cyberBadge = isDiscountActive ? ' [Cyber Week ⚡]' : '';
+      const promoBadge = activeTag ? ` [${activeTag}]` : '';
+      const promoTagLabel = activeCoupon
+        ? `Cupón ${activeCoupon.tag} (${Math.round(activeCoupon.discountRate * 100)}% OFF)`
+        : isDiscountActive
+          ? 'Cyber Week (10% OFF)'
+          : undefined;
       await sendEmail({
         to: adminEmail,
-        subject: `🔔 ¡Nuevo Pedido ${friendlyId}!${cyberBadge} - ${name} ($${formattedTotal})`,
+        subject: `🔔 ¡Nuevo Pedido ${friendlyId}!${promoBadge} - ${name} ($${formattedTotal})`,
         html: buildAdminOrderNotificationEmail({
           friendlyId,
           name,
@@ -207,7 +252,7 @@ serve(async (req) => {
           formattedTotal,
           isQuarterly,
           confirmUrl,
-          promoTag: isDiscountActive ? 'Cyber Week (10% OFF)' : undefined
+          promoTag: promoTagLabel
         })
       });
     } catch (adminEmailErr) {

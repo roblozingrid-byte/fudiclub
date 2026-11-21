@@ -2,6 +2,60 @@ import { AVAILABLE_STOCK, isPreorderMode, setPreorderMode } from './api.js';
 import posthog from 'posthog-js';
 import { validateEmailSyntax, isDisposableEmail, suggestEmailCorrection, validateAddress, validateFullName } from './email-validator.js';
 
+export const COUPONS = {
+  LUCHO10: { discountRate: 0.10, label: 'LUCHO10 (10% OFF)', tag: 'LUCHO10' }
+};
+
+let appliedCouponCode = null;
+
+export function getAppliedCouponCode() {
+  return appliedCouponCode;
+}
+
+export function clearCouponCode() {
+  appliedCouponCode = null;
+  const feedbackEl = document.getElementById('couponFeedback');
+  if (feedbackEl) {
+    feedbackEl.style.display = 'none';
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('is-valid', 'is-invalid');
+  }
+  updateCheckoutTotals();
+}
+
+export function applyCouponCode(rawCode) {
+  const code = typeof rawCode === 'string' ? rawCode.trim().toUpperCase() : '';
+  const feedbackEl = document.getElementById('couponFeedback');
+
+  if (!code) {
+    clearCouponCode();
+    return { valid: false, code: null };
+  }
+
+  const coupon = COUPONS[code];
+  if (!coupon) {
+    appliedCouponCode = null;
+    if (feedbackEl) {
+      feedbackEl.textContent = `El código "${code}" no es válido.`;
+      feedbackEl.classList.remove('is-valid');
+      feedbackEl.classList.add('is-invalid');
+      feedbackEl.style.display = 'block';
+    }
+    updateCheckoutTotals();
+    return { valid: false, code: null };
+  }
+
+  appliedCouponCode = code;
+  if (feedbackEl) {
+    feedbackEl.textContent = `✓ Cupón ${code} aplicado (${Math.round(coupon.discountRate * 100)}% OFF).`;
+    feedbackEl.classList.remove('is-invalid');
+    feedbackEl.classList.add('is-valid');
+    feedbackEl.style.display = 'block';
+  }
+  updateCheckoutTotals();
+  return { valid: true, code };
+}
+
 export function calculateCurrentEdition() {
   const now = new Date();
   let monthIndex = now.getMonth();
@@ -88,6 +142,7 @@ export function updateCheckoutTotals() {
   if (!summarySubtotal) return;
  
   const selectedPlan = document.querySelector('input[name="plan"]:checked');
+  const isBimonthly = selectedPlan && selectedPlan.value === 'bimonthly';
   const isQuarterly = selectedPlan && selectedPlan.value === 'quarterly';
   
   const now = new Date();
@@ -99,7 +154,11 @@ export function updateCheckoutTotals() {
   let subtotal = 0;
   let boxesCount = 1;
   
-  if (isQuarterly) {
+  if (isBimonthly) {
+    boxesCount = 2;
+    // 5% OFF sobre 2 cajas ($89.800 - 5% = $85.310)
+    subtotal = isDiscountActive ? 80820 : 85310;
+  } else if (isQuarterly) {
     boxesCount = 3;
     // 10% OFF sobre el total normal de 3 cajas ($134.700 - 10% = $121.230)
     subtotal = isDiscountActive ? 121230 : 127900;
@@ -114,6 +173,25 @@ export function updateCheckoutTotals() {
   
   subtotal = subtotal * userQty;
   const totalBoxes = boxesCount * userQty;
+
+  const activeCoupon = (!isDiscountActive && appliedCouponCode) ? COUPONS[appliedCouponCode] : null;
+  const discountAmount = activeCoupon ? Math.round(subtotal * activeCoupon.discountRate) : 0;
+  const finalSubtotal = subtotal - discountAmount;
+
+  const summaryDiscountRow = document.getElementById('summary-discount-row');
+  const summaryDiscountLabel = document.getElementById('summary-discount-label');
+  const summaryDiscount = document.getElementById('summary-discount');
+  if (summaryDiscountRow && summaryDiscount) {
+    if (discountAmount > 0 && activeCoupon) {
+      summaryDiscountRow.style.display = 'flex';
+      if (summaryDiscountLabel) {
+        summaryDiscountLabel.innerText = `Descuento (${activeCoupon.label}):`;
+      }
+      summaryDiscount.innerText = `-$${discountAmount.toLocaleString('es-AR')}`;
+    } else {
+      summaryDiscountRow.style.display = 'none';
+    }
+  }
   
   const cpInput = document.getElementById('cpInput');
   const cpStr = cpInput ? cpInput.value.replace(/\D/g, '') : '';
@@ -160,19 +238,29 @@ export function updateCheckoutTotals() {
   }
  
   if (summarySubtotalLabel) {
-    summarySubtotalLabel.innerText = isQuarterly ? `Subtotal (${userQty} x Trimestral = ${totalBoxes} Boxes):` : `Subtotal (${totalBoxes} Mystery Box${totalBoxes > 1 ? 'es' : ''}):`;
+    if (isBimonthly) {
+      summarySubtotalLabel.innerText = `Subtotal (${userQty} x Bimestral = ${totalBoxes} Boxes):`;
+    } else if (isQuarterly) {
+      summarySubtotalLabel.innerText = `Subtotal (${userQty} x Trimestral = ${totalBoxes} Boxes):`;
+    } else {
+      summarySubtotalLabel.innerText = `Subtotal (${totalBoxes} Mystery Box${totalBoxes > 1 ? 'es' : ''}):`;
+    }
   }
   if (summaryDeliveryLabel) {
-    summaryDeliveryLabel.innerText = isQuarterly ? `Envío (${totalBoxes} Boxes):` : `Envío (${userQty} Box${userQty > 1 ? 'es' : ''}):`;
+    if (isBimonthly || isQuarterly) {
+      summaryDeliveryLabel.innerText = `Envío (${totalBoxes} Boxes):`;
+    } else {
+      summaryDeliveryLabel.innerText = `Envío (${userQty} Box${userQty > 1 ? 'es' : ''}):`;
+    }
   }
   
   summarySubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
   summaryDelivery.innerText = deliveryText;
-  summaryTotal.innerText = `$${(subtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
+  summaryTotal.innerText = `$${(finalSubtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
   
   const transferAmount = document.getElementById('transfer-amount');
   if (transferAmount) {
-    transferAmount.innerText = `$${(subtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
+    transferAmount.innerText = `$${(finalSubtotal + totalDeliveryFee).toLocaleString('es-AR')}`;
   }
 
   const currentEditionDisplay = document.getElementById('current-edition-display');
@@ -181,7 +269,11 @@ export function updateCheckoutTotals() {
     const monthAbbr = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const baseEdition = calculateCurrentEdition();
     const bIndex = months.indexOf(baseEdition);
-    if (isQuarterly) {
+    if (isBimonthly) {
+      const a1 = monthAbbr[bIndex];
+      const a2 = monthAbbr[(bIndex + 1) % 12];
+      currentEditionDisplay.innerText = `${a1} y ${a2}`;
+    } else if (isQuarterly) {
       const a1 = monthAbbr[bIndex];
       const a2 = monthAbbr[(bIndex + 1) % 12];
       const a3 = monthAbbr[(bIndex + 2) % 12];
@@ -438,7 +530,7 @@ export function updatePlanCardsPricingUI() {
   const isDiscountActive = (monthIndex === 10 && day <= 10);
 
   const planCardOne = document.getElementById('plan-card-one');
-  const planCardQuarterly = document.getElementById('plan-card-quarterly');
+  const planCardBimonthly = document.getElementById('plan-card-bimonthly') || document.getElementById('plan-card-quarterly');
   const stickyPrice = document.querySelector('.sticky-box-price');
 
   if (isDiscountActive) {
@@ -469,18 +561,21 @@ export function updatePlanCardsPricingUI() {
       }
     }
 
-    if (planCardQuarterly) {
-      let sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+    if (planCardBimonthly) {
+      let sticker = planCardBimonthly.querySelector('.plan-badge-sticker');
       if (!sticker) {
         sticker = document.createElement('div');
         sticker.className = 'plan-badge-sticker';
-        planCardQuarterly.prepend(sticker);
+        planCardBimonthly.prepend(sticker);
       }
       sticker.style.background = 'var(--festive-red, #ff5e7e)';
       sticker.style.color = 'white';
       sticker.textContent = '⚡ 10% OFF CYBER';
 
-      const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
+      const planNameEl = planCardBimonthly.querySelector('.plan-name') || planCardBimonthly.querySelector('.plan-title');
+      if (planNameEl) planNameEl.textContent = 'Plan Bimestral';
+
+      const priceWrap = planCardBimonthly.querySelector('.radio-neo-content');
       if (priceWrap) {
         let priceContainer = priceWrap.querySelector('.plan-pricing-container');
         if (!priceContainer) {
@@ -490,13 +585,13 @@ export function updatePlanCardsPricingUI() {
           const oldPrice = priceWrap.querySelector('.plan-price');
           if (oldPrice) oldPrice.replaceWith(priceContainer);
         }
-        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$134.700</span><span class="plan-price focal-price">$121.230</span>`;
+        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$89.800</span><span class="plan-price focal-price">$80.820</span>`;
         const tags = priceWrap.querySelectorAll('.plan-tag');
         if (tags.length > 1) {
           tags[0].remove();
         }
         const tag = priceWrap.querySelector('.plan-tag');
-        if (tag) tag.textContent = '¡Ahorrás $13.470 en total!';
+        if (tag) tag.textContent = '¡Ahorrás $8.980 en total!';
       }
     }
 
@@ -520,29 +615,37 @@ export function updatePlanCardsPricingUI() {
       }
     }
 
-    if (planCardQuarterly) {
-      let sticker = planCardQuarterly.querySelector('.plan-badge-sticker');
+    if (planCardBimonthly) {
+      let sticker = planCardBimonthly.querySelector('.plan-badge-sticker');
       if (!sticker) {
         sticker = document.createElement('div');
         sticker.className = 'plan-badge-sticker';
-        planCardQuarterly.prepend(sticker);
+        planCardBimonthly.prepend(sticker);
       }
       sticker.style.background = '';
       sticker.style.color = '';
       sticker.textContent = '⭐ 5% OFF · MEJOR PRECIO';
 
-      const priceWrap = planCardQuarterly.querySelector('.radio-neo-content');
+      const planNameEl = planCardBimonthly.querySelector('.plan-name') || planCardBimonthly.querySelector('.plan-title');
+      if (planNameEl) planNameEl.textContent = 'Plan Bimestral';
+
+      const priceWrap = planCardBimonthly.querySelector('.radio-neo-content');
       if (priceWrap) {
-        const priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        let priceContainer = priceWrap.querySelector('.plan-pricing-container');
         if (priceContainer) {
-          priceContainer.outerHTML = `<span class="plan-price focal-price">$127.900</span>`;
+          priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$89.800</span><span class="plan-price focal-price">$85.310</span>`;
+        } else {
+          const oldPrice = priceWrap.querySelector('.plan-price');
+          if (oldPrice) {
+            oldPrice.outerHTML = `<div class="plan-pricing-container" style="display: flex; align-items: baseline; gap: 8px; justify-content: center;"><span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$89.800</span><span class="plan-price focal-price">$85.310</span></div>`;
+          }
         }
         const tags = priceWrap.querySelectorAll('.plan-tag');
         if (tags.length > 1) {
           tags[0].remove();
         }
         const tag = priceWrap.querySelector('.plan-tag');
-        if (tag) tag.textContent = '¡Ahorrás $6.800 por ciclo!';
+        if (tag) tag.textContent = 'Diciembre + Enero · ¡Ahorrás $4.490!';
       }
     }
 
@@ -578,6 +681,34 @@ export function initCheckoutFlow() {
   updateCheckoutTotals();
   updateMonthlyUrgencyAlerts();
   updatePlanCardsPricingUI();
+
+  const couponInput = document.getElementById('couponInput');
+  const btnApplyCoupon = document.getElementById('btnApplyCoupon');
+  if (btnApplyCoupon && couponInput) {
+    btnApplyCoupon.addEventListener('click', () => {
+      applyCouponCode(couponInput.value);
+    });
+    couponInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyCouponCode(couponInput.value);
+      }
+    });
+    couponInput.addEventListener('input', () => {
+      if (!couponInput.value.trim() && appliedCouponCode) {
+        clearCouponCode();
+      }
+    });
+  }
+
+  if (typeof window !== 'undefined' && window.location && window.location.search) {
+    const params = new URLSearchParams(window.location.search);
+    const urlCoupon = params.get('cupon') || params.get('coupon');
+    if (urlCoupon) {
+      if (couponInput) couponInput.value = urlCoupon.trim().toUpperCase();
+      applyCouponCode(urlCoupon);
+    }
+  }
 
   if (!expandedCheckout) return;
 
@@ -1010,6 +1141,7 @@ export function initCheckoutFlow() {
       allInputs.forEach(input => input.disabled = true);
 
       const planValue = document.querySelector('input[name="plan"]:checked').value;
+      const isBimonthly = planValue === 'bimonthly';
       const isQuarterly = planValue === 'quarterly';
       const baseEdition = calculateCurrentEdition();
       const monthsList = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -1019,8 +1151,14 @@ export function initCheckoutFlow() {
       
       const now = new Date();
       const isCyberWeek = (now.getMonth() === 10 && now.getDate() <= 10);
-      const cyberWeekTag = isCyberWeek ? ' [Cyber Week]' : '';
-      const editionAssigned = isQuarterly ? `${baseEdition} - ${m2} - ${m3}${cyberWeekTag}` : `Edición ${baseEdition}${cyberWeekTag}`;
+      const activePromoTag = (!isCyberWeek && appliedCouponCode) ? appliedCouponCode : (isCyberWeek ? 'Cyber Week' : undefined);
+      const promoSuffix = activePromoTag ? ` [${activePromoTag}]` : '';
+      let editionAssigned = `Edición ${baseEdition}${promoSuffix}`;
+      if (isBimonthly) {
+        editionAssigned = `${baseEdition} - ${m2}${promoSuffix}`;
+      } else if (isQuarterly) {
+        editionAssigned = `${baseEdition} - ${m2} - ${m3}${promoSuffix}`;
+      }
       const paymentMethodElement = document.querySelector('input[name="payment_method"]:checked');
       const paymentMethod = paymentMethodElement ? paymentMethodElement.value : 'transfer';
       const emailInputElem = document.getElementById('emailInput');
@@ -1113,7 +1251,8 @@ export function initCheckoutFlow() {
         edition: editionAssigned,
         is_preorder: isPreorderMode,
         quantity: orderQuantity,
-        tag: isCyberWeek ? 'Cyber Week' : undefined
+        coupon_code: (!isCyberWeek && appliedCouponCode) ? appliedCouponCode : undefined,
+        tag: activePromoTag
       };
 
       const functionsUrl = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL || 'http://127.0.0.1:54321/functions/v1';
@@ -1226,8 +1365,8 @@ export function initCheckoutFlow() {
           const btnWhatsapp = document.getElementById('btn-whatsapp-proof');
           if (btnWhatsapp) {
             const friendlyOrderId = data.orderId || '';
-            const msg = isCyberWeek
-              ? `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId}) [Cyber Week]`
+            const msg = activePromoTag
+              ? `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId}) [${activePromoTag}]`
               : `Hola! Soy ${name}, adjunto comprobante de mi Mystery Box (${friendlyOrderId})`;
             btnWhatsapp.href = `https://wa.me/5491139264426?text=${encodeURIComponent(msg)}`;
             btnWhatsapp.onclick = () => {
@@ -1236,7 +1375,7 @@ export function initCheckoutFlow() {
                 email: email,
                 plan: planValue,
                 total: payload.total,
-                tag: isCyberWeek ? 'Cyber Week' : undefined
+                tag: activePromoTag
               });
             };
           }
