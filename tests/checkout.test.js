@@ -226,6 +226,42 @@ describe('src/checkout.js', () => {
       expect(document.getElementById('summary-subtotal').innerText).toBe('$121.230');
       expect(document.getElementById('summary-total').innerText).toBe('$121.230');
     });
+
+    it('applies Thanksgiving & Black Friday pricing ($39.900 / $79.800) between Nov 26 and Nov 30', () => {
+      // 26 de Noviembre de 2026 (Thanksgiving)
+      vi.setSystemTime(new Date(2026, 10, 26));
+      updateCheckoutTotals();
+
+      // Compra única a $39.900
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$39.900');
+      expect(document.getElementById('summary-total').innerText).toBe('$39.900');
+
+      // Plan Bimestral a $79.800 ($39.900 x 2)
+      const bimonthlyRadio = document.querySelector('input[value="bimonthly"]');
+      bimonthlyRadio.checked = true;
+      document.querySelector('input[value="monthly"]').checked = false;
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$79.800');
+      expect(document.getElementById('summary-total').innerText).toBe('$79.800');
+    });
+
+    it('automatically restores standard pricing ($44.900 / $85.310) starting Dec 1', () => {
+      // 1 de Diciembre de 2026
+      vi.setSystemTime(new Date(2026, 11, 1));
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$44.900');
+      expect(document.getElementById('summary-total').innerText).toBe('$44.900');
+
+      const bimonthlyRadio = document.querySelector('input[value="bimonthly"]');
+      bimonthlyRadio.checked = true;
+      document.querySelector('input[value="monthly"]').checked = false;
+      updateCheckoutTotals();
+
+      expect(document.getElementById('summary-subtotal').innerText).toBe('$85.310');
+      expect(document.getElementById('summary-total').innerText).toBe('$85.310');
+    });
   });
 
   describe('initCheckoutFlow', () => {
@@ -699,6 +735,31 @@ describe('src/checkout.js', () => {
       });
     });
 
+    it('attaches Black Friday tag and edition marker when submitting during Black Friday week (Nov 26-30)', async () => {
+      vi.setSystemTime(new Date(2026, 10, 26)); // 26 de Noviembre (Thanksgiving)
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, orderId: 'FUDI-11-BF' })
+      });
+
+      initCheckoutFlow();
+
+      const emailInput = document.getElementById('emailInput');
+      emailInput.value = 'blackfriday@fudiclub.com';
+
+      const paymentForm = document.getElementById('paymentForm');
+      paymentForm.dispatchEvent(new Event('submit', { cancelable: true }));
+
+      await vi.waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('/create-order'),
+          expect.objectContaining({
+            body: expect.stringMatching(/"tag":"Black Friday"/)
+          })
+        );
+      });
+    });
+
     it('shows name error on blur when surname is missing, and clears when fixed', () => {
       initCheckoutFlow();
 
@@ -965,6 +1026,31 @@ describe('src/checkout.js', () => {
       expect(checkoutAlert.style.display).toBe('none');
     });
 
+    it('shows Thanksgiving & Black Friday alert and ticker from Nov 26 to Nov 30', () => {
+      // 26 de Noviembre de 2026 (Thanksgiving)
+      vi.setSystemTime(new Date(2026, 10, 26));
+
+      updateMonthlyUrgencyAlerts();
+
+      const tickerContent = document.querySelector('.ticker-content');
+      const heroBadge = document.getElementById('hero-deadline-badge');
+      const checkoutAlert = document.getElementById('checkout-deadline-alert');
+      const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+      const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
+
+      expect(tickerContent.textContent).toContain('THANKSGIVING & BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900');
+      expect(heroBadge.style.display).toBe('inline-flex');
+      expect(heroBadge.textContent).toBe('🔥 BLACK FRIDAY · PREVENTA DICIEMBRE $39.900 · HASTA EL LUNES 30/11');
+      expect(checkoutAlert.style.display).toBe('flex');
+      expect(titleEl.textContent).toContain('Asegurá tu Box de Diciembre a solo $39.900 por Black Friday');
+      expect(descEl.textContent).toContain('lunes 30 de Noviembre');
+
+      // 30 de Noviembre de 2026 (Cyber Monday - último día de promo)
+      vi.setSystemTime(new Date(2026, 10, 30, 23, 30));
+      updateMonthlyUrgencyAlerts();
+      expect(heroBadge.style.display).toBe('inline-flex');
+    });
+
     it('remains deactivated on mid-month days (e.g. day 20)', () => {
       vi.setSystemTime(new Date(2026, 9, 20));
 
@@ -1023,6 +1109,28 @@ describe('src/checkout.js', () => {
       expect(planCardBimonthly.querySelector('.plan-price').textContent).toBe('$80.820');
       expect(planCardBimonthly.querySelector('.plan-badge-sticker').textContent).toBe('⚡ 10% OFF CYBER');
       expect(planCardBimonthly.querySelector('.plan-tag').textContent).toBe('¡Ahorrás $8.980 en total!');
+    });
+
+    it('activates Black Friday pricing ($39.900 / $79.800) and badges from Nov 26 to Nov 30', () => {
+      // 26 de Noviembre de 2026 (Thanksgiving)
+      vi.setSystemTime(new Date(2026, 10, 26));
+
+      updatePlanCardsPricingUI();
+
+      const planCardOne = document.getElementById('plan-card-one');
+      const stickerOne = planCardOne.querySelector('.plan-badge-sticker');
+      expect(stickerOne).not.toBeNull();
+      expect(stickerOne.textContent).toBe('⚡ BLACK FRIDAY $39.900');
+      expect(planCardOne.querySelector('.plan-price').textContent).toBe('$39.900');
+      expect(planCardOne.querySelector('.plan-tag').textContent).toBe('Preventa Diciembre · ¡Ahorrás $5.000!');
+
+      const planCardBimonthly = document.getElementById('plan-card-bimonthly') || document.getElementById('plan-card-quarterly');
+      expect(planCardBimonthly.querySelector('.plan-price').textContent).toBe('$79.800');
+      expect(planCardBimonthly.querySelector('.plan-badge-sticker').textContent).toBe('⚡ BLACK FRIDAY · MEJOR PRECIO');
+      expect(planCardBimonthly.querySelector('.plan-tag').textContent).toBe('Diciembre + Enero · ¡Ahorrás $10.000!');
+
+      const stickyPrice = document.querySelector('.sticky-box-price');
+      expect(stickyPrice.innerHTML).toContain('$39.900 <small>· Black Friday</small>');
     });
 
     it('automatically restores standard pricing and tags starting Nov 11', () => {

@@ -149,23 +149,30 @@ export function updateCheckoutTotals() {
   const day = now.getDate();
   const monthIndex = now.getMonth();
   // 10% OFF promocional para la edición de Noviembre (Cyber Week activa hasta el día 10 inclusive)
-  const isDiscountActive = (monthIndex === 10 && day <= 10);
+  const isCyberWeekActive = (monthIndex === 10 && day <= 10);
+  // Preventa Thanksgiving & Black Friday (del jueves 26 al lunes 30 de Noviembre inclusive)
+  const isBlackFridayActive = (monthIndex === 10 && day >= 26 && day <= 30);
+  const isDiscountActive = isCyberWeekActive || isBlackFridayActive;
   
   let subtotal = 0;
   let boxesCount = 1;
   
   if (isBimonthly) {
     boxesCount = 2;
-    // 5% OFF sobre 2 cajas ($89.800 - 5% = $85.310)
-    subtotal = isDiscountActive ? 80820 : 85310;
+    // Black Friday: $39.900 x 2 = $79.800 ($10.000 de ahorro sobre $89.800)
+    // Cyber Week: $80.820
+    // Regular 5% OFF bimestral: $85.310
+    subtotal = isBlackFridayActive ? 79800 : (isCyberWeekActive ? 80820 : 85310);
   } else if (isQuarterly) {
     boxesCount = 3;
-    // 10% OFF sobre el total normal de 3 cajas ($134.700 - 10% = $121.230)
-    subtotal = isDiscountActive ? 121230 : 127900;
+    // Black Friday: $39.900 x 3 = $119.700
+    subtotal = isBlackFridayActive ? 119700 : (isCyberWeekActive ? 121230 : 127900);
   } else {
     boxesCount = 1;
-    // 10% OFF sobre 1 caja ($44.900 - 10% = $40.410)
-    subtotal = isDiscountActive ? 40410 : 44900;
+    // Black Friday: $39.900 ($5.000 de ahorro sobre $44.900)
+    // Cyber Week: $40.410
+    // Regular: $44.900
+    subtotal = isBlackFridayActive ? 39900 : (isCyberWeekActive ? 40410 : 44900);
   }
   
   const qtyDisplay = document.getElementById('qty-display');
@@ -444,11 +451,15 @@ export function updateMonthlyUrgencyAlerts() {
   const monthIndex = now.getMonth();
   const year = now.getFullYear();
 
-  // En noviembre, la venta se extiende de forma especial hasta el 10/11 por Cyber Week (con 10% OFF).
+  // En noviembre:
+  // 1) Cyber Week activa hasta el 10/11
+  // 2) Preventa Thanksgiving & Black Friday activa del 26 al 30 de Noviembre
   // En los demás meses, activo del día 1 al 5 de cada mes.
-  const isNovemberCyberWeek = (monthIndex === 10);
-  const closingDay = isNovemberCyberWeek ? 10 : 5;
-  const isUrgencyActive = (day >= 1 && day <= closingDay);
+  const isNovemberCyberWeek = (monthIndex === 10 && day <= 10);
+  const isBlackFridayActive = (monthIndex === 10 && day >= 26 && day <= 30);
+  const closingDay = (monthIndex === 10) ? 10 : 5;
+  const isStandardUrgency = (day >= 1 && day <= closingDay);
+  const isUrgencyActive = isStandardUrgency || isBlackFridayActive;
 
   const months = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -467,7 +478,10 @@ export function updateMonthlyUrgencyAlerts() {
   // 1. Ticker superior
   const tickerContent = document.querySelector('.ticker-content');
   if (tickerContent) {
-    if (isUrgencyActive) {
+    if (isBlackFridayActive) {
+      const urgencyMsg = `⚡ THANKSGIVING & BLACK FRIDAY: PREVENTA BOX DE DICIEMBRE A $39.900 // VÁLIDO HASTA EL LUNES 30/11 // CUPOS LIMITADOS // SEGUINOS EN @somosfudiclub // `;
+      tickerContent.innerHTML = `<span>${urgencyMsg}</span><span>${urgencyMsg}</span>`;
+    } else if (isUrgencyActive) {
       let urgencyMsg;
       if (isNovemberCyberWeek) {
         urgencyMsg = `⚡ CYBER WEEK: 10% OFF EN LA BOX DE NOVIEMBRE // EXTENDIDA HASTA EL ${closingDayName.toUpperCase()} 10/${monthNum} A LAS 23:59 // ÚLTIMOS CUPOS // SEGUINOS EN @somosfudiclub // `;
@@ -484,7 +498,10 @@ export function updateMonthlyUrgencyAlerts() {
   // 2. Badge en el Hero (soporta versión desktop sobre la caja y mobile antes del logo)
   const heroBadges = document.querySelectorAll('.hero-deadline-badge');
   heroBadges.forEach(heroBadge => {
-    if (isUrgencyActive) {
+    if (isBlackFridayActive) {
+      heroBadge.textContent = `🔥 BLACK FRIDAY · PREVENTA DICIEMBRE $39.900 · HASTA EL LUNES 30/11`;
+      heroBadge.style.display = 'inline-flex';
+    } else if (isUrgencyActive) {
       if (isNovemberCyberWeek) {
         heroBadge.textContent = `🔥 CYBER WEEK 10% OFF · EXTENDIDO HASTA EL ${closingDayName.toUpperCase()} 10/${monthNum}`;
       } else {
@@ -499,7 +516,17 @@ export function updateMonthlyUrgencyAlerts() {
   // 3. Alerta en el Checkout
   const checkoutAlert = document.getElementById('checkout-deadline-alert');
   if (checkoutAlert) {
-    if (isUrgencyActive) {
+    if (isBlackFridayActive) {
+      const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
+      const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
+      if (titleEl) {
+        titleEl.textContent = `Preventa Especial Fiestas: ¡Asegurá tu Box de Diciembre a solo $39.900 por Black Friday!`;
+      }
+      if (descEl) {
+        descEl.textContent = `Asegurá tu cupo para la edición de Diciembre con precio especial de preventa hasta el lunes 30 de Noviembre a las 23:59 hs.`;
+      }
+      checkoutAlert.style.display = 'flex';
+    } else if (isUrgencyActive) {
       const titleEl = checkoutAlert.querySelector('.deadline-alert-title');
       const descEl = checkoutAlert.querySelector('.deadline-alert-desc');
       if (titleEl) {
@@ -527,13 +554,79 @@ export function updatePlanCardsPricingUI() {
   const now = new Date();
   const day = now.getDate();
   const monthIndex = now.getMonth();
-  const isDiscountActive = (monthIndex === 10 && day <= 10);
+  const isCyberWeekActive = (monthIndex === 10 && day <= 10);
+  const isBlackFridayActive = (monthIndex === 10 && day >= 26 && day <= 30);
 
   const planCardOne = document.getElementById('plan-card-one');
   const planCardBimonthly = document.getElementById('plan-card-bimonthly') || document.getElementById('plan-card-quarterly');
   const stickyPrice = document.querySelector('.sticky-box-price');
 
-  if (isDiscountActive) {
+  if (isBlackFridayActive) {
+    if (planCardOne) {
+      let sticker = planCardOne.querySelector('.plan-badge-sticker');
+      if (!sticker) {
+        sticker = document.createElement('div');
+        sticker.className = 'plan-badge-sticker';
+        planCardOne.prepend(sticker);
+      }
+      sticker.style.background = 'var(--festive-red, #ff5e7e)';
+      sticker.style.color = 'white';
+      sticker.textContent = '⚡ BLACK FRIDAY $39.900';
+
+      const priceWrap = planCardOne.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        let priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (!priceContainer) {
+          priceContainer = document.createElement('div');
+          priceContainer.className = 'plan-pricing-container';
+          priceContainer.style.cssText = 'display: flex; align-items: baseline; gap: 8px; justify-content: center;';
+          const oldPrice = priceWrap.querySelector('.plan-price');
+          if (oldPrice) oldPrice.replaceWith(priceContainer);
+        }
+        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$44.900</span><span class="plan-price focal-price">$39.900</span>`;
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = 'Preventa Diciembre · ¡Ahorrás $5.000!';
+      }
+    }
+
+    if (planCardBimonthly) {
+      let sticker = planCardBimonthly.querySelector('.plan-badge-sticker');
+      if (!sticker) {
+        sticker = document.createElement('div');
+        sticker.className = 'plan-badge-sticker';
+        planCardBimonthly.prepend(sticker);
+      }
+      sticker.style.background = 'var(--festive-red, #ff5e7e)';
+      sticker.style.color = 'white';
+      sticker.textContent = '⚡ BLACK FRIDAY · MEJOR PRECIO';
+
+      const planNameEl = planCardBimonthly.querySelector('.plan-name') || planCardBimonthly.querySelector('.plan-title');
+      if (planNameEl) planNameEl.textContent = 'Plan Bimestral';
+
+      const priceWrap = planCardBimonthly.querySelector('.radio-neo-content');
+      if (priceWrap) {
+        let priceContainer = priceWrap.querySelector('.plan-pricing-container');
+        if (!priceContainer) {
+          priceContainer = document.createElement('div');
+          priceContainer.className = 'plan-pricing-container';
+          priceContainer.style.cssText = 'display: flex; align-items: baseline; gap: 8px; justify-content: center;';
+          const oldPrice = priceWrap.querySelector('.plan-price');
+          if (oldPrice) oldPrice.replaceWith(priceContainer);
+        }
+        priceContainer.innerHTML = `<span style="text-decoration: line-through; opacity: 0.55; font-size: 1.05rem; font-weight: 600;">$89.800</span><span class="plan-price focal-price">$79.800</span>`;
+        const tags = priceWrap.querySelectorAll('.plan-tag');
+        if (tags.length > 1) {
+          tags[0].remove();
+        }
+        const tag = priceWrap.querySelector('.plan-tag');
+        if (tag) tag.textContent = 'Diciembre + Enero · ¡Ahorrás $10.000!';
+      }
+    }
+
+    if (stickyPrice) {
+      stickyPrice.innerHTML = `<s style="opacity: 0.6; font-size: 0.8em; margin-right: 3px;">$44.900</s>$39.900 <small>· Black Friday</small>`;
+    }
+  } else if (isCyberWeekActive) {
     if (planCardOne) {
       let sticker = planCardOne.querySelector('.plan-badge-sticker');
       if (!sticker) {
@@ -1151,7 +1244,10 @@ export function initCheckoutFlow() {
       
       const now = new Date();
       const isCyberWeek = (now.getMonth() === 10 && now.getDate() <= 10);
-      const activePromoTag = (!isCyberWeek && appliedCouponCode) ? appliedCouponCode : (isCyberWeek ? 'Cyber Week' : undefined);
+      const isBlackFriday = (now.getMonth() === 10 && now.getDate() >= 26 && now.getDate() <= 30);
+      const activePromoTag = (!isCyberWeek && !isBlackFriday && appliedCouponCode)
+        ? appliedCouponCode
+        : (isBlackFriday ? 'Black Friday' : (isCyberWeek ? 'Cyber Week' : undefined));
       const promoSuffix = activePromoTag ? ` [${activePromoTag}]` : '';
       let editionAssigned = `Edición ${baseEdition}${promoSuffix}`;
       if (isBimonthly) {

@@ -81,13 +81,15 @@ serve(async (req) => {
     const currentDay = argDate.getDate();
 
     // 10% OFF promocional para la edición de Noviembre (hasta el 10 de noviembre inclusive)
-    // Trimestral: 10% OFF sobre el total de 3 cajas a precio normal ($134.700 -> $121.230)
-    // Bimestral: 5% OFF sobre 2 cajas ($89.800 -> $85.310), o $80.820 en Cyber Week
-    // Compra única: 10% OFF sobre 1 caja ($44.900 -> $40.410)
+    // Preventa Especial Thanksgiving & Black Friday (del jueves 26 al lunes 30 de Noviembre inclusive)
+    // Trimestral: $119.700 en Black Friday ($39.900 x 3), $121.230 en Cyber Week, $127.900 regular
+    // Bimestral: $79.800 en Black Friday ($39.900 x 2), $80.820 en Cyber Week, $85.310 regular
+    // Compra única: $39.900 en Black Friday, $40.410 en Cyber Week, $44.900 regular
     const isDiscountActive = (currentMonthIdx === 10 && currentDay <= 10);
-    const UNIT_PRICE_QUARTERLY = isDiscountActive ? 121230 : 127900;
-    const UNIT_PRICE_BIMONTHLY = isDiscountActive ? 80820 : 85310;
-    const UNIT_PRICE_ONE_TIME = isDiscountActive ? 40410 : 44900;
+    const isBlackFridayActive = (currentMonthIdx === 10 && currentDay >= 26 && currentDay <= 30);
+    const UNIT_PRICE_QUARTERLY = isBlackFridayActive ? 119700 : (isDiscountActive ? 121230 : 127900);
+    const UNIT_PRICE_BIMONTHLY = isBlackFridayActive ? 79800 : (isDiscountActive ? 80820 : 85310);
+    const UNIT_PRICE_ONE_TIME = isBlackFridayActive ? 39900 : (isDiscountActive ? 40410 : 44900);
 
     const COUPONS: Record<string, { discountRate: number; tag: string }> = {
       LUCHO10: { discountRate: 0.10, tag: 'LUCHO10' }
@@ -99,7 +101,7 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       )
     }
-    const activeCoupon = (!isDiscountActive && normalizedCoupon) ? COUPONS[normalizedCoupon] : null;
+    const activeCoupon = (!isDiscountActive && !isBlackFridayActive && normalizedCoupon) ? COUPONS[normalizedCoupon] : null;
 
     const baseSubtotal = isQuarterly
       ? (UNIT_PRICE_QUARTERLY * qty)
@@ -164,7 +166,7 @@ serve(async (req) => {
       finalEdition = `${baseMonth} - ${m2} - ${m3}`;
     }
 
-    const activeTag = activeCoupon ? activeCoupon.tag : (isDiscountActive ? 'Cyber Week' : null);
+    const activeTag = activeCoupon ? activeCoupon.tag : (isBlackFridayActive ? 'Black Friday' : (isDiscountActive ? 'Cyber Week' : null));
 
     if (activeTag && !finalEdition?.includes(activeTag)) {
       finalEdition = `${finalEdition} [${activeTag}]`;
